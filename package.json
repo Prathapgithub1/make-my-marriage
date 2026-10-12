@@ -1,0 +1,34 @@
+{
+  "name": "make-my-marriage",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=24.16.0 <25"
+  },
+  "packageManager": "npm@11.13.0",
+  "workspaces": [
+    "apps/web",
+    "apps/api"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev --workspace @mmm/web",
+    "dev:api": "npm run dev --workspace @mmm/api",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "eslint apps",
+    "format": "prettier --write \"**/*.{js,mjs,cjs,ts,tsx,json,md,yml,yaml,css,html}\"",
+    "format:check": "prettier --check \"**/*.{js,mjs,cjs,ts,tsx,json,md,yml,yaml,css,html}\"",
+    "test": "npm run test --workspaces --if-present"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.12.0",
+    "globals": "17.13.0",
+    "prettier": "3.9.10",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.71.1"
+  },
+  "allowScripts": {
+    "@swc/core@1.16.18": true
+  }
+}

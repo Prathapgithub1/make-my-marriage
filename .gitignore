@@ -1,0 +1,23 @@
+# Dependencies and build output
+node_modules/
+dist/
+coverage/
+.parcel-cache/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Generated Prisma Client and local database files
+prisma/generated/
+*.db
+*.sqlite
+
+# Logs and OS/editor files
+npm-debug.log*
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json

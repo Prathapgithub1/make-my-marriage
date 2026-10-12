@@ -1,0 +1,9 @@
+node_modules/
+dist/
+coverage/
+.parcel-cache/
+package-lock.json
+Docs/Database_Design_V1.md
+Docs/Product Requirements Document (PRD V1).md
+Docs/REST API Design V1.md
+Docs/System_Design_Architecture.md
