@@ -4,7 +4,7 @@ Make My Marriage is a wedding-planning SaaS application. This repository is an n
 
 ## Current status
 
-The repository contains the initial application foundation: a Parcel-served React page, shared frontend providers and routing, an Express API with a health endpoint, and development tooling. Product features and database integration are not implemented yet. The approved product and architecture references are in [`Docs/`](Docs/).
+The repository foundation is complete, and the responsive public homepage is implemented with clearly labeled sample data. Authenticated wedding-planning features and database integration are not implemented yet. See [`Docs/PROJECT_STATUS.md`](Docs/PROJECT_STATUS.md) for milestone progress and [`Docs/`](Docs/) for the approved product and architecture references.
 
 ## Requirements
 

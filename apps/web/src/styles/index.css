@@ -1,13 +1,24 @@
 @import 'tailwindcss';
 
-html {
+:root {
   color-scheme: light;
-  background: #ffffff;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html {
+  background: #fafaf3;
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-family: Inter, 'Segoe UI', Arial, sans-serif;
 }
