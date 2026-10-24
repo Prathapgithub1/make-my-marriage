@@ -1,6 +1,33 @@
 @import 'tailwindcss';
 
+@theme {
+  --font-sans: Inter, 'Segoe UI', Arial, sans-serif;
+  --font-serif: 'Playfair Display', 'Iowan Old Style', Georgia, serif;
+
+  --color-canvas: #fafaf3;
+  --color-surface: #ffffff;
+  --color-surface-low: #f4f4ed;
+  --color-ink: #1a1c18;
+  --color-muted: #53433e;
+  --color-primary: #8a4b35;
+  --color-primary-hover: #a8624b;
+  --color-sage: #556251;
+  --color-outline: #d8c2bb;
+  --color-line: #e5e1d9;
+}
+
 :root {
+  --canvas: #fafaf3;
+  --surface: #ffffff;
+  --surface-low: #f4f4ed;
+  --ink: #1a1c18;
+  --muted: #53433e;
+  --primary: #8a4b35;
+  --primary-hover: #a8624b;
+  --sage: #556251;
+  --outline: #d8c2bb;
+  --line: #e5e1d9;
+
   color-scheme: light;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -10,9 +37,6 @@
 
 html {
   scroll-behavior: smooth;
-}
-
-html {
   background: #fafaf3;
 }
 
@@ -21,4 +45,89 @@ body {
   min-width: 320px;
   min-height: 100vh;
   font-family: Inter, 'Segoe UI', Arial, sans-serif;
+  color: #1a1c18;
+  background-color: #fafaf3;
+}
+
+/* Global button and brand mark base styles */
+.brand-mark-shell {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  place-items: center;
+  border: 1px solid var(--outline, #d8c2bb);
+  border-radius: 8px;
+  color: var(--primary, #8a4b35);
+  background: var(--surface-low, #f4f4ed);
+}
+
+.brand-mark-shell.is-compact {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+}
+
+.brand-mark {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.brand-mark-shell.is-compact .brand-mark {
+  width: 20px;
+  height: 20px;
+}
+
+.button,
+.btn-primary {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 20px;
+  border: 1px solid var(--primary, #8a4b35);
+  border-radius: 8px;
+  color: #ffffff !important;
+  background-color: var(--primary, #8a4b35);
+  box-shadow: 0 2px 6px rgba(37, 39, 35, 0.08);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    transform 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.button:hover,
+.btn-primary:hover {
+  transform: translateY(-1px);
+  background-color: var(--primary-hover, #a8624b);
+  border-color: var(--primary-hover, #a8624b);
+  box-shadow: 0 5px 14px rgba(37, 39, 35, 0.1);
+}
+
+.button-small {
+  min-height: 40px;
+  padding-inline: 18px;
+  font-size: 13px;
+}
+
+.button-secondary {
+  border-color: var(--outline, #d8c2bb);
+  color: var(--ink, #1a1c18) !important;
+  background-color: var(--surface, #ffffff);
+  box-shadow: none;
+}
+
+.button-secondary:hover {
+  background-color: var(--surface-low, #f4f4ed);
+  border-color: var(--outline, #d8c2bb);
 }

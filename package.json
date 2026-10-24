@@ -12,9 +12,11 @@
   ],
   "scripts": {
     "dev:web": "npm run dev --workspace @mmm/web",
-    "dev:api": "npm run dev --workspace @mmm/api",
-    "build": "npm run build --workspaces --if-present",
-    "typecheck": "npm run typecheck --workspaces --if-present",
+    "dev:api": "npm run prisma:generate && npm run dev --workspace @mmm/api",
+    "prisma:generate": "prisma generate --config prisma7.config.ts",
+    "prisma:migrate:dev": "prisma migrate dev --config prisma7.config.ts",
+    "build": "npm run prisma:generate && npm run build --workspaces --if-present",
+    "typecheck": "npm run prisma:generate && npm run typecheck --workspaces --if-present",
     "lint": "eslint apps",
     "format": "prettier --write \"**/*.{js,mjs,cjs,ts,tsx,json,md,yml,yaml,css,html}\"",
     "format:check": "prettier --check \"**/*.{js,mjs,cjs,ts,tsx,json,md,yml,yaml,css,html}\"",
@@ -29,6 +31,9 @@
     "typescript-eslint": "8.71.1"
   },
   "allowScripts": {
-    "@swc/core@1.16.18": true
+    "@swc/core@1.16.18": true,
+    "argon2@0.45.1": true,
+    "@prisma/engines@7.10.0": true,
+    "prisma@7.10.0": true
   }
 }

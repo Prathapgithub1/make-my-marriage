@@ -10,10 +10,10 @@ coverage/
 !.env.example
 .mcp.json
 
-# Generated Prisma Client and local database files
-prisma/generated/
-*.db
-*.sqlite
+# # Generated Prisma Client and local database files
+# prisma/generated/
+# *.db
+# *.sqlite
 
 # Logs and OS/editor files
 npm-debug.log*
