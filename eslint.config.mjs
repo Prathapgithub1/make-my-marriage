@@ -4,7 +4,13 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['**/dist/**', '**/coverage/**', '**/node_modules/**', '**/.parcel-cache/**'],
+    ignores: [
+      '**/dist/**',
+      '**/dev-dist/**',
+      '**/coverage/**',
+      '**/node_modules/**',
+      '**/.parcel-cache/**',
+    ],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
