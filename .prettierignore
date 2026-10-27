@@ -1,7 +1,9 @@
 node_modules/
 dist/
+dev-dist/
 coverage/
 .parcel-cache/
+apps/api/src/generated/
 package-lock.json
 Docs/Database_Design_V1.md
 Docs/Product Requirements Document (PRD V1).md

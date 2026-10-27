@@ -1,6 +1,6 @@
 import type { PropsWithChildren, ReactNode } from 'react';
 import { Link } from 'react-router';
-import { BrandMark } from '../home/components/BrandMark';
+import { BrandLockup } from '../home/components/BrandMark';
 import { SignupPreviewCard } from './SignupPreviewCard';
 
 type AuthPageLayoutProps = PropsWithChildren<{
@@ -33,13 +33,10 @@ export function AuthPageLayout({
         <div className="mx-auto flex min-h-16 w-[min(calc(100%_-_24px),_1080px)] items-center justify-between gap-3">
           <Link
             aria-label="Make My Marriage home"
-            className="inline-flex items-center gap-2 rounded-md"
+            className="inline-flex items-center gap-2 rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
             to="/"
           >
-            <BrandMark compact />
-            <span className="font-serif text-base font-bold tracking-[-0.035em] sm:text-lg">
-              Make My Marriage
-            </span>
+            <BrandLockup compact />
           </Link>
           <Link className="text-xs font-medium text-muted hover:text-primary sm:text-sm" to="/">
             Explore the platform{' '}

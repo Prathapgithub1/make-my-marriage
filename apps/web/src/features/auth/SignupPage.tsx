@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { BrandMark } from '../home/components/BrandMark';
+import { BrandLockup } from '../home/components/BrandMark';
 import { SignupForm } from './SignupForm';
 import { SignupPreviewCard } from './SignupPreviewCard';
 
@@ -19,10 +19,7 @@ export function SignupPage() {
             className="inline-flex items-center gap-2 rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
             to="/"
           >
-            <BrandMark compact />
-            <span className="font-serif text-base font-bold tracking-[-0.035em] sm:text-lg">
-              Make My Marriage
-            </span>
+            <BrandLockup compact />
           </Link>
           <Link
             className="rounded-md px-1.5 py-1.5 text-xs font-medium text-muted hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:text-sm"

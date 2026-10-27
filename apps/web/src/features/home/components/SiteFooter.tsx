@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { BrandMark } from './BrandMark';
+import { BrandLockup } from './BrandMark';
 
 const exploreLinks = [
   { href: '#features', label: 'Features' },
@@ -13,8 +13,7 @@ export function SiteFooter() {
       <div className="page-container footer-main">
         <div className="footer-brand-block">
           <Link className="brand" to="/" aria-label="Make My Marriage home">
-            <BrandMark />
-            <span className="brand-wordmark">Make My Marriage</span>
+            <BrandLockup />
           </Link>
           <p>The connected workspace for wedding planning and guest coordination.</p>
         </div>

@@ -131,3 +131,9 @@ body {
   background-color: var(--surface-low, #f4f4ed);
   border-color: var(--outline, #d8c2bb);
 }
+
+.wedding-hero-bg {
+  background-image: url('../assets/images/wedding-hero.jpg');
+  background-size: cover;
+  background-position: center 20%;
+}

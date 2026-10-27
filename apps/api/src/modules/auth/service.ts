@@ -9,8 +9,28 @@ import { createCsrfToken, createOpaqueToken, hashToken, SESSION_TTL_MS } from '.
 const RESET_TTL_MS = 30 * 60 * 1000;
 
 export type AuthUser = { id: string; email: string; displayName: string | null };
-export type AuthResult = { user: AuthUser; hasWedding: false; sessionToken: string };
-export type SignupResult = { user: AuthUser; hasWedding: false; sessionToken: string };
+export type AuthResult = { user: AuthUser; hasWedding: boolean; sessionToken: string };
+export type SignupResult = { user: AuthUser; hasWedding: boolean; sessionToken: string };
+
+export type AuthMembership = {
+  role: 'ADMIN' | 'MANAGER';
+};
+
+export type AuthWeddingSummary = {
+  id: string;
+  title: string;
+  brideName: string;
+  groomName: string;
+  weddingDate: string | null;
+  location: string | null;
+};
+
+export type AuthContextResult = {
+  user: AuthUser;
+  hasWedding: boolean;
+  membership: AuthMembership | null;
+  wedding: AuthWeddingSummary | null;
+};
 
 export interface AuthMailer {
   sendResetLink(email: string, link: string): Promise<void>;
@@ -80,7 +100,10 @@ export function createDefaultMailer(): AuthMailer {
   return createConsoleMailer();
 }
 
-export function createAuthService(db: PrismaClient | undefined, mailer: AuthMailer = createDefaultMailer(),) {
+export function createAuthService(
+  db: PrismaClient | undefined,
+  mailer: AuthMailer = createDefaultMailer(),
+) {
   function requireDatabase(): PrismaClient {
     if (!db) {
       throw new AppError(503, 'DATABASE_UNAVAILABLE', 'Database connection is unavailable.');
@@ -123,7 +146,10 @@ export function createAuthService(db: PrismaClient | undefined, mailer: AuthMail
 
   async function login(email: string, password: string): Promise<AuthResult> {
     const database = requireDatabase();
-    const user = await database.user.findUnique({ where: { email } });
+    const user = await database.user.findUnique({
+      where: { email },
+      include: { weddingMembership: true },
+    });
     const validPassword = user
       ? await argon2.verify(user.passwordHash, password).catch(() => false)
       : false;
@@ -141,8 +167,74 @@ export function createAuthService(db: PrismaClient | undefined, mailer: AuthMail
     });
     return {
       user: { id: user.id, email: user.email, displayName: user.displayName },
-      hasWedding: false,
+      hasWedding: Boolean(user.weddingMembership),
       sessionToken,
+    };
+  }
+
+  async function getAuthContext(
+    sessionToken: string | undefined,
+  ): Promise<AuthContextResult | null> {
+    if (!sessionToken) return null;
+    const session = await requireDatabase().session.findFirst({
+      where: {
+        tokenHash: hashToken(sessionToken),
+        revokedAt: null,
+        expiresAt: { gt: new Date() },
+      },
+      select: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            displayName: true,
+            weddingMembership: {
+              select: {
+                id: true,
+                weddingId: true,
+                role: true,
+                wedding: {
+                  select: {
+                    id: true,
+                    title: true,
+                    brideName: true,
+                    groomName: true,
+                    weddingDate: true,
+                    location: true,
+                    city: true,
+                    state: true,
+                    country: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!session?.user) return null;
+    const membership = session.user.weddingMembership;
+    return {
+      user: {
+        id: session.user.id,
+        email: session.user.email,
+        displayName: session.user.displayName,
+      },
+      hasWedding: Boolean(membership),
+      membership: membership ? { role: membership.role } : null,
+      wedding: membership?.wedding
+        ? {
+            id: membership.wedding.id,
+            title: membership.wedding.title,
+            brideName: membership.wedding.brideName,
+            groomName: membership.wedding.groomName,
+            weddingDate: membership.wedding.weddingDate
+              ? membership.wedding.weddingDate.toISOString().slice(0, 10)
+              : null,
+            location: membership.wedding.location,
+          }
+        : null,
     };
   }
 
@@ -282,6 +374,7 @@ export function createAuthService(db: PrismaClient | undefined, mailer: AuthMail
     signup,
     login,
     authenticate,
+    getAuthContext,
     logout,
     forgotPassword,
     resetPassword,

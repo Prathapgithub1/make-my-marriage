@@ -6,6 +6,7 @@ export type ApiErrorBody = {
   error?: {
     code?: string;
     message?: string;
+    details?: Record<string, string>;
   };
   requestId?: string;
 };
@@ -15,6 +16,7 @@ export class ApiRequestError extends Error {
     message: string,
     readonly status: number,
     readonly code?: string,
+    readonly details?: Record<string, string>,
   ) {
     super(message);
     this.name = 'ApiRequestError';
@@ -52,6 +54,7 @@ export async function apiRequest<T>(path: string, init: RequestInit = {}): Promi
       errorBody.error?.message ?? `API request failed (${response.status})`,
       response.status,
       errorBody.error?.code,
+      errorBody.error?.details,
     );
   }
 

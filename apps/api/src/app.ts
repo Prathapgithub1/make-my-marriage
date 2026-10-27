@@ -9,6 +9,7 @@ import { corsMiddleware } from './middleware/cors';
 import { databaseHealthRouter, healthRouter } from './modules/health/routes';
 import { authRouter } from './modules/auth/routes';
 import { apiDocsRouter } from './modules/docs/routes';
+import { weddingRouter, dashboardRouter } from './modules/wedding/routes';
 import { AppError } from './shared/app-error';
 
 export function createApp(applicationLogger: Logger = logger) {
@@ -41,6 +42,8 @@ export function createApp(applicationLogger: Logger = logger) {
   apiRouter.use('/health', healthRouter);
   apiRouter.use('/health/database', databaseHealthRouter);
   apiRouter.use('/auth', authRouter);
+  apiRouter.use('/wedding', weddingRouter);
+  apiRouter.use('/dashboard', dashboardRouter);
   app.use('/api/v1', apiRouter);
 
   app.use((_req, _res, next) => next(new AppError(404, 'NOT_FOUND', 'Route not found.')));
@@ -62,6 +65,7 @@ export function createApp(applicationLogger: Logger = logger) {
       error: {
         code: appError?.code ?? 'INTERNAL_ERROR',
         message: appError?.message ?? 'An unexpected error occurred.',
+        ...(appError?.details ? { details: appError.details } : {}),
       },
       requestId,
     });

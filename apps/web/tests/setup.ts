@@ -98,6 +98,100 @@ Object.defineProperty(globalThis, 'fetch', {
         }),
       } as Response;
     }
+    if (url.endsWith('/wedding')) {
+      const method = (init?.method ?? 'GET').toUpperCase();
+      if (method === 'POST') {
+        const body = JSON.parse(String(init?.body ?? '{}')) as {
+          title?: string;
+          brideName?: string;
+          groomName?: string;
+        };
+        if (body.title === 'Conflict') {
+          return {
+            ok: false,
+            status: 409,
+            json: async () => ({
+              error: {
+                code: 'ALREADY_HAS_WEDDING',
+                message: 'You already belong to a wedding workspace.',
+              },
+            }),
+          } as Response;
+        }
+        if (!body.title || body.title.trim().length < 2) {
+          return {
+            ok: false,
+            status: 400,
+            json: async () => ({
+              error: {
+                code: 'VALIDATION_ERROR',
+                message: 'Check your wedding details and try again.',
+                details: { title: 'Wedding name must be at least 2 characters' },
+              },
+            }),
+          } as Response;
+        }
+        return {
+          ok: true,
+          status: 201,
+          json: async () => ({
+            data: {
+              id: 'test-wedding-id',
+              title: body.title,
+              brideName: body.brideName ?? 'Akshitha Rao',
+              groomName: body.groomName ?? 'Prathap Kumar',
+              weddingDate: '2025-11-14',
+              location: 'The Oberoi Udaivilas, Udaipur',
+              website: { slug: 'akshitha-prathap-14112025', isPublished: false },
+            },
+          }),
+        } as Response;
+      }
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          data: {
+            id: 'test-wedding-id',
+            title: "Prathap & Akshitha's Wedding",
+            brideName: 'Akshitha Rao',
+            groomName: 'Prathap Kumar',
+            weddingDate: '2025-11-14',
+            location: 'The Oberoi Udaivilas, Udaipur',
+            website: { slug: 'akshitha-prathap-14112025', isPublished: false },
+          },
+        }),
+      } as Response;
+    }
+    if (url.endsWith('/dashboard')) {
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          data: {
+            wedding: {
+              id: 'test-wedding-id',
+              title: "Prathap & Akshitha's Wedding",
+              brideName: 'Akshitha Rao',
+              groomName: 'Prathap Kumar',
+              weddingDate: '2025-11-14',
+              location: 'The Oberoi Udaivilas, Udaipur',
+            },
+            countdown: { weddingDate: '2025-11-14', daysRemaining: 120 },
+            summary: {
+              events: 0,
+              tasks: { total: 0, completed: 0 },
+              guests: 0,
+              rsvps: { pending: 0, attending: 0, notAttending: 0 },
+              totalExpenseAmount: '0.00',
+              vendors: 0,
+            },
+            upcomingEvents: [],
+            upcomingTasks: [],
+          },
+        }),
+      } as Response;
+    }
     return { ok: true, status: 200, json: async () => ({ data: { success: true } }) } as Response;
   }),
 });

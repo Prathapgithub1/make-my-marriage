@@ -1,6 +1,11 @@
 import { apiRequest } from '../../lib/api-client';
 
-export type AuthUser = { id: string; email: string; name: string | null };
+export type AuthUser = {
+  id: string;
+  email: string;
+  name: string | null;
+  displayName?: string | null;
+};
 export type AuthAccount = {
   user: { id: string; email: string; name: string | null };
   hasWedding: boolean;
@@ -9,7 +14,15 @@ export type AuthSession = {
   user: AuthUser;
   hasWedding: boolean;
   membership: null | { role: string };
-  wedding: null | { id: string; name: string };
+  wedding: null | {
+    id: string;
+    title?: string;
+    name?: string;
+    brideName?: string;
+    groomName?: string;
+    weddingDate?: string | null;
+    location?: string | null;
+  };
 };
 
 type Envelope<T> = { data: T };

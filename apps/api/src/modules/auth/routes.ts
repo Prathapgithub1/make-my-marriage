@@ -5,7 +5,7 @@ import { env } from '../../config/env';
 import { prisma } from '../../infrastructure/database/pool';
 import { AppError } from '../../shared/app-error';
 import { forgotPasswordSchema, loginSchema, resetPasswordSchema, signupSchema } from './schemas';
-import type { AuthResult, AuthUser, SignupResult } from './service';
+import type { AuthContextResult, AuthResult, AuthUser, SignupResult } from './service';
 import { createAuthService } from './service';
 import {
   appendSetCookies,
@@ -19,13 +19,14 @@ import {
 } from './security';
 
 const SESSION_SECONDS = 7 * 24 * 60 * 60;
-const authService = createAuthService(prisma);
+export const authService = createAuthService(prisma);
 
 export interface AuthOperations {
   createCsrfToken(): string;
   signup(name: string, email: string, password: string, requestId?: string): Promise<SignupResult>;
   login(email: string, password: string): Promise<AuthResult>;
   authenticate(sessionToken: string | undefined): Promise<AuthUser | null>;
+  getAuthContext?(sessionToken: string | undefined): Promise<AuthContextResult | null>;
   logout(sessionToken: string | undefined): Promise<void>;
   forgotPassword(email: string, requestId: string): Promise<void>;
   resetPassword(token: string, newPassword: string): Promise<'ok' | 'invalid' | 'expired'>;
@@ -112,18 +113,33 @@ export function createAuthRouter(service: AuthOperations = authService) {
 
   router.get('/me', async (req, res, next) => {
     try {
-      const user = await service.authenticate(parseCookies(req.header('Cookie'))[SESSION_COOKIE]);
-      if (!user) {
-        appendSetCookies(res, [clearCookieHeader(SESSION_COOKIE, true)]);
-        throw new AppError(401, 'UNAUTHENTICATED', 'Sign in to continue.');
+      const sessionToken = parseCookies(req.header('Cookie'))[SESSION_COOKIE];
+      const context = service.getAuthContext ? await service.getAuthContext(sessionToken) : null;
+
+      if (!context) {
+        const user = await service.authenticate(sessionToken);
+        if (!user) {
+          appendSetCookies(res, [clearCookieHeader(SESSION_COOKIE, true)]);
+          throw new AppError(401, 'UNAUTHENTICATED', 'Sign in to continue.');
+        }
+        res.json({
+          data: {
+            user: { id: user.id, email: user.email, name: user.displayName },
+            hasWedding: false,
+            membership: null,
+            wedding: null,
+          },
+          requestId: getRequestId(res),
+        });
+        return;
       }
-      // Wedding membership is null until the wedding module is implemented.
+
       res.json({
         data: {
-          user: { id: user.id, email: user.email, name: user.displayName },
-          hasWedding: false,
-          membership: null,
-          wedding: null,
+          user: { id: context.user.id, email: context.user.email, name: context.user.displayName },
+          hasWedding: context.hasWedding,
+          membership: context.membership,
+          wedding: context.wedding,
         },
         requestId: getRequestId(res),
       });
@@ -179,7 +195,7 @@ export function createAuthRouter(service: AuthOperations = authService) {
   return router;
 }
 
-const requireSameOrigin: RequestHandler = (req, _res, next) => {
+export const requireSameOrigin: RequestHandler = (req, _res, next) => {
   const origin = req.header('Origin');
   const referer = req.header('Referer');
   let sourceOrigin = origin;
@@ -207,7 +223,7 @@ const requireSameOrigin: RequestHandler = (req, _res, next) => {
   next();
 };
 
-const requireCsrf: RequestHandler = (req, _res, next) => {
+export const requireCsrf: RequestHandler = (req, _res, next) => {
   try {
     const cookieToken = parseCookies(req.header('Cookie'))[CSRF_COOKIE];
     const headerToken = req.header('X-CSRF-Token');
@@ -255,7 +271,7 @@ function sameValue(left: string, right: string) {
   return leftBytes.length === rightBytes.length && timingSafeEqual(leftBytes, rightBytes);
 }
 
-function getRequestId(res: {
+export function getRequestId(res: {
   getHeader: (name: string) => number | string | string[] | undefined;
 }) {
   return String(res.getHeader('X-Request-Id') ?? '');

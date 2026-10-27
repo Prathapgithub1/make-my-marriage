@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import { Link } from 'react-router';
-import { BrandMark } from './BrandMark';
+import { BrandLockup } from './BrandMark';
 import { HomeIcon } from './HomeIcon';
 
 const navigationItems = [
@@ -28,8 +28,7 @@ export function SiteHeader() {
     <header className="site-header" onKeyDown={handleMenuKeyDown}>
       <div className="site-header-inner">
         <Link className="brand" to="/" aria-label="Make My Marriage home" onClick={closeMenu}>
-          <BrandMark />
-          <span className="brand-wordmark">Make My Marriage</span>
+          <BrandLockup />
         </Link>
         <button
           ref={menuButton}

@@ -1,19 +1,19 @@
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { App } from './App';
+import { NotFoundPage } from './NotFoundPage';
 import { SignupPage } from '../features/auth/SignupPage';
 import { LoginPage } from '../features/auth/LoginPage';
 import { ForgotPasswordPage } from '../features/auth/ForgotPasswordPage';
 import { ResetPasswordPage } from '../features/auth/ResetPasswordPage';
 import { ProtectedRoute } from '../features/auth/ProtectedRoute';
-import {
-  DashboardPlaceholder,
-  WeddingSetupPlaceholder,
-} from '../features/auth/ProtectedWorkspacePlaceholder';
+import { WeddingSetupPage } from '../features/wedding/WeddingSetupPage';
+import { DashboardPage } from '../features/wedding/DashboardPage';
 
 export function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<App />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -22,7 +22,7 @@ export function AppRouter() {
           path="/wedding/setup"
           element={
             <ProtectedRoute requireWedding={false}>
-              <WeddingSetupPlaceholder />
+              <WeddingSetupPage />
             </ProtectedRoute>
           }
         />
@@ -30,11 +30,11 @@ export function AppRouter() {
           path="/dashboard"
           element={
             <ProtectedRoute requireWedding>
-              <DashboardPlaceholder />
+              <DashboardPage />
             </ProtectedRoute>
           }
         />
-        <Route path="*" element={<App />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );

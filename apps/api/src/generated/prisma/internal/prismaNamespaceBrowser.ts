@@ -52,6 +52,10 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
+  Wedding: 'Wedding',
+  WeddingMembership: 'WeddingMembership',
+  WebsiteSettings: 'WebsiteSettings',
+  GalleryAccessToken: 'GalleryAccessToken',
   Session: 'Session',
   PasswordResetToken: 'PasswordResetToken',
   AuthRateLimit: 'AuthRateLimit',
@@ -85,6 +89,64 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const WeddingScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  brideName: 'brideName',
+  groomName: 'groomName',
+  weddingDate: 'weddingDate',
+  location: 'location',
+  city: 'city',
+  state: 'state',
+  country: 'country',
+  description: 'description',
+  coverImageKey: 'coverImageKey',
+  createdByUserId: 'createdByUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WeddingScalarFieldEnum = (typeof WeddingScalarFieldEnum)[keyof typeof WeddingScalarFieldEnum]
+
+
+export const WeddingMembershipScalarFieldEnum = {
+  id: 'id',
+  weddingId: 'weddingId',
+  userId: 'userId',
+  role: 'role',
+  joinedAt: 'joinedAt'
+} as const
+
+export type WeddingMembershipScalarFieldEnum = (typeof WeddingMembershipScalarFieldEnum)[keyof typeof WeddingMembershipScalarFieldEnum]
+
+
+export const WebsiteSettingsScalarFieldEnum = {
+  id: 'id',
+  weddingId: 'weddingId',
+  slug: 'slug',
+  theme: 'theme',
+  isPublished: 'isPublished',
+  content: 'content',
+  publishedAt: 'publishedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WebsiteSettingsScalarFieldEnum = (typeof WebsiteSettingsScalarFieldEnum)[keyof typeof WebsiteSettingsScalarFieldEnum]
+
+
+export const GalleryAccessTokenScalarFieldEnum = {
+  id: 'id',
+  weddingId: 'weddingId',
+  tokenHash: 'tokenHash',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt'
+} as const
+
+export type GalleryAccessTokenScalarFieldEnum = (typeof GalleryAccessTokenScalarFieldEnum)[keyof typeof GalleryAccessTokenScalarFieldEnum]
 
 
 export const SessionScalarFieldEnum = {
@@ -142,6 +204,14 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -156,4 +226,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
