@@ -90,6 +90,8 @@ export function createAuthRouter(service: AuthOperations = authService) {
         data: {
           user: { id: result.user.id, email: result.user.email, name: result.user.displayName },
           hasWedding: result.hasWedding,
+          membership: result.membership ?? null,
+          wedding: result.wedding ?? null,
         },
         requestId: getRequestId(res),
       });
@@ -248,7 +250,7 @@ export const requireCsrf: RequestHandler = (req, _res, next) => {
   }
 };
 
-async function enforceRateLimit(
+export async function enforceRateLimit(
   service: AuthOperations,
   req: Parameters<RequestHandler>[0],
   action: string,

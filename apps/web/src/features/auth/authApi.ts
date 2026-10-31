@@ -9,6 +9,16 @@ export type AuthUser = {
 export type AuthAccount = {
   user: { id: string; email: string; name: string | null };
   hasWedding: boolean;
+  membership?: null | { role: string };
+  wedding?: null | {
+    id: string;
+    title?: string;
+    name?: string;
+    brideName?: string;
+    groomName?: string;
+    weddingDate?: string | null;
+    location?: string | null;
+  };
 };
 export type AuthSession = {
   user: AuthUser;

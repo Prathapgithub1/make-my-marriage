@@ -1,7 +1,12 @@
+import dns from 'node:dns';
 import { createApp } from './app';
 import { env } from './config/env';
 import { logger } from './config/logger';
 import { checkDatabaseConnection, closeDatabaseConnection } from './infrastructure/database/pool';
+
+if (typeof dns.setDefaultResultOrder === 'function') {
+  dns.setDefaultResultOrder('ipv4first');
+}
 
 const server = createApp().listen(env.PORT, () => {
   logger.info({ port: env.PORT }, 'Make My Marriage API listening');

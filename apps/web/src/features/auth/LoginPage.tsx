@@ -38,8 +38,8 @@ export function LoginPage() {
       queryClient.setQueryData(['auth', 'me'], {
         user: account.user,
         hasWedding: account.hasWedding,
-        membership: null,
-        wedding: null,
+        membership: account.membership ?? null,
+        wedding: account.wedding ?? null,
       });
       navigate(account.hasWedding ? '/dashboard' : '/wedding/setup', { replace: true });
     } catch (error) {

@@ -9,7 +9,13 @@ import { createCsrfToken, createOpaqueToken, hashToken, SESSION_TTL_MS } from '.
 const RESET_TTL_MS = 30 * 60 * 1000;
 
 export type AuthUser = { id: string; email: string; displayName: string | null };
-export type AuthResult = { user: AuthUser; hasWedding: boolean; sessionToken: string };
+export type AuthResult = {
+  user: AuthUser;
+  hasWedding: boolean;
+  sessionToken: string;
+  membership?: AuthMembership | null;
+  wedding?: AuthWeddingSummary | null;
+};
 export type SignupResult = { user: AuthUser; hasWedding: boolean; sessionToken: string };
 
 export type AuthMembership = {
@@ -148,7 +154,13 @@ export function createAuthService(
     const database = requireDatabase();
     const user = await database.user.findUnique({
       where: { email },
-      include: { weddingMembership: true },
+      include: {
+        weddingMembership: {
+          include: {
+            wedding: true,
+          },
+        },
+      },
     });
     const validPassword = user
       ? await argon2.verify(user.passwordHash, password).catch(() => false)
@@ -165,9 +177,24 @@ export function createAuthService(
         expiresAt: new Date(Date.now() + SESSION_TTL_MS),
       },
     });
+
+    const membership = user.weddingMembership;
     return {
       user: { id: user.id, email: user.email, displayName: user.displayName },
-      hasWedding: Boolean(user.weddingMembership),
+      hasWedding: Boolean(membership),
+      membership: membership ? { role: membership.role } : null,
+      wedding: membership?.wedding
+        ? {
+            id: membership.wedding.id,
+            title: membership.wedding.title,
+            brideName: membership.wedding.brideName,
+            groomName: membership.wedding.groomName,
+            weddingDate: membership.wedding.weddingDate
+              ? membership.wedding.weddingDate.toISOString().slice(0, 10)
+              : null,
+            location: membership.wedding.location,
+          }
+        : null,
       sessionToken,
     };
   }

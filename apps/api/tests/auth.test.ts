@@ -97,6 +97,8 @@ describe('authentication routes', () => {
     expect(response.body.data).toEqual({
       user: { id: user.id, email: user.email, name: user.displayName },
       hasWedding: false,
+      membership: null,
+      wedding: null,
     });
     const cookies = response.headers['set-cookie'];
     const cookieHeader = Array.isArray(cookies) ? cookies.join(';') : (cookies ?? '');

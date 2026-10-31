@@ -192,6 +192,134 @@ Object.defineProperty(globalThis, 'fetch', {
         }),
       } as Response;
     }
+    if (url.includes('/public/member-invitations')) {
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          data: {
+            id: 'test-invitation-id',
+            email: 'vikram@example.com',
+            role: 'MANAGER',
+            expiresAt: '2026-11-04T12:00:00.000Z',
+            wedding: {
+              id: 'test-wedding-id',
+              title: "Prathap & Akshitha's Wedding",
+              brideName: 'Akshitha Rao',
+              groomName: 'Prathap Kumar',
+              weddingDate: '2025-11-14',
+              location: 'The Oberoi Udaivilas, Udaipur',
+            },
+            inviter: {
+              displayName: 'Akshitha Rao',
+            },
+          },
+        }),
+      } as Response;
+    }
+    if (url.includes('/member-invitations') && url.endsWith('/accept')) {
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          data: {
+            membership: {
+              id: 'test-membership-id',
+              weddingId: 'test-wedding-id',
+              role: 'MANAGER',
+              joinedAt: '2026-10-28T00:00:00.000Z',
+            },
+            wedding: {
+              id: 'test-wedding-id',
+              title: "Prathap & Akshitha's Wedding",
+              brideName: 'Akshitha Rao',
+              groomName: 'Prathap Kumar',
+            },
+          },
+        }),
+      } as Response;
+    }
+    if (url.includes('/members/invitations')) {
+      if (init?.method === 'POST') {
+        const body = JSON.parse(String(init.body ?? '{}')) as { email: string; role: string };
+        return {
+          ok: true,
+          status: 201,
+          json: async () => ({
+            data: {
+              id: 'new-invitation-id',
+              email: body.email,
+              role: body.role,
+              status: 'PENDING',
+              expiresAt: '2026-11-04T12:00:00.000Z',
+              createdAt: '2026-10-28T12:00:00.000Z',
+              invitedBy: {
+                id: 'test-user',
+                displayName: 'Akshitha Rao',
+                email: 'akshitha@example.com',
+              },
+              inviteUrl: 'http://localhost:1234/invitations/members/sample-token',
+              emailDelivery: {
+                delivered: true,
+              },
+            },
+          }),
+        } as Response;
+      }
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          data: [
+            {
+              id: 'pending-invitation-1',
+              email: 'family@example.com',
+              role: 'MANAGER',
+              status: 'PENDING',
+              expiresAt: '2026-11-04T12:00:00.000Z',
+              createdAt: '2026-10-28T12:00:00.000Z',
+              invitedBy: {
+                id: 'test-user',
+                displayName: 'Akshitha Rao',
+                email: 'akshitha@example.com',
+              },
+            },
+          ],
+        }),
+      } as Response;
+    }
+    if (url.endsWith('/members')) {
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          data: [
+            {
+              id: 'member-1',
+              userId: 'test-user',
+              role: 'ADMIN',
+              joinedAt: '2026-10-25T00:00:00.000Z',
+              user: {
+                id: 'test-user',
+                email: 'akshitha@example.com',
+                displayName: 'Akshitha Rao',
+              },
+            },
+            {
+              id: 'member-2',
+              userId: 'manager-user',
+              role: 'MANAGER',
+              joinedAt: '2026-10-26T00:00:00.000Z',
+              user: {
+                id: 'manager-user',
+                email: 'manager@example.com',
+                displayName: 'Rohan Sharma',
+              },
+            },
+          ],
+        }),
+      } as Response;
+    }
     return { ok: true, status: 200, json: async () => ({ data: { success: true } }) } as Response;
   }),
 });

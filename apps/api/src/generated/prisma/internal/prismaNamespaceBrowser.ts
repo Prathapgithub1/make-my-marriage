@@ -59,7 +59,8 @@ export const ModelName = {
   Session: 'Session',
   PasswordResetToken: 'PasswordResetToken',
   AuthRateLimit: 'AuthRateLimit',
-  EmailVerificationToken: 'EmailVerificationToken'
+  EmailVerificationToken: 'EmailVerificationToken',
+  MemberInvitation: 'MemberInvitation'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -194,6 +195,22 @@ export const EmailVerificationTokenScalarFieldEnum = {
 } as const
 
 export type EmailVerificationTokenScalarFieldEnum = (typeof EmailVerificationTokenScalarFieldEnum)[keyof typeof EmailVerificationTokenScalarFieldEnum]
+
+
+export const MemberInvitationScalarFieldEnum = {
+  id: 'id',
+  weddingId: 'weddingId',
+  email: 'email',
+  role: 'role',
+  tokenHash: 'tokenHash',
+  invitedByUserId: 'invitedByUserId',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  acceptedAt: 'acceptedAt',
+  revokedAt: 'revokedAt'
+} as const
+
+export type MemberInvitationScalarFieldEnum = (typeof MemberInvitationScalarFieldEnum)[keyof typeof MemberInvitationScalarFieldEnum]
 
 
 export const SortOrder = {

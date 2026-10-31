@@ -41,13 +41,13 @@ Treat those documents as the source of truth. Do not invent product requirements
 
 1. **Authentication Flow (V2):** Secure server-side sessions, Argon2 hashing, CSRF protection, rate limiting, and password reset via Resend.
 2. **Wedding Onboarding & Workspace Dashboard (V2):** Stitch-inspired `/wedding/setup` and `/dashboard`, 1-user-1-wedding transactional creation, countdown calculation, honest database-backed empty states, brand mark vector system with dynamic route subtitles, and Parcel asset loading resilience.
+3. **Wedding Member Management & Team Invitations (V1):** Role-based access control (`ADMIN`, `MANAGER`), secure team invitations with rate-limited endpoints, cryptographically hashed tokens and Resend email dispatch, atomic race-condition-protected acceptance flow, member role management with sole admin protection, and clean UI for roster and pending invitations.
 
 ## Next planned implementation
 
-- **Wedding Member Management & Team Invitations (PRD §9.4, REST API §5.3):**
-  - Admin invites family members/organizers via email with roles (`ADMIN`, `MANAGER`).
-  - Secure invitation tokens, expiration, and acceptance flow (`/api/v1/members`, `/api/v1/members/invitations`, `/api/v1/member-invitations/:token/accept`).
-  - Settings UI for member list, role changes, and member removals.
+- **Wedding Events Management (PRD §9.5, REST API §5.4):**
+  - Multi-event scheduling (Engagement, Mehendi, Haldi, Sangeet, Wedding, Reception).
+  - Event dates, start/end times, venues, dress codes, and descriptions.
 
 ## Decisions that remain open for future milestones
 

@@ -405,7 +405,8 @@ export const ModelName = {
   Session: 'Session',
   PasswordResetToken: 'PasswordResetToken',
   AuthRateLimit: 'AuthRateLimit',
-  EmailVerificationToken: 'EmailVerificationToken'
+  EmailVerificationToken: 'EmailVerificationToken',
+  MemberInvitation: 'MemberInvitation'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -421,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "wedding" | "weddingMembership" | "websiteSettings" | "galleryAccessToken" | "session" | "passwordResetToken" | "authRateLimit" | "emailVerificationToken"
+    modelProps: "user" | "wedding" | "weddingMembership" | "websiteSettings" | "galleryAccessToken" | "session" | "passwordResetToken" | "authRateLimit" | "emailVerificationToken" | "memberInvitation"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1091,6 +1092,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    MemberInvitation: {
+      payload: Prisma.$MemberInvitationPayload<ExtArgs>
+      fields: Prisma.MemberInvitationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MemberInvitationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MemberInvitationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitationPayload>
+        }
+        findFirst: {
+          args: Prisma.MemberInvitationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MemberInvitationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitationPayload>
+        }
+        findMany: {
+          args: Prisma.MemberInvitationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitationPayload>[]
+        }
+        create: {
+          args: Prisma.MemberInvitationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitationPayload>
+        }
+        createMany: {
+          args: Prisma.MemberInvitationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MemberInvitationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitationPayload>[]
+        }
+        delete: {
+          args: Prisma.MemberInvitationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitationPayload>
+        }
+        update: {
+          args: Prisma.MemberInvitationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitationPayload>
+        }
+        deleteMany: {
+          args: Prisma.MemberInvitationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MemberInvitationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MemberInvitationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitationPayload>[]
+        }
+        upsert: {
+          args: Prisma.MemberInvitationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitationPayload>
+        }
+        aggregate: {
+          args: Prisma.MemberInvitationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMemberInvitation>
+        }
+        groupBy: {
+          args: Prisma.MemberInvitationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MemberInvitationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MemberInvitationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MemberInvitationCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1246,6 +1321,22 @@ export const EmailVerificationTokenScalarFieldEnum = {
 } as const
 
 export type EmailVerificationTokenScalarFieldEnum = (typeof EmailVerificationTokenScalarFieldEnum)[keyof typeof EmailVerificationTokenScalarFieldEnum]
+
+
+export const MemberInvitationScalarFieldEnum = {
+  id: 'id',
+  weddingId: 'weddingId',
+  email: 'email',
+  role: 'role',
+  tokenHash: 'tokenHash',
+  invitedByUserId: 'invitedByUserId',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  acceptedAt: 'acceptedAt',
+  revokedAt: 'revokedAt'
+} as const
+
+export type MemberInvitationScalarFieldEnum = (typeof MemberInvitationScalarFieldEnum)[keyof typeof MemberInvitationScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1559,6 +1650,7 @@ export type GlobalOmitConfig = {
   passwordResetToken?: Prisma.PasswordResetTokenOmit
   authRateLimit?: Prisma.AuthRateLimitOmit
   emailVerificationToken?: Prisma.EmailVerificationTokenOmit
+  memberInvitation?: Prisma.MemberInvitationOmit
 }
 
 /* Types for Logging */

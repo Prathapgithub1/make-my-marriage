@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, Link } from 'react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../auth/AuthProvider';
 import { BrandLockup } from '../../components/BrandMark';
@@ -150,6 +150,12 @@ export function DashboardPage() {
               <span className="text-[#8a4b35] border-b-2 border-[#8a4b35] pb-1 font-semibold text-xs uppercase tracking-wider cursor-default">
                 Overview
               </span>
+              <Link
+                to="/settings/members"
+                className="text-[#53433e] hover:text-[#1a1c18] pb-1 transition-colors text-xs uppercase tracking-wider font-medium"
+              >
+                Team
+              </Link>
               <a
                 href="#events"
                 className="text-[#53433e] hover:text-[#1a1c18] pb-1 transition-colors text-xs uppercase tracking-wider font-medium"
@@ -634,6 +640,29 @@ export function DashboardPage() {
                   </p>
                 </div>
               </div>
+
+              {/* Action 7: Wedding Team */}
+              <Link
+                to="/settings/members"
+                className="bg-white p-4 rounded-xl border border-[#8a4b35]/30 hover:border-[#8a4b35] hover:shadow-xs transition-all group cursor-pointer flex flex-col justify-between col-span-1 sm:col-span-2 bg-gradient-to-r from-white to-[#faf5f2]"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-[#851321]/10 text-[#851321] flex items-center justify-center text-lg font-semibold shrink-0">
+                    👥
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-xs font-semibold text-[#1a1c18] group-hover:text-[#8a4b35] transition-colors flex items-center justify-between">
+                      Manage Wedding Team & Family
+                      <span className="opacity-0 group-hover:opacity-100 transition-opacity">
+                        →
+                      </span>
+                    </h4>
+                    <p className="text-[11px] text-[#53433e] mt-0.5">
+                      Invite bride, groom, parents, & co-organizers to manage the wedding
+                    </p>
+                  </div>
+                </div>
+              </Link>
             </div>
 
             {/* Editorial Bridal Preview Card */}

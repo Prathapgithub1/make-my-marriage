@@ -8,6 +8,8 @@ import { ResetPasswordPage } from '../features/auth/ResetPasswordPage';
 import { ProtectedRoute } from '../features/auth/ProtectedRoute';
 import { WeddingSetupPage } from '../features/wedding/WeddingSetupPage';
 import { DashboardPage } from '../features/wedding/DashboardPage';
+import { MembersPage } from '../features/members/MembersPage';
+import { AcceptInvitationPage } from '../features/members/AcceptInvitationPage';
 
 export function AppRouter() {
   return (
@@ -34,6 +36,23 @@ export function AppRouter() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/settings/members"
+          element={
+            <ProtectedRoute requireWedding>
+              <MembersPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/members"
+          element={
+            <ProtectedRoute requireWedding>
+              <MembersPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/invitations/members/:token" element={<AcceptInvitationPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
