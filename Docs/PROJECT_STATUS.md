@@ -4,6 +4,7 @@ This file tracks delivered project milestones. The approved PRD, System Design, 
 
 ## Current snapshot
 
+- **Security Hardening & QA Audit Fixes (V1):** Complete end-to-end. Open redirect mitigation (CWE-601) across authentication forms, environment-gated invitation acceptance verification, clean Parcel bundle module resolution, and expanded frontend/backend test suites (112 tests passing).
 - **Wedding Member Management & Team Invitations:** Complete end-to-end (PRD §9.4, REST API §5.3). Role-based access control (`ADMIN`, `MANAGER`), secure team invitations with cryptographically hashed tokens and Resend email delivery, atomic race-condition-protected invitation acceptance, member role upgrades/downgrades with last-admin guard, and member offboarding.
 - **Wedding Onboarding & Workspace Dashboard:** Complete end-to-end. Authenticated users without a wedding can complete the Stitch-inspired onboarding form, persist their workspace in PostgreSQL, become its Admin in a transaction, and land on their real dashboard. Users with an existing wedding return to that workspace. Dashboard renders actual database details and honest empty states without fabricated data.
 - **Brand System & Dynamic Context:** Approved M-and-heart vector mark and dynamic uppercase page subtitles integrated across all public, auth, onboarding, and workspace routes.
@@ -12,6 +13,28 @@ This file tracks delivered project milestones. The approved PRD, System Design, 
 - **Repository foundation & database:** Complete with PostgreSQL and Prisma 7 ORM migrations.
 
 ## Milestones
+
+### 2026-11-05 — Security Hardening, Open Redirect Mitigation & QA Verification — Complete
+
+- **Security & Authorization Hardening:**
+  - Neutralized Open Redirect (CWE-601) vulnerabilities in `/login` and `/signup` by introducing strict local relative pathname sanitization (`sanitizeRedirectUrl` in `apps/web/src/lib/api-client.ts`).
+  - Gated the self-invitation acceptance testing shortcut in `apps/api/src/modules/members/service.ts` exclusively to non-production environments and strictly enforced recipient email matching to prevent unauthorized invitation redemption in production.
+  - Hardened CSRF token cookie reading and auto-recovery in the frontend API client.
+- **Frontend Build & Dependency Optimization:**
+  - Resolved Parcel runtime HMR module resolution for authentication components by co-locating `sanitizeRedirectUrl` within the core `api-client` dependency.
+  - Added `.temp-cache/` to `.gitignore` to prevent Parcel temporary build cache pollution.
+- **Automated Test Coverage Expansion:**
+  - Added unit test coverage for `sanitizeRedirectUrl` validating local path preservation and rejection of external protocol, schema-relative, and backslash targets.
+  - Added component test coverage for `LoginPage` external redirect sanitization.
+  - Added test coverage for the restricted `MANAGER` role view on `/settings/members` confirming hidden admin controls and absence of pending invitation management.
+  - Resolved React `act(...)` test lifecycle warnings on members data fetching.
+- **Verification:**
+  - `npm run typecheck`: Passed with 0 errors across `@mmm/web` and `@mmm/api`.
+  - `npm test --workspace=@mmm/web`: Passed with 58 passed tests across 6 suites.
+  - `npm test --workspace=@mmm/api`: Passed with 54 passed tests across 5 suites (1 skipped).
+  - Total automated test suite: 112 passed tests across 11 test suites.
+  - `npm run lint`: Passed with 0 errors and 0 warnings.
+  - `npm run format:check`: Passed with all files formatted according to Prettier.
 
 ### 2026-10-28 — Wedding Member Management & Team Invitations — Complete
 

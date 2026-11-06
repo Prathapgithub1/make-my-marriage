@@ -1,5 +1,5 @@
 import { useState, useEffect, type FormEvent } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../auth/AuthProvider';
 import { ApiRequestError } from '../../lib/api-client';
 import { BrandMark } from '../../components/BrandMark';
@@ -17,6 +17,7 @@ import {
 
 export function MembersPage() {
   const { session, logout } = useAuth();
+  const navigate = useNavigate();
 
   const [members, setMembers] = useState<MemberSummary[]>([]);
   const [invitations, setInvitations] = useState<MemberInvitationSummary[]>([]);
@@ -243,7 +244,13 @@ export function MembersPage() {
             </Link>
 
             <button
-              onClick={() => void logout()}
+              onClick={async () => {
+                try {
+                  await logout();
+                } finally {
+                  navigate('/login', { replace: true });
+                }
+              }}
               className="text-xs sm:text-sm text-[#7a7c77] hover:text-[#851321] font-medium px-2.5 py-1.5 rounded-lg transition-colors"
             >
               Sign out

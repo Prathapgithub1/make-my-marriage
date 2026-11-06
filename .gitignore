@@ -4,6 +4,8 @@ dist/
 dev-dist/
 coverage/
 .parcel-cache/
+.temp-cache/
+**/.temp-cache/
 
 # Local configuration and secrets
 .env

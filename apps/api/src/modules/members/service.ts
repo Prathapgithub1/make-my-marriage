@@ -286,11 +286,16 @@ export function createMembersService(
       });
 
       if (existingUser?.weddingMembership?.weddingId === membership.weddingId) {
-        throw new AppError(
-          409,
-          'CONFLICT',
-          'A user with this email address is already a member of this wedding workspace.',
-        );
+        if (env.NODE_ENV !== 'production' && existingUser.id === userId) {
+          // In local development, allow the organizer to invite their own account email
+          // so they can test and verify real Resend inbox email delivery!
+        } else {
+          throw new AppError(
+            409,
+            'CONFLICT',
+            'A user with this email address is already a member of this wedding workspace.',
+          );
+        }
       }
 
       // Check if there is an active pending invitation
@@ -305,11 +310,16 @@ export function createMembersService(
       });
 
       if (pendingInvite) {
-        throw new AppError(
-          409,
-          'CONFLICT',
-          'An active invitation is already pending for this email address.',
-        );
+        if (env.NODE_ENV !== 'production' && existingUser?.id === userId) {
+          // In development test mode, remove the previous pending test invite so they can re-send anytime
+          await database.memberInvitation.delete({ where: { id: pendingInvite.id } });
+        } else {
+          throw new AppError(
+            409,
+            'CONFLICT',
+            'An active invitation is already pending for this email address.',
+          );
+        }
       }
 
       const rawToken = randomBytes(32).toString('base64url');
@@ -644,14 +654,6 @@ export function createMembersService(
         throw new AppError(401, 'UNAUTHENTICATED', 'Sign in to accept this invitation.');
       }
 
-      if (user.weddingMembership) {
-        throw new AppError(
-          409,
-          'ALREADY_HAS_WEDDING',
-          'You already belong to a wedding workspace. A user can only belong to one wedding in V1.',
-        );
-      }
-
       const tokenHash = hashToken(token);
 
       const invitation = await database.memberInvitation.findUnique({
@@ -677,6 +679,35 @@ export function createMembersService(
 
       if (invitation.expiresAt.getTime() < Date.now()) {
         throw new AppError(400, 'TOKEN_EXPIRED', 'This wedding invitation has expired.');
+      }
+
+      if (user.weddingMembership) {
+        if (
+          env.NODE_ENV !== 'production' &&
+          user.weddingMembership.weddingId === invitation.weddingId &&
+          user.email.toLowerCase() === invitation.email.toLowerCase()
+        ) {
+          // In local development test mode, allow the workspace creator to test accepting their own invitation link
+          return {
+            membership: {
+              id: user.weddingMembership.id,
+              weddingId: user.weddingMembership.weddingId,
+              role: user.weddingMembership.role,
+              joinedAt: user.weddingMembership.joinedAt.toISOString(),
+            },
+            wedding: {
+              id: invitation.wedding.id,
+              title: invitation.wedding.title,
+              brideName: invitation.wedding.brideName,
+              groomName: invitation.wedding.groomName,
+            },
+          };
+        }
+        throw new AppError(
+          409,
+          'ALREADY_HAS_WEDDING',
+          'You already belong to a wedding workspace. A user can only belong to one wedding in V1.',
+        );
       }
 
       // Check if the signed in user's email matches the invited email

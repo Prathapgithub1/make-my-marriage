@@ -72,3 +72,7 @@ export function signUp(name: string, email: string, password: string) {
     body: JSON.stringify({ name, email, password }),
   }).then((response) => response.data);
 }
+
+export { sanitizeRedirectUrl } from '../../lib/api-client';
+
+export { sanitizeRedirectUrl } from '../../lib/api-client';

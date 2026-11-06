@@ -68,6 +68,25 @@ describe('Wedding Members & Team Invitations Frontend', () => {
       ).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /Done/i })).toBeInTheDocument();
     });
+
+    it('renders the manager view without invite button or admin action controls', async () => {
+      queryClient.setQueryData(['auth', 'me'], {
+        user: { id: 'manager-user-id', email: 'manager@example.com', name: 'Rohan Sharma' },
+        hasWedding: true,
+        membership: { role: 'MANAGER' },
+        wedding: { id: 'test-wedding-id', title: "Prathap & Akshitha's Wedding" },
+      });
+
+      renderPage(<MembersPage />, ['/settings/members']);
+
+      expect(screen.getByText('Wedding Team & Members')).toBeInTheDocument();
+      expect(await screen.findByText('Rohan Sharma')).toBeInTheDocument();
+      expect(screen.getByText('Manager view (Admins manage team members)')).toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', { name: /Invite Family \/ Organizer/i }),
+      ).not.toBeInTheDocument();
+      expect(screen.queryByText(/Pending Invitations/i)).not.toBeInTheDocument();
+    });
   });
 
   describe('AcceptInvitationPage (/invitations/members/:token)', () => {
@@ -97,9 +116,9 @@ describe('Wedding Members & Team Invitations Frontend', () => {
       ).toBeInTheDocument();
       expect(screen.getAllByText('vikram@example.com')[0]).toBeInTheDocument();
 
-      // Check for Sign In / Create Account buttons when unauthenticated
-      expect(screen.getByRole('link', { name: /Sign In to Accept/i })).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: /Create Account/i })).toBeInTheDocument();
+      // Check for Create Account / Sign In buttons when unauthenticated
+      expect(screen.getByRole('link', { name: /Create Account to Accept/i })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /Sign In/i })).toBeInTheDocument();
     });
   });
 });

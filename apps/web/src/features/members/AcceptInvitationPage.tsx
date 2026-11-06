@@ -218,22 +218,22 @@ export function AcceptInvitationPage() {
               {!isUserLoggedIn ? (
                 <div className="space-y-3">
                   <p className="text-xs text-[#7a7c77]">
-                    Please sign in or create an account with <strong>{invitation.email}</strong> to
+                    Please create an account or sign in with <strong>{invitation.email}</strong> to
                     join the team.
                   </p>
 
                   <Link
-                    to={`/login?redirect=${encodeURIComponent(window.location.pathname)}&email=${encodeURIComponent(invitation.email)}`}
+                    to={`/signup?redirect=${encodeURIComponent(window.location.pathname)}&email=${encodeURIComponent(invitation.email)}`}
                     className="w-full flex items-center justify-center px-5 py-3 rounded-xl bg-[#851321] hover:bg-[#6c0f1b] text-white font-medium text-sm transition-colors shadow-sm"
                   >
-                    Sign In to Accept
+                    Create Account to Accept
                   </Link>
 
                   <Link
-                    to={`/signup?redirect=${encodeURIComponent(window.location.pathname)}&email=${encodeURIComponent(invitation.email)}`}
+                    to={`/login?redirect=${encodeURIComponent(window.location.pathname)}&email=${encodeURIComponent(invitation.email)}`}
                     className="w-full flex items-center justify-center px-5 py-2.5 rounded-xl bg-[#fafaf7] hover:bg-[#f0ede6] text-[#2c2d2a] border border-[#d8d5cb] font-medium text-sm transition-colors"
                   >
-                    Create Account
+                    Already have an account? Sign In
                   </Link>
                 </div>
               ) : isEmailMatching ? (

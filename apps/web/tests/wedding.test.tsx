@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { AppProviders, queryClient } from '../src/app/providers';
@@ -151,6 +151,42 @@ describe('Wedding Onboarding and Workspace Dashboard', () => {
           screen.queryByRole('heading', { name: /Edit wedding details/i }),
         ).not.toBeInTheDocument();
       });
+    });
+
+    it('renders the concierge destination wedding image with object-fit cover and handles fallback', async () => {
+      renderPage(<DashboardPage />, ['/dashboard']);
+      expect(await screen.findByText("Prathap & Akshitha's Wedding")).toBeInTheDocument();
+
+      const destinationImg = await screen.findByAltText('Editorial wedding couple in Udaipur');
+      expect(destinationImg).toBeInTheDocument();
+      expect(destinationImg).toHaveClass('object-cover');
+      expect(destinationImg.getAttribute('src')).toBeTruthy();
+
+      // Trigger image error to verify fallback UI
+      fireEvent.error(destinationImg);
+
+      expect(screen.getByTestId('destination-image-fallback')).toBeInTheDocument();
+      expect(screen.getByText('Bespoke Destination Sanctuary')).toBeInTheDocument();
+      expect(screen.getByText('Concierge Service')).toBeInTheDocument();
+    });
+
+    it('signs out smoothly from the dashboard and navigates to /login', async () => {
+      const user = userEvent.setup();
+      render(
+        <MemoryRouter initialEntries={['/dashboard']}>
+          <AppProviders>
+            <Routes>
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/login" element={<h1>Mock Login Screen</h1>} />
+            </Routes>
+          </AppProviders>
+        </MemoryRouter>,
+      );
+
+      const signOutBtn = await screen.findByRole('button', { name: /Sign out/i });
+      await user.click(signOutBtn);
+
+      expect(await screen.findByText('Mock Login Screen')).toBeInTheDocument();
     });
   });
 });

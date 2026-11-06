@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../auth/AuthProvider';
 import { BrandLockup } from '../../components/BrandMark';
+import weddingHeroImage from '../../assets/images/wedding-hero.jpg';
 import {
   getDashboard,
   updateWedding,
@@ -15,6 +16,13 @@ export function DashboardPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [imageLoadFailed, setImageLoadFailed] = useState(false);
+
+  const heroImageSrc =
+    (typeof weddingHeroImage === 'string' || typeof weddingHeroImage === 'object') &&
+    weddingHeroImage
+      ? String((weddingHeroImage as unknown as { default?: string })?.default || weddingHeroImage)
+      : '';
 
   const {
     data: dashboard,
@@ -207,8 +215,11 @@ export function DashboardPage() {
             <button
               type="button"
               onClick={async () => {
-                await logout();
-                navigate('/login', { replace: true });
+                try {
+                  await logout();
+                } finally {
+                  navigate('/login', { replace: true });
+                }
               }}
               className="text-xs font-medium text-[#53433e] hover:text-[#8a4b35] px-2.5 py-1.5 rounded-lg border border-[#d8c2bb]/40 hover:bg-[#eeeee8] transition-colors"
             >
@@ -667,22 +678,39 @@ export function DashboardPage() {
 
             {/* Editorial Bridal Preview Card */}
             <div className="bg-white rounded-2xl border border-[#d8c2bb]/40 overflow-hidden shadow-[0_1px_3px_rgba(37,39,35,0.03)] flex flex-col">
-              <div className="relative h-48 w-full overflow-hidden bg-[#e8e9e2]">
-                <img
-                  src="https://lh3.googleusercontent.com/aida/AEtjO1W7SJSa4j0duSkXubslI2HL0U5Bjr_anyUNox-nWW0Qf_YU45cFwrVz1y2ddYD_7SNsikEGxYxE669tyd6TbZIh9KgfEfY6Yo5ePbuCoQSIGs0B_Z7KmPFh3_-gJXVDsyXLoGfBuOmzKjykkZ23ZhlR4_vc9pRWHUdPPCqPdXx1u1cRy5vYaYCKy8V9m_tTtsYwb2wwg-4goO-ZoIZl53YORUVYxPixo4mdx_Mzx67Q2BWanBZDrdlwDjY"
-                  alt="Editorial wedding couple in Udaipur"
-                  className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-700 ease-out"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1a1c18]/70 via-transparent to-transparent"></div>
+              <div className="relative h-48 w-full overflow-hidden bg-[#2e1d18]">
+                {!imageLoadFailed && heroImageSrc ? (
+                  <img
+                    src={heroImageSrc}
+                    alt="Editorial wedding couple in Udaipur"
+                    onError={() => setImageLoadFailed(true)}
+                    className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700 ease-out"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div
+                    data-testid="destination-image-fallback"
+                    className="w-full h-full bg-gradient-to-br from-[#851321] via-[#5c2420] to-[#251513] flex items-center justify-center relative"
+                  >
+                    <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#f4ba9c_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                    <div className="text-center z-10 px-4">
+                      <span className="text-2xl text-[#f4ba9c]">✦</span>
+                      <p className="font-serif italic text-sm text-white/90 mt-1">
+                        Bespoke Destination Sanctuary
+                      </p>
+                    </div>
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1a1c18]/80 via-[#1a1c18]/25 to-transparent pointer-events-none"></div>
                 <span className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-md text-[#1a1c18] text-[11px] font-semibold tracking-wide shadow-xs">
                   Concierge Service
                 </span>
-                <div className="absolute bottom-3 left-4 right-4 text-white">
+                <div className="absolute bottom-3 left-4 right-4 text-white pointer-events-none">
                   <span className="text-[10px] uppercase tracking-widest text-[#f4ba9c] font-semibold">
                     Bespoke Destination
                   </span>
                   <p className="text-sm font-serif font-medium text-white/95">
-                    {wedding.location || 'The Oberoi Udaivilas Celebration Suite'}
+                    {wedding.location?.trim() || 'The Oberoi Udaivilas Celebration Suite'}
                   </p>
                 </div>
               </div>

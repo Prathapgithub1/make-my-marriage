@@ -227,14 +227,27 @@ export const requireSameOrigin: RequestHandler = (req, _res, next) => {
 
 export const requireCsrf: RequestHandler = (req, _res, next) => {
   try {
-    const cookieToken = parseCookies(req.header('Cookie'))[CSRF_COOKIE];
+    const rawCookieHeader = req.header('Cookie') ?? '';
+    const cookieTokens = rawCookieHeader
+      .split(';')
+      .map((part) => {
+        const separator = part.indexOf('=');
+        if (separator < 1) return null;
+        const key = part.slice(0, separator).trim();
+        if (key !== CSRF_COOKIE) return null;
+        let value = decodeURIComponent(part.slice(separator + 1).trim());
+        if (value.startsWith('"') && value.endsWith('"') && value.length >= 2) {
+          value = value.slice(1, -1);
+        }
+        return value;
+      })
+      .filter((v): v is string => Boolean(v));
+
     const headerToken = req.header('X-CSRF-Token');
-    if (
-      !cookieToken ||
-      !headerToken ||
-      !sameValue(cookieToken, headerToken) ||
-      !verifyCsrfToken(headerToken)
-    ) {
+    const hasMatchingCookie =
+      Boolean(headerToken) && cookieTokens.some((cookieVal) => sameValue(cookieVal, headerToken!));
+
+    if (!headerToken || !hasMatchingCookie || !verifyCsrfToken(headerToken)) {
       next(
         new AppError(
           403,

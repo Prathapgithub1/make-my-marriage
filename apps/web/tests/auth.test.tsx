@@ -6,6 +6,8 @@ import { AppProviders, queryClient } from '../src/app/providers';
 import { ForgotPasswordPage } from '../src/features/auth/ForgotPasswordPage';
 import { LoginPage } from '../src/features/auth/LoginPage';
 import { ProtectedRoute } from '../src/features/auth/ProtectedRoute';
+import { useAuth } from '../src/features/auth/AuthProvider';
+import { sanitizeRedirectUrl } from '../src/lib/api-client';
 
 function renderPage(page: ReactNode) {
   return render(
@@ -111,5 +113,102 @@ describe('authentication screens', () => {
     );
     expect(await screen.findByText('Sign in required')).toBeInTheDocument();
     expect(screen.queryByText('Private workspace')).not.toBeInTheDocument();
+  });
+
+  it('clears session and query state on logout even when signOut fails', async () => {
+    function TestLogoutComponent() {
+      const { session, logout } = useAuth();
+      return (
+        <div>
+          <span>{session ? `Logged in: ${session.user.email}` : 'Logged out'}</span>
+          <button type="button" onClick={() => void logout()}>
+            Do Logout
+          </button>
+        </div>
+      );
+    }
+
+    queryClient.setQueryData(['auth', 'me'], {
+      user: { id: 'user-1', email: 'test@example.com', name: 'Tester' },
+      hasWedding: false,
+      membership: null,
+      wedding: null,
+    });
+
+    const fetchMock = jest.mocked(fetch);
+    const originalImplementation = fetchMock.getMockImplementation();
+    fetchMock.mockImplementation(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (url.endsWith('/auth/logout')) {
+        return {
+          ok: false,
+          status: 403,
+          json: async () => ({
+            error: {
+              code: 'CSRF_REJECTED',
+              message: 'Request could not be verified. Refresh the page and try again.',
+            },
+          }),
+        } as Response;
+      }
+      return originalImplementation
+        ? originalImplementation(input, init)
+        : ({ ok: true, status: 200, json: async () => ({}) } as Response);
+    });
+
+    const user = userEvent.setup();
+    renderPage(<TestLogoutComponent />);
+    expect(screen.getByText('Logged in: test@example.com')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Do Logout' }));
+
+    expect(await screen.findByText('Logged out')).toBeInTheDocument();
+    expect(queryClient.getQueryData(['auth', 'me'])).toBeNull();
+
+    if (originalImplementation) {
+      fetchMock.mockImplementation(originalImplementation);
+    }
+  });
+
+  describe('open redirect protection (CWE-601)', () => {
+    it('sanitizes redirect URLs to permit only safe relative paths', () => {
+      // Safe relative paths
+      expect(sanitizeRedirectUrl('/dashboard')).toBe('/dashboard');
+      expect(sanitizeRedirectUrl('/wedding/setup')).toBe('/wedding/setup');
+      expect(sanitizeRedirectUrl('/invitations/members/sample-token')).toBe(
+        '/invitations/members/sample-token',
+      );
+      expect(sanitizeRedirectUrl('  /settings/members  ')).toBe('/settings/members');
+
+      // Malicious external and protocol-relative targets
+      expect(sanitizeRedirectUrl('https://evil.com')).toBeNull();
+      expect(sanitizeRedirectUrl('http://attacker.com/steal')).toBeNull();
+      expect(sanitizeRedirectUrl('//evil.com')).toBeNull();
+      expect(sanitizeRedirectUrl('/\\evil.com')).toBeNull();
+      expect(sanitizeRedirectUrl('/path\\evil.com')).toBeNull();
+      expect(sanitizeRedirectUrl('javascript:alert(1)')).toBeNull();
+      expect(sanitizeRedirectUrl('')).toBeNull();
+      expect(sanitizeRedirectUrl(null)).toBeNull();
+      expect(sanitizeRedirectUrl(undefined)).toBeNull();
+    });
+
+    it('ignores malicious redirect params in LoginPage and falls back safely', async () => {
+      render(
+        <MemoryRouter initialEntries={['/login?redirect=https://evil.com&email=test@example.com']}>
+          <AppProviders>
+            <LoginPage />
+          </AppProviders>
+        </MemoryRouter>,
+      );
+
+      // Verify email was prefilled safely
+      const emailInput = screen.getByLabelText(/Email address/i) as HTMLInputElement;
+      expect(emailInput.value).toBe('test@example.com');
+
+      // The create account link should NOT forward the malicious redirect target
+      const createAccountLink = screen.getByRole('link', { name: /Create an account/i });
+      expect(createAccountLink.getAttribute('href')).not.toContain('evil.com');
+      expect(createAccountLink.getAttribute('href')).toContain('/signup?email=test%40example.com');
+    });
   });
 });
