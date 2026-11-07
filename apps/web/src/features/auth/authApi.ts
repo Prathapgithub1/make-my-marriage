@@ -74,5 +74,3 @@ export function signUp(name: string, email: string, password: string) {
 }
 
 export { sanitizeRedirectUrl } from '../../lib/api-client';
-
-export { sanitizeRedirectUrl } from '../../lib/api-client';

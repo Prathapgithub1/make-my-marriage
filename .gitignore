@@ -25,3 +25,7 @@ Thumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# AWS certificates and temporary test files
+*.pem
+test-rds.js
