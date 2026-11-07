@@ -1,0 +1,40 @@
+
+name: Make My Marriage - CI
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Install, Test and Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npm run prisma:generate
+
+      - name: TypeScript check
+        run: npm run typecheck
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build application
+        run: npm run build
