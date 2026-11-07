@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import type { SubmitHandler } from 'react-hook-form';
-import { ApiRequestError } from '../../lib/api-client';
+import { ApiRequestError, sanitizeRedirectUrl } from '../../lib/api-client';
 import { createAccount, isSignupDemoMode } from './signupApi';
 import { signupSchema } from './signupSchema';
 import type { SignupFormValues } from './signupSchema';
@@ -15,6 +15,10 @@ const inputClasses =
 export function SignupForm() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [searchParams] = useSearchParams();
+  const redirectParam = sanitizeRedirectUrl(searchParams.get('redirect'));
+  const emailParam = searchParams.get('email') || '';
+
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [feedback, setFeedback] = useState<{ kind: 'success' | 'error'; message: string } | null>(
     null,
@@ -30,7 +34,7 @@ export function SignupForm() {
     resolver: zodResolver(signupSchema),
     mode: 'onBlur',
     reValidateMode: 'onChange',
-    defaultValues: { name: '', email: '', password: '', confirmPassword: '' },
+    defaultValues: { name: '', email: emailParam, password: '', confirmPassword: '' },
   });
 
   const submitSignup: SubmitHandler<SignupFormValues> = async (values) => {
@@ -45,7 +49,8 @@ export function SignupForm() {
           membership: null,
           wedding: null,
         });
-        navigate(account.hasWedding ? '/dashboard' : '/wedding/setup', { replace: true });
+        const target = redirectParam || (account.hasWedding ? '/dashboard' : '/wedding/setup');
+        navigate(target, { replace: true });
         return;
       }
       reset({ name: values.name, email: account.user.email, password: '', confirmPassword: '' });
@@ -198,6 +203,23 @@ export function SignupForm() {
       >
         {isSubmitting ? 'Creating account…' : 'Create account'}
       </button>
+
+      <p className="text-center text-xs text-muted pt-1">
+        Already have an account?{' '}
+        <Link
+          to={
+            redirectParam
+              ? `/login?redirect=${encodeURIComponent(redirectParam)}&email=${encodeURIComponent(emailParam)}`
+              : emailParam
+                ? `/login?email=${encodeURIComponent(emailParam)}`
+                : '/login'
+          }
+          className="font-semibold text-primary hover:underline"
+        >
+          Sign in
+        </Link>
+      </p>
+
       <p className="text-center text-[11px] leading-4 text-muted">
         {isSignupDemoMode
           ? 'Demo mode: the form uses a local mock response. No account or password is stored.'

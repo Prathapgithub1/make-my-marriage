@@ -44,7 +44,11 @@ export function parseCookies(header = ''): Record<string, string> {
       if (separator < 1) return [];
       const key = part.slice(0, separator).trim();
       try {
-        return [[key, decodeURIComponent(part.slice(separator + 1).trim())]];
+        let value = decodeURIComponent(part.slice(separator + 1).trim());
+        if (value.startsWith('"') && value.endsWith('"') && value.length >= 2) {
+          value = value.slice(1, -1);
+        }
+        return [[key, value]];
       } catch {
         return [];
       }

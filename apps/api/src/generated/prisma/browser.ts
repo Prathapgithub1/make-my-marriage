@@ -62,3 +62,8 @@ export type AuthRateLimit = Prisma.AuthRateLimitModel
  * 
  */
 export type EmailVerificationToken = Prisma.EmailVerificationTokenModel
+/**
+ * Model MemberInvitation
+ * 
+ */
+export type MemberInvitation = Prisma.MemberInvitationModel

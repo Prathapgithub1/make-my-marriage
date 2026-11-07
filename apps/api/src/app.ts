@@ -1,4 +1,9 @@
+import dns from 'node:dns';
 import { randomUUID } from 'node:crypto';
+
+if (typeof dns.setDefaultResultOrder === 'function') {
+  dns.setDefaultResultOrder('ipv4first');
+}
 import express, { type ErrorRequestHandler } from 'express';
 import helmet from 'helmet';
 import type { Logger } from 'pino';
@@ -10,6 +15,11 @@ import { databaseHealthRouter, healthRouter } from './modules/health/routes';
 import { authRouter } from './modules/auth/routes';
 import { apiDocsRouter } from './modules/docs/routes';
 import { weddingRouter, dashboardRouter } from './modules/wedding/routes';
+import {
+  membersRouter,
+  publicMemberInvitationsRouter,
+  memberInvitationsRouter,
+} from './modules/members/routes';
 import { AppError } from './shared/app-error';
 
 export function createApp(applicationLogger: Logger = logger) {
@@ -44,6 +54,9 @@ export function createApp(applicationLogger: Logger = logger) {
   apiRouter.use('/auth', authRouter);
   apiRouter.use('/wedding', weddingRouter);
   apiRouter.use('/dashboard', dashboardRouter);
+  apiRouter.use('/members', membersRouter);
+  apiRouter.use('/public/member-invitations', publicMemberInvitationsRouter);
+  apiRouter.use('/member-invitations', memberInvitationsRouter);
   app.use('/api/v1', apiRouter);
 
   app.use((_req, _res, next) => next(new AppError(404, 'NOT_FOUND', 'Route not found.')));

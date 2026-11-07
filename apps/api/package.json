@@ -1,6 +1,6 @@
 {
   "name": "@mmm/api",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "nodemon --watch src --ext ts --exec \"node --env-file-if-exists=../../.env --import tsx\" src/server.ts",

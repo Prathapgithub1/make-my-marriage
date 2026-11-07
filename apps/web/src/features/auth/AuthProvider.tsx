@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo } from 'react';
 import type { PropsWithChildren } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { ApiRequestError } from '../../lib/api-client';
+import { ApiRequestError, clearCsrfToken } from '../../lib/api-client';
 import { getCurrentSession, signOut } from './authApi';
 import type { AuthSession } from './authApi';
 
@@ -36,8 +36,18 @@ export function AuthProvider({ children }: PropsWithChildren) {
       isLoading: sessionQuery.isPending,
       error: sessionQuery.error,
       logout: async () => {
-        await signOut();
-        queryClient.setQueryData(sessionQueryKey, null);
+        try {
+          await signOut();
+        } catch (error) {
+          // Handle logout request failures gracefully without unhandled rejection,
+          // while ensuring client-side session and queries are cleanly cleared.
+          console.warn('Logout API request failed; proceeding to clear client session:', error);
+        } finally {
+          clearCsrfToken();
+          queryClient.setQueryData(sessionQueryKey, null);
+          queryClient.removeQueries({ queryKey: sessionQueryKey });
+          queryClient.clear();
+        }
       },
     }),
     [queryClient, sessionQuery.data, sessionQuery.error, sessionQuery.isPending],

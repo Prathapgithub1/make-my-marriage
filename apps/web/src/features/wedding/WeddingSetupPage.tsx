@@ -9,16 +9,6 @@ import { BrandLockup } from '../../components/BrandMark';
 import { createWedding } from './weddingApi';
 import { weddingSetupSchema, type WeddingSetupFormValues } from './weddingFormSchema';
 import { calculateDaysRemaining } from './DashboardPage';
-import weddingHeroImage from '../../assets/images/wedding-hero.jpg';
-
-function getHeroImageSrc(): string {
-  if (weddingHeroImage) return weddingHeroImage;
-  if (typeof document !== 'undefined') {
-    const link = document.getElementById('wedding-hero-preload') as HTMLLinkElement | null;
-    if (link?.href) return link.href;
-  }
-  return '';
-}
 
 export function WeddingSetupPage() {
   const { session, logout } = useAuth();
@@ -140,7 +130,6 @@ export function WeddingSetupPage() {
 
   const userName = session?.user.displayName ?? session?.user.name ?? 'Valued Member';
   const userEmail = session?.user.email ?? '';
-  const heroImageSrc = getHeroImageSrc();
 
   return (
     <div className="min-h-screen flex flex-col justify-between bg-[#fafaf3] text-[#1a1c18] antialiased">
@@ -166,8 +155,11 @@ export function WeddingSetupPage() {
             <button
               type="button"
               onClick={async () => {
-                await logout();
-                navigate('/login', { replace: true });
+                try {
+                  await logout();
+                } finally {
+                  navigate('/login', { replace: true });
+                }
               }}
               className="text-xs font-medium text-[#53433e] hover:text-[#8a4b35] px-2.5 py-1.5 rounded-lg border border-[#d8c2bb]/40 hover:bg-[#eeeee8] transition-colors"
             >
@@ -402,16 +394,6 @@ export function WeddingSetupPage() {
           {/* Right / Editorial Visual Section (5 cols on desktop) */}
           <section className="lg:col-span-5 flex flex-col">
             <div className="relative w-full h-full min-h-[520px] rounded-2xl overflow-hidden border border-[#d8c2bb]/50 shadow-[0_4px_24px_rgba(37,39,35,0.03)] bg-[#e8e9e2] wedding-hero-bg flex flex-col justify-end p-6 sm:p-8">
-              {/* High-Resolution Editorial Nuptials Image */}
-              {heroImageSrc ? (
-                <img
-                  src={heroImageSrc}
-                  alt="Royal Indian wedding celebration portrait"
-                  className="absolute inset-0 w-full h-full object-cover object-[center_20%]"
-                  loading="eager"
-                />
-              ) : null}
-
               {/* Subtle targeted gradient scrim for text readability without darkening the couple or architecture */}
               <div
                 className="absolute inset-0 bg-gradient-to-t from-[#1a1c18]/90 via-[#1a1c18]/30 via-50% to-transparent pointer-events-none"

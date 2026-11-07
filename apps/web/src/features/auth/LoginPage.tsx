@@ -4,7 +4,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router';
 import { useForm } from 'react-hook-form';
 import type { SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ApiRequestError } from '../../lib/api-client';
+import { ApiRequestError, sanitizeRedirectUrl } from '../../lib/api-client';
 import { signIn } from './authApi';
 import { AuthPageLayout } from './AuthPageLayout';
 import { loginFormSchema } from './authFormSchemas';
@@ -19,6 +19,8 @@ export function LoginPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const passwordResetSuccess = searchParams.get('passwordReset') === '1';
+  const redirectParam = sanitizeRedirectUrl(searchParams.get('redirect'));
+  const emailParam = searchParams.get('email') || '';
   const queryClient = useQueryClient();
   const {
     register,
@@ -28,7 +30,7 @@ export function LoginPage() {
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
     mode: 'onBlur',
-    defaultValues: { email: '', password: '' },
+    defaultValues: { email: emailParam, password: '' },
   });
 
   const submit: SubmitHandler<LoginFormValues> = async ({ email, password }) => {
@@ -38,10 +40,11 @@ export function LoginPage() {
       queryClient.setQueryData(['auth', 'me'], {
         user: account.user,
         hasWedding: account.hasWedding,
-        membership: null,
-        wedding: null,
+        membership: account.membership ?? null,
+        wedding: account.wedding ?? null,
       });
-      navigate(account.hasWedding ? '/dashboard' : '/wedding/setup', { replace: true });
+      const target = redirectParam || (account.hasWedding ? '/dashboard' : '/wedding/setup');
+      navigate(target, { replace: true });
     } catch (error) {
       if (error instanceof ApiRequestError && error.code === 'VALIDATION_ERROR') {
         setError('email', { type: 'server', message: error.message });
@@ -65,7 +68,16 @@ export function LoginPage() {
       footer={
         <>
           New to Make My Marriage?{' '}
-          <Link className="font-semibold text-primary" to="/signup">
+          <Link
+            className="font-semibold text-primary"
+            to={
+              redirectParam
+                ? `/signup?redirect=${encodeURIComponent(redirectParam)}&email=${encodeURIComponent(emailParam)}`
+                : emailParam
+                  ? `/signup?email=${encodeURIComponent(emailParam)}`
+                  : '/signup'
+            }
+          >
             Create an account
           </Link>
         </>

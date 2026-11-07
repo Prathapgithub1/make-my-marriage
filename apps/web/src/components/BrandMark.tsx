@@ -69,8 +69,11 @@ export const ROUTE_SUBTITLES: Record<string, string> = {
   '/gallery': 'YOUR WEDDING MEMORIES',
   '/photos': 'YOUR WEDDING MEMORIES',
   '/wedding/gallery': 'YOUR WEDDING MEMORIES',
-  '/wedding/photos': 'YOUR WEDDING MEMORIES',
   '/settings': 'WORKSPACE SETTINGS',
+  '/settings/members': 'WEDDING TEAM & MEMBERS',
+  '/members': 'WEDDING TEAM & MEMBERS',
+  '/wedding/members': 'WEDDING TEAM & MEMBERS',
+  '/invitations/members': 'ACCEPT WEDDING INVITATION',
   '/wedding/settings': 'WORKSPACE SETTINGS',
 };
 

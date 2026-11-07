@@ -2,6 +2,13 @@ const API_BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:3104/api/v1';
 let csrfToken: string | undefined;
 let csrfRequest: Promise<string> | undefined;
 
+export function clearCsrfToken(): void {
+  csrfToken = undefined;
+  if (typeof document !== 'undefined') {
+    document.cookie = 'mmm_csrf=; Path=/; Max-Age=0; SameSite=Lax';
+  }
+}
+
 export type ApiErrorBody = {
   error?: {
     code?: string;
@@ -23,7 +30,11 @@ export class ApiRequestError extends Error {
   }
 }
 
-export async function apiRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
+export async function apiRequest<T>(
+  path: string,
+  init: RequestInit = {},
+  isRetry = false,
+): Promise<T> {
   const baseUrl = API_BASE_URL.replace(/\/$/, '');
   const resourcePath = path.replace(/^\//, '');
   const headers = new Headers(init.headers);
@@ -44,8 +55,28 @@ export async function apiRequest<T>(path: string, init: RequestInit = {}): Promi
 
   const responseBody: unknown = await response.json().catch(() => undefined);
 
+  // If a request requiring CSRF is rejected due to token invalidation or mismatch,
+  // clear stale CSRF state, fetch a fresh CSRF token from the server, and retry once.
+  if (
+    !response.ok &&
+    needsCsrf &&
+    !isRetry &&
+    response.status === 403 &&
+    Boolean(
+      (responseBody as ApiErrorBody)?.error?.code === 'CSRF_REJECTED' ||
+      (responseBody as ApiErrorBody)?.error?.message
+        ?.toLowerCase()
+        .includes('could not be verified'),
+    )
+  ) {
+    clearCsrfToken();
+    const freshToken = await getCsrfToken(true);
+    headers.set('X-CSRF-Token', freshToken);
+    return apiRequest<T>(path, { ...init, headers }, true);
+  }
+
   if (needsCsrf && (resourcePath === 'auth/logout' || resourcePath === 'auth/reset-password')) {
-    csrfToken = undefined;
+    clearCsrfToken();
   }
 
   if (!response.ok) {
@@ -64,15 +95,22 @@ export async function apiRequest<T>(path: string, init: RequestInit = {}): Promi
 function readCsrfCookie(): string | undefined {
   if (typeof document === 'undefined') return undefined;
   const match = document.cookie.match(/(?:^|;\s*)mmm_csrf=([^;]+)/);
-  return match ? decodeURIComponent(match[1]) : undefined;
+  if (!match) return undefined;
+  let val = decodeURIComponent(match[1].trim());
+  if (val.startsWith('"') && val.endsWith('"') && val.length >= 2) {
+    val = val.slice(1, -1);
+  }
+  return val;
 }
 
-async function getCsrfToken(): Promise<string> {
-  if (csrfToken) return csrfToken;
-  const fromCookie = readCsrfCookie();
-  if (fromCookie) {
-    csrfToken = fromCookie;
-    return csrfToken;
+export async function getCsrfToken(forceFresh = false): Promise<string> {
+  if (!forceFresh && csrfToken) return csrfToken;
+  if (!forceFresh) {
+    const fromCookie = readCsrfCookie();
+    if (fromCookie) {
+      csrfToken = fromCookie;
+      return csrfToken;
+    }
   }
 
   if (!csrfRequest) {
@@ -96,4 +134,22 @@ async function getCsrfToken(): Promise<string> {
       });
   }
   return csrfRequest;
+}
+
+/**
+ * Validates and sanitizes a redirect URL to prevent Open Redirect (CWE-601) vulnerabilities.
+ * Only relative local pathname targets starting with '/' (and not '//' or '/\') are permitted.
+ */
+export function sanitizeRedirectUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  const trimmed = url.trim();
+  if (
+    trimmed.startsWith('/') &&
+    !trimmed.startsWith('//') &&
+    !trimmed.startsWith('/\\') &&
+    !trimmed.includes('\\')
+  ) {
+    return trimmed;
+  }
+  return null;
 }

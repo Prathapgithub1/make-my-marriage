@@ -20,6 +20,7 @@ model User {
   emailVerificationTokens EmailVerificationToken[]
   weddingMembership   WeddingMembership?
   weddingsCreated     Wedding[]            @relation("WeddingsCreated")
+  invitationsSent     MemberInvitation[]   @relation("InvitationsSent")
 
   @@map("users")
 }
@@ -53,6 +54,7 @@ model Wedding {
 
   createdByUser       User              @relation("WeddingsCreated", fields: [createdByUserId], references: [id], onDelete: Restrict)
   memberships         WeddingMembership[]
+  memberInvitations   MemberInvitation[]
   websiteSettings     WebsiteSettings?
   galleryAccessTokens GalleryAccessToken[]
 
@@ -154,5 +156,25 @@ model EmailVerificationToken {
 
   @@index([userId, expiresAt], map: "email_verification_tokens_user_id_expires_at_idx")
   @@map("email_verification_tokens")
+}
+
+model MemberInvitation {
+  id              String      @id @default(uuid()) @db.Uuid
+  weddingId       String      @map("wedding_id") @db.Uuid
+  email           String      @db.VarChar(320)
+  role            WeddingRole @default(MANAGER)
+  tokenHash       String      @unique(map: "member_invitations_token_hash_key") @map("token_hash") @db.VarChar(128)
+  invitedByUserId String      @map("invited_by_user_id") @db.Uuid
+  createdAt       DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  expiresAt       DateTime    @map("expires_at") @db.Timestamptz(6)
+  acceptedAt      DateTime?   @map("accepted_at") @db.Timestamptz(6)
+  revokedAt       DateTime?   @map("revoked_at") @db.Timestamptz(6)
+
+  wedding         Wedding     @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  invitedByUser   User        @relation("InvitationsSent", fields: [invitedByUserId], references: [id], onDelete: Restrict)
+
+  @@index([weddingId, email], map: "member_invitations_wedding_id_email_idx")
+  @@index([expiresAt], map: "member_invitations_expires_at_idx")
+  @@map("member_invitations")
 }
 
