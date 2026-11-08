@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "parcel index.html --port 1234",
-    "build": "parcel build index.html --dist-dir dist",
+    "build": "parcel build index.html --dist-dir dist --cache-dir .parcel-build-cache",
     "test": "jest --config jest.config.cjs",
     "typecheck": "tsc --noEmit"
   },

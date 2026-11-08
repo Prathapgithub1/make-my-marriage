@@ -257,6 +257,7 @@ export type WeddingWhereInput = {
   createdByUser?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   memberships?: Prisma.WeddingMembershipListRelationFilter
   memberInvitations?: Prisma.MemberInvitationListRelationFilter
+  events?: Prisma.EventListRelationFilter
   websiteSettings?: Prisma.XOR<Prisma.WebsiteSettingsNullableScalarRelationFilter, Prisma.WebsiteSettingsWhereInput> | null
   galleryAccessTokens?: Prisma.GalleryAccessTokenListRelationFilter
 }
@@ -279,6 +280,7 @@ export type WeddingOrderByWithRelationInput = {
   createdByUser?: Prisma.UserOrderByWithRelationInput
   memberships?: Prisma.WeddingMembershipOrderByRelationAggregateInput
   memberInvitations?: Prisma.MemberInvitationOrderByRelationAggregateInput
+  events?: Prisma.EventOrderByRelationAggregateInput
   websiteSettings?: Prisma.WebsiteSettingsOrderByWithRelationInput
   galleryAccessTokens?: Prisma.GalleryAccessTokenOrderByRelationAggregateInput
 }
@@ -304,6 +306,7 @@ export type WeddingWhereUniqueInput = Prisma.AtLeast<{
   createdByUser?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   memberships?: Prisma.WeddingMembershipListRelationFilter
   memberInvitations?: Prisma.MemberInvitationListRelationFilter
+  events?: Prisma.EventListRelationFilter
   websiteSettings?: Prisma.XOR<Prisma.WebsiteSettingsNullableScalarRelationFilter, Prisma.WebsiteSettingsWhereInput> | null
   galleryAccessTokens?: Prisma.GalleryAccessTokenListRelationFilter
 }, "id">
@@ -365,6 +368,7 @@ export type WeddingCreateInput = {
   createdByUser: Prisma.UserCreateNestedOneWithoutWeddingsCreatedInput
   memberships?: Prisma.WeddingMembershipCreateNestedManyWithoutWeddingInput
   memberInvitations?: Prisma.MemberInvitationCreateNestedManyWithoutWeddingInput
+  events?: Prisma.EventCreateNestedManyWithoutWeddingInput
   websiteSettings?: Prisma.WebsiteSettingsCreateNestedOneWithoutWeddingInput
   galleryAccessTokens?: Prisma.GalleryAccessTokenCreateNestedManyWithoutWeddingInput
 }
@@ -386,6 +390,7 @@ export type WeddingUncheckedCreateInput = {
   updatedAt?: Date | string
   memberships?: Prisma.WeddingMembershipUncheckedCreateNestedManyWithoutWeddingInput
   memberInvitations?: Prisma.MemberInvitationUncheckedCreateNestedManyWithoutWeddingInput
+  events?: Prisma.EventUncheckedCreateNestedManyWithoutWeddingInput
   websiteSettings?: Prisma.WebsiteSettingsUncheckedCreateNestedOneWithoutWeddingInput
   galleryAccessTokens?: Prisma.GalleryAccessTokenUncheckedCreateNestedManyWithoutWeddingInput
 }
@@ -407,6 +412,7 @@ export type WeddingUpdateInput = {
   createdByUser?: Prisma.UserUpdateOneRequiredWithoutWeddingsCreatedNestedInput
   memberships?: Prisma.WeddingMembershipUpdateManyWithoutWeddingNestedInput
   memberInvitations?: Prisma.MemberInvitationUpdateManyWithoutWeddingNestedInput
+  events?: Prisma.EventUpdateManyWithoutWeddingNestedInput
   websiteSettings?: Prisma.WebsiteSettingsUpdateOneWithoutWeddingNestedInput
   galleryAccessTokens?: Prisma.GalleryAccessTokenUpdateManyWithoutWeddingNestedInput
 }
@@ -428,6 +434,7 @@ export type WeddingUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.WeddingMembershipUncheckedUpdateManyWithoutWeddingNestedInput
   memberInvitations?: Prisma.MemberInvitationUncheckedUpdateManyWithoutWeddingNestedInput
+  events?: Prisma.EventUncheckedUpdateManyWithoutWeddingNestedInput
   websiteSettings?: Prisma.WebsiteSettingsUncheckedUpdateOneWithoutWeddingNestedInput
   galleryAccessTokens?: Prisma.GalleryAccessTokenUncheckedUpdateManyWithoutWeddingNestedInput
 }
@@ -646,6 +653,20 @@ export type WeddingUpdateOneRequiredWithoutMemberInvitationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WeddingUpdateToOneWithWhereWithoutMemberInvitationsInput, Prisma.WeddingUpdateWithoutMemberInvitationsInput>, Prisma.WeddingUncheckedUpdateWithoutMemberInvitationsInput>
 }
 
+export type WeddingCreateNestedOneWithoutEventsInput = {
+  create?: Prisma.XOR<Prisma.WeddingCreateWithoutEventsInput, Prisma.WeddingUncheckedCreateWithoutEventsInput>
+  connectOrCreate?: Prisma.WeddingCreateOrConnectWithoutEventsInput
+  connect?: Prisma.WeddingWhereUniqueInput
+}
+
+export type WeddingUpdateOneRequiredWithoutEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.WeddingCreateWithoutEventsInput, Prisma.WeddingUncheckedCreateWithoutEventsInput>
+  connectOrCreate?: Prisma.WeddingCreateOrConnectWithoutEventsInput
+  upsert?: Prisma.WeddingUpsertWithoutEventsInput
+  connect?: Prisma.WeddingWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WeddingUpdateToOneWithWhereWithoutEventsInput, Prisma.WeddingUpdateWithoutEventsInput>, Prisma.WeddingUncheckedUpdateWithoutEventsInput>
+}
+
 export type WeddingCreateWithoutCreatedByUserInput = {
   id?: string
   title: string
@@ -662,6 +683,7 @@ export type WeddingCreateWithoutCreatedByUserInput = {
   updatedAt?: Date | string
   memberships?: Prisma.WeddingMembershipCreateNestedManyWithoutWeddingInput
   memberInvitations?: Prisma.MemberInvitationCreateNestedManyWithoutWeddingInput
+  events?: Prisma.EventCreateNestedManyWithoutWeddingInput
   websiteSettings?: Prisma.WebsiteSettingsCreateNestedOneWithoutWeddingInput
   galleryAccessTokens?: Prisma.GalleryAccessTokenCreateNestedManyWithoutWeddingInput
 }
@@ -682,6 +704,7 @@ export type WeddingUncheckedCreateWithoutCreatedByUserInput = {
   updatedAt?: Date | string
   memberships?: Prisma.WeddingMembershipUncheckedCreateNestedManyWithoutWeddingInput
   memberInvitations?: Prisma.MemberInvitationUncheckedCreateNestedManyWithoutWeddingInput
+  events?: Prisma.EventUncheckedCreateNestedManyWithoutWeddingInput
   websiteSettings?: Prisma.WebsiteSettingsUncheckedCreateNestedOneWithoutWeddingInput
   galleryAccessTokens?: Prisma.GalleryAccessTokenUncheckedCreateNestedManyWithoutWeddingInput
 }
@@ -748,6 +771,7 @@ export type WeddingCreateWithoutMembershipsInput = {
   updatedAt?: Date | string
   createdByUser: Prisma.UserCreateNestedOneWithoutWeddingsCreatedInput
   memberInvitations?: Prisma.MemberInvitationCreateNestedManyWithoutWeddingInput
+  events?: Prisma.EventCreateNestedManyWithoutWeddingInput
   websiteSettings?: Prisma.WebsiteSettingsCreateNestedOneWithoutWeddingInput
   galleryAccessTokens?: Prisma.GalleryAccessTokenCreateNestedManyWithoutWeddingInput
 }
@@ -768,6 +792,7 @@ export type WeddingUncheckedCreateWithoutMembershipsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   memberInvitations?: Prisma.MemberInvitationUncheckedCreateNestedManyWithoutWeddingInput
+  events?: Prisma.EventUncheckedCreateNestedManyWithoutWeddingInput
   websiteSettings?: Prisma.WebsiteSettingsUncheckedCreateNestedOneWithoutWeddingInput
   galleryAccessTokens?: Prisma.GalleryAccessTokenUncheckedCreateNestedManyWithoutWeddingInput
 }
@@ -804,6 +829,7 @@ export type WeddingUpdateWithoutMembershipsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdByUser?: Prisma.UserUpdateOneRequiredWithoutWeddingsCreatedNestedInput
   memberInvitations?: Prisma.MemberInvitationUpdateManyWithoutWeddingNestedInput
+  events?: Prisma.EventUpdateManyWithoutWeddingNestedInput
   websiteSettings?: Prisma.WebsiteSettingsUpdateOneWithoutWeddingNestedInput
   galleryAccessTokens?: Prisma.GalleryAccessTokenUpdateManyWithoutWeddingNestedInput
 }
@@ -824,6 +850,7 @@ export type WeddingUncheckedUpdateWithoutMembershipsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberInvitations?: Prisma.MemberInvitationUncheckedUpdateManyWithoutWeddingNestedInput
+  events?: Prisma.EventUncheckedUpdateManyWithoutWeddingNestedInput
   websiteSettings?: Prisma.WebsiteSettingsUncheckedUpdateOneWithoutWeddingNestedInput
   galleryAccessTokens?: Prisma.GalleryAccessTokenUncheckedUpdateManyWithoutWeddingNestedInput
 }
@@ -845,6 +872,7 @@ export type WeddingCreateWithoutWebsiteSettingsInput = {
   createdByUser: Prisma.UserCreateNestedOneWithoutWeddingsCreatedInput
   memberships?: Prisma.WeddingMembershipCreateNestedManyWithoutWeddingInput
   memberInvitations?: Prisma.MemberInvitationCreateNestedManyWithoutWeddingInput
+  events?: Prisma.EventCreateNestedManyWithoutWeddingInput
   galleryAccessTokens?: Prisma.GalleryAccessTokenCreateNestedManyWithoutWeddingInput
 }
 
@@ -865,6 +893,7 @@ export type WeddingUncheckedCreateWithoutWebsiteSettingsInput = {
   updatedAt?: Date | string
   memberships?: Prisma.WeddingMembershipUncheckedCreateNestedManyWithoutWeddingInput
   memberInvitations?: Prisma.MemberInvitationUncheckedCreateNestedManyWithoutWeddingInput
+  events?: Prisma.EventUncheckedCreateNestedManyWithoutWeddingInput
   galleryAccessTokens?: Prisma.GalleryAccessTokenUncheckedCreateNestedManyWithoutWeddingInput
 }
 
@@ -901,6 +930,7 @@ export type WeddingUpdateWithoutWebsiteSettingsInput = {
   createdByUser?: Prisma.UserUpdateOneRequiredWithoutWeddingsCreatedNestedInput
   memberships?: Prisma.WeddingMembershipUpdateManyWithoutWeddingNestedInput
   memberInvitations?: Prisma.MemberInvitationUpdateManyWithoutWeddingNestedInput
+  events?: Prisma.EventUpdateManyWithoutWeddingNestedInput
   galleryAccessTokens?: Prisma.GalleryAccessTokenUpdateManyWithoutWeddingNestedInput
 }
 
@@ -921,6 +951,7 @@ export type WeddingUncheckedUpdateWithoutWebsiteSettingsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.WeddingMembershipUncheckedUpdateManyWithoutWeddingNestedInput
   memberInvitations?: Prisma.MemberInvitationUncheckedUpdateManyWithoutWeddingNestedInput
+  events?: Prisma.EventUncheckedUpdateManyWithoutWeddingNestedInput
   galleryAccessTokens?: Prisma.GalleryAccessTokenUncheckedUpdateManyWithoutWeddingNestedInput
 }
 
@@ -941,6 +972,7 @@ export type WeddingCreateWithoutGalleryAccessTokensInput = {
   createdByUser: Prisma.UserCreateNestedOneWithoutWeddingsCreatedInput
   memberships?: Prisma.WeddingMembershipCreateNestedManyWithoutWeddingInput
   memberInvitations?: Prisma.MemberInvitationCreateNestedManyWithoutWeddingInput
+  events?: Prisma.EventCreateNestedManyWithoutWeddingInput
   websiteSettings?: Prisma.WebsiteSettingsCreateNestedOneWithoutWeddingInput
 }
 
@@ -961,6 +993,7 @@ export type WeddingUncheckedCreateWithoutGalleryAccessTokensInput = {
   updatedAt?: Date | string
   memberships?: Prisma.WeddingMembershipUncheckedCreateNestedManyWithoutWeddingInput
   memberInvitations?: Prisma.MemberInvitationUncheckedCreateNestedManyWithoutWeddingInput
+  events?: Prisma.EventUncheckedCreateNestedManyWithoutWeddingInput
   websiteSettings?: Prisma.WebsiteSettingsUncheckedCreateNestedOneWithoutWeddingInput
 }
 
@@ -997,6 +1030,7 @@ export type WeddingUpdateWithoutGalleryAccessTokensInput = {
   createdByUser?: Prisma.UserUpdateOneRequiredWithoutWeddingsCreatedNestedInput
   memberships?: Prisma.WeddingMembershipUpdateManyWithoutWeddingNestedInput
   memberInvitations?: Prisma.MemberInvitationUpdateManyWithoutWeddingNestedInput
+  events?: Prisma.EventUpdateManyWithoutWeddingNestedInput
   websiteSettings?: Prisma.WebsiteSettingsUpdateOneWithoutWeddingNestedInput
 }
 
@@ -1017,6 +1051,7 @@ export type WeddingUncheckedUpdateWithoutGalleryAccessTokensInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.WeddingMembershipUncheckedUpdateManyWithoutWeddingNestedInput
   memberInvitations?: Prisma.MemberInvitationUncheckedUpdateManyWithoutWeddingNestedInput
+  events?: Prisma.EventUncheckedUpdateManyWithoutWeddingNestedInput
   websiteSettings?: Prisma.WebsiteSettingsUncheckedUpdateOneWithoutWeddingNestedInput
 }
 
@@ -1036,6 +1071,7 @@ export type WeddingCreateWithoutMemberInvitationsInput = {
   updatedAt?: Date | string
   createdByUser: Prisma.UserCreateNestedOneWithoutWeddingsCreatedInput
   memberships?: Prisma.WeddingMembershipCreateNestedManyWithoutWeddingInput
+  events?: Prisma.EventCreateNestedManyWithoutWeddingInput
   websiteSettings?: Prisma.WebsiteSettingsCreateNestedOneWithoutWeddingInput
   galleryAccessTokens?: Prisma.GalleryAccessTokenCreateNestedManyWithoutWeddingInput
 }
@@ -1056,6 +1092,7 @@ export type WeddingUncheckedCreateWithoutMemberInvitationsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   memberships?: Prisma.WeddingMembershipUncheckedCreateNestedManyWithoutWeddingInput
+  events?: Prisma.EventUncheckedCreateNestedManyWithoutWeddingInput
   websiteSettings?: Prisma.WebsiteSettingsUncheckedCreateNestedOneWithoutWeddingInput
   galleryAccessTokens?: Prisma.GalleryAccessTokenUncheckedCreateNestedManyWithoutWeddingInput
 }
@@ -1092,6 +1129,7 @@ export type WeddingUpdateWithoutMemberInvitationsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdByUser?: Prisma.UserUpdateOneRequiredWithoutWeddingsCreatedNestedInput
   memberships?: Prisma.WeddingMembershipUpdateManyWithoutWeddingNestedInput
+  events?: Prisma.EventUpdateManyWithoutWeddingNestedInput
   websiteSettings?: Prisma.WebsiteSettingsUpdateOneWithoutWeddingNestedInput
   galleryAccessTokens?: Prisma.GalleryAccessTokenUpdateManyWithoutWeddingNestedInput
 }
@@ -1112,6 +1150,107 @@ export type WeddingUncheckedUpdateWithoutMemberInvitationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.WeddingMembershipUncheckedUpdateManyWithoutWeddingNestedInput
+  events?: Prisma.EventUncheckedUpdateManyWithoutWeddingNestedInput
+  websiteSettings?: Prisma.WebsiteSettingsUncheckedUpdateOneWithoutWeddingNestedInput
+  galleryAccessTokens?: Prisma.GalleryAccessTokenUncheckedUpdateManyWithoutWeddingNestedInput
+}
+
+export type WeddingCreateWithoutEventsInput = {
+  id?: string
+  title: string
+  brideName: string
+  groomName: string
+  weddingDate?: Date | string | null
+  location?: string | null
+  city?: string | null
+  state?: string | null
+  country?: string | null
+  description?: string | null
+  coverImageKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdByUser: Prisma.UserCreateNestedOneWithoutWeddingsCreatedInput
+  memberships?: Prisma.WeddingMembershipCreateNestedManyWithoutWeddingInput
+  memberInvitations?: Prisma.MemberInvitationCreateNestedManyWithoutWeddingInput
+  websiteSettings?: Prisma.WebsiteSettingsCreateNestedOneWithoutWeddingInput
+  galleryAccessTokens?: Prisma.GalleryAccessTokenCreateNestedManyWithoutWeddingInput
+}
+
+export type WeddingUncheckedCreateWithoutEventsInput = {
+  id?: string
+  title: string
+  brideName: string
+  groomName: string
+  weddingDate?: Date | string | null
+  location?: string | null
+  city?: string | null
+  state?: string | null
+  country?: string | null
+  description?: string | null
+  coverImageKey?: string | null
+  createdByUserId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.WeddingMembershipUncheckedCreateNestedManyWithoutWeddingInput
+  memberInvitations?: Prisma.MemberInvitationUncheckedCreateNestedManyWithoutWeddingInput
+  websiteSettings?: Prisma.WebsiteSettingsUncheckedCreateNestedOneWithoutWeddingInput
+  galleryAccessTokens?: Prisma.GalleryAccessTokenUncheckedCreateNestedManyWithoutWeddingInput
+}
+
+export type WeddingCreateOrConnectWithoutEventsInput = {
+  where: Prisma.WeddingWhereUniqueInput
+  create: Prisma.XOR<Prisma.WeddingCreateWithoutEventsInput, Prisma.WeddingUncheckedCreateWithoutEventsInput>
+}
+
+export type WeddingUpsertWithoutEventsInput = {
+  update: Prisma.XOR<Prisma.WeddingUpdateWithoutEventsInput, Prisma.WeddingUncheckedUpdateWithoutEventsInput>
+  create: Prisma.XOR<Prisma.WeddingCreateWithoutEventsInput, Prisma.WeddingUncheckedCreateWithoutEventsInput>
+  where?: Prisma.WeddingWhereInput
+}
+
+export type WeddingUpdateToOneWithWhereWithoutEventsInput = {
+  where?: Prisma.WeddingWhereInput
+  data: Prisma.XOR<Prisma.WeddingUpdateWithoutEventsInput, Prisma.WeddingUncheckedUpdateWithoutEventsInput>
+}
+
+export type WeddingUpdateWithoutEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  brideName?: Prisma.StringFieldUpdateOperationsInput | string
+  groomName?: Prisma.StringFieldUpdateOperationsInput | string
+  weddingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdByUser?: Prisma.UserUpdateOneRequiredWithoutWeddingsCreatedNestedInput
+  memberships?: Prisma.WeddingMembershipUpdateManyWithoutWeddingNestedInput
+  memberInvitations?: Prisma.MemberInvitationUpdateManyWithoutWeddingNestedInput
+  websiteSettings?: Prisma.WebsiteSettingsUpdateOneWithoutWeddingNestedInput
+  galleryAccessTokens?: Prisma.GalleryAccessTokenUpdateManyWithoutWeddingNestedInput
+}
+
+export type WeddingUncheckedUpdateWithoutEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  brideName?: Prisma.StringFieldUpdateOperationsInput | string
+  groomName?: Prisma.StringFieldUpdateOperationsInput | string
+  weddingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.WeddingMembershipUncheckedUpdateManyWithoutWeddingNestedInput
+  memberInvitations?: Prisma.MemberInvitationUncheckedUpdateManyWithoutWeddingNestedInput
   websiteSettings?: Prisma.WebsiteSettingsUncheckedUpdateOneWithoutWeddingNestedInput
   galleryAccessTokens?: Prisma.GalleryAccessTokenUncheckedUpdateManyWithoutWeddingNestedInput
 }
@@ -1148,6 +1287,7 @@ export type WeddingUpdateWithoutCreatedByUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.WeddingMembershipUpdateManyWithoutWeddingNestedInput
   memberInvitations?: Prisma.MemberInvitationUpdateManyWithoutWeddingNestedInput
+  events?: Prisma.EventUpdateManyWithoutWeddingNestedInput
   websiteSettings?: Prisma.WebsiteSettingsUpdateOneWithoutWeddingNestedInput
   galleryAccessTokens?: Prisma.GalleryAccessTokenUpdateManyWithoutWeddingNestedInput
 }
@@ -1168,6 +1308,7 @@ export type WeddingUncheckedUpdateWithoutCreatedByUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.WeddingMembershipUncheckedUpdateManyWithoutWeddingNestedInput
   memberInvitations?: Prisma.MemberInvitationUncheckedUpdateManyWithoutWeddingNestedInput
+  events?: Prisma.EventUncheckedUpdateManyWithoutWeddingNestedInput
   websiteSettings?: Prisma.WebsiteSettingsUncheckedUpdateOneWithoutWeddingNestedInput
   galleryAccessTokens?: Prisma.GalleryAccessTokenUncheckedUpdateManyWithoutWeddingNestedInput
 }
@@ -1196,12 +1337,14 @@ export type WeddingUncheckedUpdateManyWithoutCreatedByUserInput = {
 export type WeddingCountOutputType = {
   memberships: number
   memberInvitations: number
+  events: number
   galleryAccessTokens: number
 }
 
 export type WeddingCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   memberships?: boolean | WeddingCountOutputTypeCountMembershipsArgs
   memberInvitations?: boolean | WeddingCountOutputTypeCountMemberInvitationsArgs
+  events?: boolean | WeddingCountOutputTypeCountEventsArgs
   galleryAccessTokens?: boolean | WeddingCountOutputTypeCountGalleryAccessTokensArgs
 }
 
@@ -1232,6 +1375,13 @@ export type WeddingCountOutputTypeCountMemberInvitationsArgs<ExtArgs extends run
 /**
  * WeddingCountOutputType without action
  */
+export type WeddingCountOutputTypeCountEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EventWhereInput
+}
+
+/**
+ * WeddingCountOutputType without action
+ */
 export type WeddingCountOutputTypeCountGalleryAccessTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.GalleryAccessTokenWhereInput
 }
@@ -1255,6 +1405,7 @@ export type WeddingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   createdByUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   memberships?: boolean | Prisma.Wedding$membershipsArgs<ExtArgs>
   memberInvitations?: boolean | Prisma.Wedding$memberInvitationsArgs<ExtArgs>
+  events?: boolean | Prisma.Wedding$eventsArgs<ExtArgs>
   websiteSettings?: boolean | Prisma.Wedding$websiteSettingsArgs<ExtArgs>
   galleryAccessTokens?: boolean | Prisma.Wedding$galleryAccessTokensArgs<ExtArgs>
   _count?: boolean | Prisma.WeddingCountOutputTypeDefaultArgs<ExtArgs>
@@ -1318,6 +1469,7 @@ export type WeddingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   createdByUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   memberships?: boolean | Prisma.Wedding$membershipsArgs<ExtArgs>
   memberInvitations?: boolean | Prisma.Wedding$memberInvitationsArgs<ExtArgs>
+  events?: boolean | Prisma.Wedding$eventsArgs<ExtArgs>
   websiteSettings?: boolean | Prisma.Wedding$websiteSettingsArgs<ExtArgs>
   galleryAccessTokens?: boolean | Prisma.Wedding$galleryAccessTokensArgs<ExtArgs>
   _count?: boolean | Prisma.WeddingCountOutputTypeDefaultArgs<ExtArgs>
@@ -1335,6 +1487,7 @@ export type $WeddingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     createdByUser: Prisma.$UserPayload<ExtArgs>
     memberships: Prisma.$WeddingMembershipPayload<ExtArgs>[]
     memberInvitations: Prisma.$MemberInvitationPayload<ExtArgs>[]
+    events: Prisma.$EventPayload<ExtArgs>[]
     websiteSettings: Prisma.$WebsiteSettingsPayload<ExtArgs> | null
     galleryAccessTokens: Prisma.$GalleryAccessTokenPayload<ExtArgs>[]
   }
@@ -1750,6 +1903,7 @@ export interface Prisma__WeddingClient<T, Null = never, ExtArgs extends runtime.
   createdByUser<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   memberships<T extends Prisma.Wedding$membershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Wedding$membershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WeddingMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   memberInvitations<T extends Prisma.Wedding$memberInvitationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Wedding$memberInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MemberInvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  events<T extends Prisma.Wedding$eventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Wedding$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   websiteSettings<T extends Prisma.Wedding$websiteSettingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Wedding$websiteSettingsArgs<ExtArgs>>): Prisma.Prisma__WebsiteSettingsClient<runtime.Types.Result.GetResult<Prisma.$WebsiteSettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   galleryAccessTokens<T extends Prisma.Wedding$galleryAccessTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Wedding$galleryAccessTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GalleryAccessTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -2241,6 +2395,30 @@ export type Wedding$memberInvitationsArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.MemberInvitationScalarFieldEnum | Prisma.MemberInvitationScalarFieldEnum[]
+}
+
+/**
+ * Wedding.events
+ */
+export type Wedding$eventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Event
+   */
+  select?: Prisma.EventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Event
+   */
+  omit?: Prisma.EventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EventInclude<ExtArgs> | null
+  where?: Prisma.EventWhereInput
+  orderBy?: Prisma.EventOrderByWithRelationInput | Prisma.EventOrderByWithRelationInput[]
+  cursor?: Prisma.EventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EventScalarFieldEnum | Prisma.EventScalarFieldEnum[]
 }
 
 /**

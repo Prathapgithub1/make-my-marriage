@@ -55,6 +55,7 @@ model Wedding {
   createdByUser       User              @relation("WeddingsCreated", fields: [createdByUserId], references: [id], onDelete: Restrict)
   memberships         WeddingMembership[]
   memberInvitations   MemberInvitation[]
+  events              Event[]
   websiteSettings     WebsiteSettings?
   galleryAccessTokens GalleryAccessToken[]
 
@@ -177,4 +178,34 @@ model MemberInvitation {
   @@index([expiresAt], map: "member_invitations_expires_at_idx")
   @@map("member_invitations")
 }
+
+enum EventStatus {
+  PLANNED
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+model Event {
+  id            String      @id @default(uuid()) @db.Uuid
+  weddingId     String      @map("wedding_id") @db.Uuid
+  name          String      @db.VarChar(160)
+  description   String?     @db.Text
+  startsAt      DateTime?   @map("starts_at") @db.Timestamptz(6)
+  endsAt        DateTime?   @map("ends_at") @db.Timestamptz(6)
+  venueName     String?     @map("venue_name") @db.VarChar(200)
+  venueAddress  String?     @map("venue_address") @db.VarChar(500)
+  dressCode     String?     @map("dress_code") @db.VarChar(120)
+  coverImageKey String?     @map("cover_image_key") @db.VarChar(1024)
+  status        EventStatus @default(PLANNED)
+  createdAt     DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime    @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  wedding       Wedding     @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+
+  @@index([weddingId, startsAt], map: "events_wedding_id_starts_at_idx")
+  @@index([weddingId, status], map: "events_wedding_id_status_idx")
+  @@map("events")
+}
+
 

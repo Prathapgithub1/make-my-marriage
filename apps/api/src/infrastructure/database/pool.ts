@@ -1,4 +1,3 @@
-
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { Pool } from 'pg';
@@ -24,27 +23,20 @@ const connectionString = getConnectionString();
 
 export const databasePool = connectionString
   ? new Pool({
-    connectionString,
-    ssl: {
-      ca: readFileSync(
-        resolve(__dirname, '../../../../../global-bundle.pem'),
-        'utf8',
-      ),
-      rejectUnauthorized: true,
-    },
-    max: 10,
-    connectionTimeoutMillis: 5_000,
-    idleTimeoutMillis: 30_000,
-  })
+      connectionString,
+      ssl: {
+        ca: readFileSync(resolve(__dirname, '../../../../../global-bundle.pem'), 'utf8'),
+        rejectUnauthorized: true,
+      },
+      max: 10,
+      connectionTimeoutMillis: 5_000,
+      idleTimeoutMillis: 30_000,
+    })
   : undefined;
 
-const prismaAdapter = databasePool
-  ? new PrismaPg(databasePool)
-  : undefined;
+const prismaAdapter = databasePool ? new PrismaPg(databasePool) : undefined;
 
-export const prisma = prismaAdapter
-  ? new PrismaClient({ adapter: prismaAdapter })
-  : undefined;
+export const prisma = prismaAdapter ? new PrismaClient({ adapter: prismaAdapter }) : undefined;
 
 export async function checkDatabaseConnection(): Promise<void> {
   if (!prisma) {

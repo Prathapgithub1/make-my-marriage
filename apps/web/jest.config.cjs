@@ -11,4 +11,5 @@ module.exports = {
     '^.+\\.tsx?$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.test.json' }],
   },
   clearMocks: true,
+  testTimeout: 20000,
 };

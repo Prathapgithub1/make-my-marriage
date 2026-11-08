@@ -67,3 +67,8 @@ export type EmailVerificationToken = Prisma.EmailVerificationTokenModel
  * 
  */
 export type MemberInvitation = Prisma.MemberInvitationModel
+/**
+ * Model Event
+ * 
+ */
+export type Event = Prisma.EventModel

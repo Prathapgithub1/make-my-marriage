@@ -60,7 +60,8 @@ export const ModelName = {
   PasswordResetToken: 'PasswordResetToken',
   AuthRateLimit: 'AuthRateLimit',
   EmailVerificationToken: 'EmailVerificationToken',
-  MemberInvitation: 'MemberInvitation'
+  MemberInvitation: 'MemberInvitation',
+  Event: 'Event'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -211,6 +212,25 @@ export const MemberInvitationScalarFieldEnum = {
 } as const
 
 export type MemberInvitationScalarFieldEnum = (typeof MemberInvitationScalarFieldEnum)[keyof typeof MemberInvitationScalarFieldEnum]
+
+
+export const EventScalarFieldEnum = {
+  id: 'id',
+  weddingId: 'weddingId',
+  name: 'name',
+  description: 'description',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  venueName: 'venueName',
+  venueAddress: 'venueAddress',
+  dressCode: 'dressCode',
+  coverImageKey: 'coverImageKey',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
 
 
 export const SortOrder = {

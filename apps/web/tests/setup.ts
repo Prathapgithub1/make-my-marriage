@@ -320,6 +320,121 @@ Object.defineProperty(globalThis, 'fetch', {
         }),
       } as Response;
     }
+    if (url.includes('/events')) {
+      const method = (init?.method ?? 'GET').toUpperCase();
+      const sampleEvents = [
+        {
+          id: 'event-1',
+          weddingId: 'test-wedding-id',
+          name: 'Sangeet & Cocktail',
+          description: 'An evening of music and dance',
+          startsAt: '2026-12-10T18:00:00.000Z',
+          endsAt: '2026-12-10T23:30:00.000Z',
+          venueName: 'The Grand Palace',
+          venueAddress: 'Palace Road, Jaipur',
+          dressCode: 'Indo-Western Glamour',
+          coverImageKey: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622',
+          status: 'CONFIRMED',
+          createdAt: '2026-11-01T10:00:00.000Z',
+          updatedAt: '2026-11-01T10:00:00.000Z',
+        },
+        {
+          id: 'event-2',
+          weddingId: 'test-wedding-id',
+          name: 'Wedding Ceremony',
+          description: 'Auspicious wedding ceremony',
+          startsAt: '2026-12-11T10:00:00.000Z',
+          endsAt: '2026-12-11T14:00:00.000Z',
+          venueName: 'The Royal Mandap',
+          venueAddress: 'Fort Road, Jaipur',
+          dressCode: 'Royal Traditional',
+          coverImageKey: null,
+          status: 'PLANNED',
+          createdAt: '2026-11-01T10:00:00.000Z',
+          updatedAt: '2026-11-01T10:00:00.000Z',
+        },
+      ];
+
+      if (method === 'POST') {
+        const body = JSON.parse(String(init?.body ?? '{}'));
+        return {
+          ok: true,
+          status: 201,
+          json: async () => ({
+            data: {
+              id: 'new-event-id',
+              weddingId: 'test-wedding-id',
+              name: body.name,
+              description: body.description ?? null,
+              startsAt: body.startsAt ?? null,
+              endsAt: body.endsAt ?? null,
+              venueName: body.venueName ?? null,
+              venueAddress: body.venueAddress ?? null,
+              dressCode: body.dressCode ?? null,
+              coverImageKey: body.coverImageKey ?? null,
+              status: body.status ?? 'PLANNED',
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            },
+          }),
+        } as Response;
+      }
+
+      if (method === 'PATCH') {
+        const body = JSON.parse(String(init?.body ?? '{}'));
+        return {
+          ok: true,
+          status: 200,
+          json: async () => ({
+            data: {
+              ...sampleEvents[0],
+              ...body,
+              updatedAt: new Date().toISOString(),
+            },
+          }),
+        } as Response;
+      }
+
+      if (method === 'DELETE') {
+        return {
+          ok: true,
+          status: 200,
+          json: async () => ({
+            data: { success: true, id: 'event-1', message: 'Event deleted successfully.' },
+          }),
+        } as Response;
+      }
+
+      if (url.match(/\/events\/[a-zA-Z0-9-]+$/) && !url.includes('?')) {
+        return {
+          ok: true,
+          status: 200,
+          json: async () => ({ data: sampleEvents[0] }),
+        } as Response;
+      }
+
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          data: {
+            events: sampleEvents,
+            metrics: {
+              total: 2,
+              upcoming: 2,
+              completed: 0,
+              cancelled: 0,
+            },
+            pagination: {
+              page: 1,
+              limit: 50,
+              total: 2,
+              totalPages: 1,
+            },
+          },
+        }),
+      } as Response;
+    }
     return { ok: true, status: 200, json: async () => ({ data: { success: true } }) } as Response;
   }),
 });

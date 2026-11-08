@@ -356,6 +356,34 @@ export function createWeddingService(db: PrismaClient | undefined): WeddingServi
       const weddingDateStr = w.weddingDate ? w.weddingDate.toISOString().slice(0, 10) : null;
       const daysRemaining = calculateDaysRemaining(w.weddingDate);
 
+      // Query real event count and upcoming events for this wedding
+      const [eventsCount, rawUpcomingEvents] = await Promise.all([
+        database.event.count({
+          where: { weddingId: w.id, status: { not: 'CANCELLED' } },
+        }),
+        database.event.findMany({
+          where: {
+            weddingId: w.id,
+            status: { not: 'CANCELLED' },
+          },
+          orderBy: [{ startsAt: 'asc' }, { createdAt: 'asc' }],
+          take: 5,
+          select: {
+            id: true,
+            name: true,
+            startsAt: true,
+            venueName: true,
+          },
+        }),
+      ]);
+
+      const upcomingEvents = rawUpcomingEvents.map((evt) => ({
+        id: evt.id,
+        name: evt.name,
+        startsAt: evt.startsAt ? evt.startsAt.toISOString() : '',
+        venueName: evt.venueName,
+      }));
+
       // Honest counts: V1 schema has 0 records until each module is populated
       return {
         wedding: {
@@ -375,14 +403,14 @@ export function createWeddingService(db: PrismaClient | undefined): WeddingServi
           daysRemaining,
         },
         summary: {
-          events: 0,
+          events: eventsCount,
           tasks: { total: 0, completed: 0 },
           guests: 0,
           rsvps: { pending: 0, attending: 0, notAttending: 0 },
           totalExpenseAmount: '0.00',
           vendors: 0,
         },
-        upcomingEvents: [],
+        upcomingEvents,
         upcomingTasks: [],
       };
     },

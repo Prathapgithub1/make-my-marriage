@@ -43,12 +43,12 @@ Treat those documents as the source of truth. Do not invent product requirements
 2. **Wedding Onboarding & Workspace Dashboard (V2):** Stitch-inspired `/wedding/setup` and `/dashboard`, 1-user-1-wedding transactional creation, countdown calculation, honest database-backed empty states, brand mark vector system with dynamic route subtitles, and Parcel asset loading resilience.
 3. **Wedding Member Management & Team Invitations (V1):** Role-based access control (`ADMIN`, `MANAGER`), secure team invitations with rate-limited endpoints, cryptographically hashed tokens and Resend email dispatch, atomic race-condition-protected acceptance flow, member role management with sole admin protection, and clean UI for roster and pending invitations.
 4. **Security Hardening & QA Audit Fixes (V1):** Open redirect (CWE-601) mitigation with strict local path sanitization, environment-gated invitation acceptance verification, clean Parcel bundle module resolution, and expanded frontend/backend test suites (112 tests passing).
+5. **Wedding Events Management (V1):** Multi-event scheduling with preset chips (Roka, Engagement, Mehendi, Haldi, Sangeet, Cocktail, Wedding, Reception) and custom names, date/time and venue tracking, dress code management, status lifecycle (`PLANNED`, `CONFIRMED`, `COMPLETED`, `CANCELLED`), overview page with informational metrics, event details page with tabbed associations, and workspace dashboard timeline integration (133 tests passing).
 
 ## Next planned implementation
 
-- **Wedding Events Management (PRD §9.5, REST API §5.4):**
-  - Multi-event scheduling (Engagement, Mehendi, Haldi, Sangeet, Wedding, Reception).
-  - Event dates, start/end times, venues, dress codes, and descriptions.
+- **Guest List & RSVP Management (PRD §9.3, REST API §5.6):**
+  - Guest records, party size, attendance tracking, dietary requirements, and invitation link generation.
 
 ## Decisions that remain open for future milestones
 
