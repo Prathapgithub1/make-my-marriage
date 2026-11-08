@@ -4,17 +4,42 @@ This file tracks delivered project milestones. The approved PRD, System Design, 
 
 ## Current snapshot
 
+- **Lighthouse Performance Audit (V1):** Audit complete; bottlenecks identified; optimization pending user approval. Primary findings: 937 KB hero-image global preload on every page, monolithic 710 KB JS bundle with zero route-level code splitting, and render-blocking Google Fonts stylesheet. Implementation plan prepared; no code changes applied yet.
+- **Secret hygiene fix:** Real credentials (Resend API key, DB password, session/CSRF secrets) removed from `.env.example` and replaced with safe placeholder values before push; commit amended to keep secrets out of GitHub history. Keys should be rotated by the operator.
 - **Global Persistent Application Layout & Viewport Responsiveness:** Complete end-to-end. Unified `AuthenticatedLayout` with static 270px left sidebar (`DashboardSidebar`) and persistent top header (`DashboardHeader`) spanning all authenticated routes (`/dashboard`, `/events`, `/events/:eventId`, `/settings/members`, `/members`, `/tasks`, `/guests`, `/expenses`, `/vendors`, `/website`, `/gallery`, `/settings`). Sidebar never unmounts, reloads, or flickers during navigation. Elimination of duplicate vertical scrollbars, window clipping, and horizontal overflow. Sleeker, well-proportioned hero card and quick actions with fully responsive grid alignment.
 - **Wedding Events Management (V1):** Complete end-to-end (PRD §9.5, REST API §5.4). Multi-event scheduling with preset chips (Roka, Engagement, Mehendi, Haldi, Sangeet, Cocktail, Wedding, Reception) and custom names, date/time validation, venue and dress code tracking, status lifecycle (`PLANNED`, `CONFIRMED`, `COMPLETED`, `CANCELLED`), overview page with informational metrics, event details page with tabbed associations, and workspace dashboard timeline integration.
-- **Security Hardening & QA Audit Fixes (V1):** Complete end-to-end. Open redirect mitigation (CWE-601) across authentication forms, environment-gated invitation acceptance verification, clean Parcel bundle module resolution, and expanded frontend/backend test suites (112 tests passing).
+- **Security Hardening & QA Audit Fixes (V1):** Complete end-to-end. Open redirect mitigation (CWE-601) across authentication forms, environment-gated invitation acceptance verification, clean Parcel bundle module resolution, and expanded frontend/backend test suites (133 tests passing).
 - **Wedding Member Management & Team Invitations:** Complete end-to-end (PRD §9.4, REST API §5.3). Role-based access control (`ADMIN`, `MANAGER`), secure team invitations with cryptographically hashed tokens and Resend email delivery, atomic race-condition-protected invitation acceptance, member role upgrades/downgrades with last-admin guard, and member offboarding.
 - **Wedding Onboarding & Workspace Dashboard:** Complete end-to-end. Authenticated users without a wedding can complete the Stitch-inspired onboarding form, persist their workspace in PostgreSQL, become its Admin in a transaction, and land on their real dashboard. Users with an existing wedding return to that workspace. Dashboard renders actual database details and honest empty states without fabricated data.
 - **Brand System & Dynamic Context:** Approved M-and-heart vector mark and dynamic uppercase page subtitles integrated across all public, auth, onboarding, and workspace routes.
 - **Resilient Frontend Architecture:** React ErrorBoundary, 404 route handling, and optimized asset delivery via HTML preload and CSS styling (resolving Parcel asset bundling).
+- **Favicon & PWA Assets:** Complete. SVG, ICO, PNG 16/32/48/180/192/512 favicons and `site.webmanifest` generated and wired into `index.html` with `theme-color` meta.
 - **Authentication flow:** Complete with server-side sessions, Argon2 hashing, CSRF protection, and Resend password reset integration.
 - **Repository foundation & database:** Complete with PostgreSQL and Prisma 7 ORM migrations.
 
 ## Milestones
+
+### 2026-11-08 — Secret Hygiene Fix — Complete
+
+- **Root cause:** `.env.example` contained live Resend API key, production DB password, and session/CSRF secrets committed to version control.
+- **Fix:** Replaced all real credential values with safe documented placeholders before the GitHub push. Used `git commit --amend` to ensure the secrets never landed in GitHub history (commit `497a2de`).
+- **Action required:** Rotate the exposed Resend API key and DB password. Generate new `SESSION_SECRET` and `CSRF_SECRET` for all environments using `node -e "console.log(require('crypto').randomBytes(64).toString('base64url'))"`.
+- **Verification:** `git push origin dev` succeeded with GitHub push protection satisfied.
+
+### 2026-11-08 — Lighthouse Performance Audit — Complete (implementation pending approval)
+
+- **Audit scope:** Reviewed entire frontend architecture across Dashboard, Events, Sidebar, Layout, Auth, images, fonts, routing, and third-party dependencies.
+- **Critical findings identified:**
+  1. `apps/web/index.html` lines 23-28: `<link rel="preload" as="image" href="./src/assets/images/wedding-hero.jpg">` — the 937 KB hero JPEG is preloaded globally on **every** page including `/login` and `/`. On Lighthouse 4G throttling (~1.6 Mbps) this alone consumes 5-8 seconds of network bandwidth, directly causing FCP 22.6s and LCP 28.4s.
+  2. `apps/web/src/app/router.tsx`: All 15 route components statically imported — the entire 710 KB minified bundle downloads before any page can render (TBT 740 ms).
+  3. `apps/web/index.html` lines 19-22: Google Fonts loaded as synchronous render-blocking `<link rel="stylesheet">`.
+  4. `wedding-hero.jpg` is 937 KB uncompressed JPEG with no WebP/AVIF variant.
+- **Proposed fixes (pending user approval):**
+  - Remove hero-image preload from global `index.html`; load it lazily only where used.
+  - Convert Google Fonts link to `media="print" onload="this.media='all'"` async pattern.
+  - Add `React.lazy()` + `<Suspense>` route-level code splitting for all 10 authenticated routes.
+  - Convert hero image to WebP/AVIF (target ≤ 100 KB).
+- **Verification:** Audit runs confirmed: `npm run build` ✓, `npm test` 133/133 ✓, `npm run typecheck` ✓.
 
 ### 2026-11-08 — Global Persistent Application Layout & Dashboard Responsiveness — Complete
 
@@ -158,13 +183,20 @@ This file tracks delivered project milestones. The approved PRD, System Design, 
 
 ## Next planned features & roadmap
 
-1. **Wedding Events Management (PRD §9.5, REST API §5.4):**
-   - Multi-event scheduling (Engagement, Mehendi, Haldi, Sangeet, Wedding, Reception).
-   - Event dates, start/end times, venues, dress codes, and descriptions.
-2. **Wedding Tasks & Collaboration (PRD §9.6, REST API §5.5):**
+> [!IMPORTANT]
+> Three open design discrepancies must be resolved with the user before implementing Guest/RSVP features. See `AGENTS.md` for details.
+
+1. **Lighthouse Performance Optimization (target 90+):**
+   - Remove 937 KB hero-image global `<link rel="preload">` from `index.html` (affects every page including `/`).
+   - Convert Google Fonts `<link rel="stylesheet">` to non-render-blocking async load.
+   - Add route-level code splitting with `React.lazy()` + `<Suspense>` to cut 710 KB monolithic bundle to < 180 KB initial entry.
+   - Convert `wedding-hero.jpg` (937 KB) to WebP/AVIF (target < 100 KB).
+   - **Pending user approval** before any code changes are applied.
+2. **Guest List & RSVP Management (PRD §9.3, REST API §5.6):**
+   - Guest records, party size, attendance tracking, dietary requirements, and invitation link generation.
+   - Resolve three open design discrepancies first (invitation link storage, RSVP capacity model, wedding location model).
+3. **Wedding Tasks & Collaboration (PRD §9.6, REST API §5.5):**
    - Task creation, assignments to members, due dates, priority, status tracking (`TODO`, `IN_PROGRESS`, `COMPLETED`).
-3. **Guests & Digital Invitations (PRD §9.7, REST API §5.6):**
-   - Guest list management, household grouping, unique guest invitation links, and RSVP tracking.
 4. **Vendors & Expense Tracking (PRD §9.8, §9.9):**
    - Booked vendors, category tracking, budget and expense logging.
 5. **Wedding Website & Photo Gallery (PRD §9.10, §9.11):**
