@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <!-- Deep Burgundy subtle gradient (#641D36 base) -->
+    <linearGradient id="mmm-burgundy-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#70203D" />
+      <stop offset="100%" stop-color="#54162B" />
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Burgundy Squircle Tile (Curated 22% corner radius) -->
+  <rect width="512" height="512" rx="112" fill="url(#mmm-burgundy-grad)" />
+
+  <!-- Elegant Champagne Rim (#D8B68C at 30% opacity) for dark browser tabs -->
+  <rect x="2" y="2" width="508" height="508" rx="110" fill="none" stroke="#D8B68C" stroke-width="4" stroke-opacity="0.3" />
+
+  <!-- Left Architectural Pillar with Arched Dome Cap -->
+  <path d="M 96 150 A 34 34 0 0 1 164 150 L 164 404 L 96 404 Z" fill="#FAF8F2" />
+
+  <!-- Right Architectural Pillar with Arched Dome Cap -->
+  <path d="M 348 150 A 34 34 0 0 1 416 150 L 416 404 L 348 404 Z" fill="#FAF8F2" />
+
+  <!-- Center Chevron Arms (The M Structural Diagonals) -->
+  <path d="M 164 236 L 256 336 L 348 236 L 348 298 L 256 404 L 164 298 Z" fill="#FAF8F2" />
+
+  <!-- Central Nestled Heart (Elegance & Romantic Union) -->
+  <path d="M 256 170 C 264 132 324 126 332 172 C 332 218 284 258 256 288 C 228 258 180 218 180 172 C 180 126 248 132 256 170 Z" fill="#FAF8F2" />
+</svg>
+

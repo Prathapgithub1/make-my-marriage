@@ -131,7 +131,7 @@ describe('Wedding Onboarding and Workspace Dashboard', () => {
       expect(screen.getByText('Manage Guests')).toBeInTheDocument();
       expect(screen.getByText('Track Expenses')).toBeInTheDocument();
       expect(screen.getByText('Explore Vendors')).toBeInTheDocument();
-      expect(screen.getByText('Wedding Website')).toBeInTheDocument();
+      expect(screen.getAllByText('Wedding Website')[0]).toBeInTheDocument();
     });
 
     it('opens the edit details modal and allows updating details', async () => {

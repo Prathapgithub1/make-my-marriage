@@ -24,3 +24,13 @@ export const WebsiteTheme = {
 } as const
 
 export type WebsiteTheme = (typeof WebsiteTheme)[keyof typeof WebsiteTheme]
+
+
+export const EventStatus = {
+  PLANNED: 'PLANNED',
+  CONFIRMED: 'CONFIRMED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type EventStatus = (typeof EventStatus)[keyof typeof EventStatus]

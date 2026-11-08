@@ -4,6 +4,8 @@ dist/
 dev-dist/
 coverage/
 .parcel-cache/
+.parcel-build-cache/
+**/.parcel-build-cache/
 .temp-cache/
 **/.temp-cache/
 

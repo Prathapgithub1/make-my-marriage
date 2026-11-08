@@ -4,6 +4,8 @@ This file tracks delivered project milestones. The approved PRD, System Design, 
 
 ## Current snapshot
 
+- **Global Persistent Application Layout & Viewport Responsiveness:** Complete end-to-end. Unified `AuthenticatedLayout` with static 270px left sidebar (`DashboardSidebar`) and persistent top header (`DashboardHeader`) spanning all authenticated routes (`/dashboard`, `/events`, `/events/:eventId`, `/settings/members`, `/members`, `/tasks`, `/guests`, `/expenses`, `/vendors`, `/website`, `/gallery`, `/settings`). Sidebar never unmounts, reloads, or flickers during navigation. Elimination of duplicate vertical scrollbars, window clipping, and horizontal overflow. Sleeker, well-proportioned hero card and quick actions with fully responsive grid alignment.
+- **Wedding Events Management (V1):** Complete end-to-end (PRD §9.5, REST API §5.4). Multi-event scheduling with preset chips (Roka, Engagement, Mehendi, Haldi, Sangeet, Cocktail, Wedding, Reception) and custom names, date/time validation, venue and dress code tracking, status lifecycle (`PLANNED`, `CONFIRMED`, `COMPLETED`, `CANCELLED`), overview page with informational metrics, event details page with tabbed associations, and workspace dashboard timeline integration.
 - **Security Hardening & QA Audit Fixes (V1):** Complete end-to-end. Open redirect mitigation (CWE-601) across authentication forms, environment-gated invitation acceptance verification, clean Parcel bundle module resolution, and expanded frontend/backend test suites (112 tests passing).
 - **Wedding Member Management & Team Invitations:** Complete end-to-end (PRD §9.4, REST API §5.3). Role-based access control (`ADMIN`, `MANAGER`), secure team invitations with cryptographically hashed tokens and Resend email delivery, atomic race-condition-protected invitation acceptance, member role upgrades/downgrades with last-admin guard, and member offboarding.
 - **Wedding Onboarding & Workspace Dashboard:** Complete end-to-end. Authenticated users without a wedding can complete the Stitch-inspired onboarding form, persist their workspace in PostgreSQL, become its Admin in a transaction, and land on their real dashboard. Users with an existing wedding return to that workspace. Dashboard renders actual database details and honest empty states without fabricated data.
@@ -13,6 +15,81 @@ This file tracks delivered project milestones. The approved PRD, System Design, 
 - **Repository foundation & database:** Complete with PostgreSQL and Prisma 7 ORM migrations.
 
 ## Milestones
+
+### 2026-11-08 — Global Persistent Application Layout & Dashboard Responsiveness — Complete
+
+- **Persistent Application Layout (`AuthenticatedLayout`):**
+  - Implemented shared `AuthenticatedLayout` wrapped inside `<ProtectedRoute requireWedding>` in `apps/web/src/app/router.tsx`.
+  - Persistent 270px left sidebar (`DashboardSidebar`) remains permanently visible and mounted across all authenticated routes (`/dashboard`, `/events`, `/events/:eventId`, `/settings/members`, `/members`, `/tasks`, `/guests`, `/expenses`, `/vendors`, `/website`, `/gallery`, `/settings`).
+  - Navigating between pages updates only the right-side main content area via React Router `<Outlet />`, with zero unmounting or re-rendering of the sidebar.
+  - Active route highlighting powered by `isItemActive`: exact matching for `/dashboard`, prefix matching for `/events` & `/wedding/events`, and disambiguated paths for `/settings` vs `/settings/members`.
+  - Feature placeholder page (`FeaturePlaceholderPage`) with warm editorial styling for roadmap modules (`/tasks`, `/guests`, `/expenses`, `/vendors`, `/website`, `/gallery`, `/settings`).
+  - Seamless backward compatibility: pages detect `useIsInsideAuthenticatedLayout()` to avoid rendering duplicate standalone headers or sidebars, ensuring 100% of existing isolated unit tests continue to pass.
+- **Dashboard Sizing, Spacing & Viewport Responsiveness:**
+  - Standardized shell grid layout: `lg:grid lg:grid-cols-[270px_minmax(0,1fr)] min-h-screen w-full` with content container `min-w-0 flex flex-col flex-1 w-full`.
+  - Pinned desktop sidebar: `w-[270px] shrink-0 sticky top-0 h-screen overflow-y-auto border-r border-[#EAE6E1] bg-white` with independent scroll only when height is exceeded.
+  - Completely eliminated duplicate inner vertical scrollbars and horizontal scrollbars.
+  - Streamlined `WeddingOverview` hero card to make it attractive and compact (reduced padding to `p-5 sm:p-6`, tightened metadata chips, and adjusted heading proportions to `text-2xl sm:text-3xl lg:text-[32px]`).
+  - Responsive column alignment:
+    - Large desktop: 4 quick actions, 4 summary cards, 2-column bento grid.
+    - Tablet: 2 quick actions per row, 2 summary cards per row, stacked sections.
+    - Mobile: Single-column canvas with drawer sidebar triggered from header hamburger menu.
+- **Verification:**
+  - `npm.cmd run typecheck`: Passed with 0 errors across `@mmm/web` and `@mmm/api`.
+  - `npm.cmd run lint`: Passed with 0 errors across all workspaces.
+  - `npm.cmd run format:check`: Passed with 100% Prettier compliance.
+  - `npm.cmd test --workspace @mmm/web`: 7 of 7 test suites passed (63 of 63 tests).
+  - `npm.cmd test --workspace @mmm/api`: 6 of 6 test suites passed (70 of 70 tests).
+  - `npm.cmd run build`: Built production distribution in 9.81s with Parcel and TypeScript.
+
+### 2026-11-08 — Wedding Management Suite Dashboard Redesign — Complete
+
+- **Visual Fidelity & Layout Alignment (Screenshots 1 & 2):**
+  - **Sidebar Navigation:** Clean, navigation-only sidebar matching Screenshot 1. Structured into `MAIN MENU` (Dashboard, Events, Tasks, Guests & RSVP, Expenses, Vendors, Wedding Website, Gallery) and `ADMINISTRATION` (Settings, Wedding Members). Active item highlighted with `#FBF4F0` background, burgundy text, and dot indicator. Real and preview badges displayed (`3` on Events, `4 Due` on Tasks, `184` on Guests, `Live` on Website, `3` on Members). Duplicate bottom user profile and workspace switchers removed.
+  - **Minimal Top Header:** Clean, role-aware header without duplicate workspace or branding elements. Features notification bell with unread count `3`, circular avatar with status dot, user display name, dynamic role badge (`Admin`, `Manager`, `Organizer`), and profile dropdown with smooth sign out.
+  - **Wedding Overview Hero Card:** Features "Welcome to your wedding workspace" pill, large serif wedding title, concierge workspace synchronization subtitle, three metadata cards (Scheduled Ceremony date, Celebration Destination, and Days to Go countdown pill), subtle rotated diamond watermark, and "Edit Wedding Details" trigger.
+  - **Quick Actions Bar:** 4 horizontal action cards (Create Event with `#964F38` terracotta accent linking to `/events`, Create Task, Add Guest, Add Expense). Non-implemented tools trigger clean Coming Soon modal.
+  - **Four Dashboard Summary Cards (Screenshot 2):** Upcoming Events (`3 Scheduled`, next ceremony indicator), Task Progress (`24 / 28`, `86%` progress bar, urgent task count), Guests & RSVP (`184 Total`, attending & pending breakdown), and Recorded Expenses (`₹18,45,000`, confirmed payments indicator).
+  - **Two-Column Main Content Area (Screenshot 2):**
+    - **Left Column (~58%):** `Upcoming Events` ("Ceremonies & Itinerary", "+ Add Ceremony", "View All →", vertical ceremony cards with month/day date boxes, time range, venue location, guest counts, status badges, and options menu).
+    - **Right Column (~42%):** `Tasks to Focus On` ("Priority checklist", "+ New Task", interactive task cards with checkboxes, priority badges `HIGH`, `MED`, `Normal`, due dates, and assignee avatars with initials).
+  - **Component Modularization:** Extracted dashboard into discrete components (`DashboardSidebar`, `DashboardHeader`, `WeddingOverview`, `QuickActions`, `SummaryCard`, `UpcomingEventsCard`, `TaskFocusList`, `EditWeddingDetailsModal`, `ComingSoonModal`).
+- **Data Integration & Graceful Fallbacks:**
+  - Database-first resolution for real wedding workspace data (`Wedding`, `Event`, countdown calculation).
+  - Isolated demo and mock data maintained in `apps/web/src/features/wedding/dashboardMockData.ts` without database pollution.
+  - Coming Soon modals for unbuilt modules (Guest list, Budget tracker, Vendors).
+- **Verification:**
+  - `npm run typecheck`: Passed with 0 errors across `@mmm/web` and `@mmm/api`.
+  - `npm --workspace @mmm/web test`: Passed with 63 passed tests across 7 test suites (`brand.test.tsx`, `events.test.tsx`, `members.test.tsx`, `signup.test.tsx`, `auth.test.tsx`, `app.test.tsx`, `wedding.test.tsx`).
+  - `npm --workspace @mmm/web run build`: Production Parcel build succeeded in 11.00s with all assets (including 8 favicon formats and hero image) cleanly bundled.
+
+- **Database Models & PostgreSQL Migration:**
+  - Added `Event` model and `EventStatus` enum (`PLANNED`, `CONFIRMED`, `COMPLETED`, `CANCELLED`) to Prisma schema mapping to `events`.
+  - Added database check constraint `events_time_order` ensuring `ends_at >= starts_at`.
+  - Added indexes on `(weddingId, startsAt)` and `(weddingId, status)` with foreign key cascade on `weddingId`.
+  - Applied migration `20261108170000_wedding_events` and generated Prisma Client 7.10.0.
+- **Backend REST API (`/api/v1/events`):**
+  - Implemented `POST /api/v1/events`: Creates event with Zod 4 validation, name/time constraints, and strict wedding tenant resolution via user membership.
+  - Implemented `GET /api/v1/events`: Paginated event listing with status filtering, date range, search, sorting, and aggregated metrics (`total`, `upcoming`, `completed`, `cancelled`).
+  - Implemented `GET /api/v1/events/:eventId`: Detailed event lookup scoped to current wedding.
+  - Implemented `PATCH /api/v1/events/:eventId`: Partial update with chronological time validation and status updates (including quick cancellation).
+  - Implemented `DELETE /api/v1/events/:eventId`: Confirmed event deletion with tenant boundary isolation.
+  - State-modifying endpoints enforce `requireSameOrigin` and double-submit CSRF cookie/header protection.
+  - Updated `GET /api/v1/dashboard` to provide real event counts and chronological upcoming events list.
+- **Frontend Workspace & UI (`apps/web`):**
+  - Implemented `EventsPage` (`/events`, `/wedding/events`): Responsive overview with metric summary cards, search filter, status filter, date sort, empty states, and delete confirmation modal.
+  - Implemented `EventModal`: Create/Edit modal with event name presets (Roka, Engagement, Mehendi, Haldi, Sangeet, Cocktail, Wedding, Reception), custom name input, date & time pickers, venue details, dress code suggestions, and curated cover photo presets.
+  - Implemented `EventDetailPage` (`/events/:eventId`): Hero cover banner, timing, dress code, venue location, status actions, and tabbed view for Overview, Invited Guests, Related Tasks, Related Expenses, and Related Vendors with honest empty states.
+  - Updated `DashboardPage` (`/dashboard`): Real event metric card, dynamic upcoming events list with direct detail navigation, and checklist setup link.
+  - Resilient API unwrapping in `eventsApi.ts` ensuring safe defaults and preventing unhandled undefined property errors.
+- **Verification:**
+  - `npm run typecheck`: Passed with 0 errors across `@mmm/web` and `@mmm/api`.
+  - `npm test --workspace=@mmm/web`: Passed with 63 passed tests across 7 test suites.
+  - `npm test --workspace=@mmm/api`: Passed with 70 passed tests across 6 test suites (1 skipped).
+  - Total automated test suite: 133 passed tests across 13 test suites.
+  - `npm run lint`: Passed with 0 errors and 0 warnings.
+  - `npm run format:check`: Passed with all files formatted according to Prettier.
+  - `npm run build`: Production build succeeded across all workspaces (`apps/web` Parcel build configured with isolated cache).
 
 ### 2026-11-05 — Security Hardening, Open Redirect Mitigation & QA Verification — Complete
 

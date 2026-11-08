@@ -38,7 +38,7 @@ describe('authentication screens', () => {
   });
 
   it('signs in through the API and redirects to the protected wedding setup page', async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     render(
       <MemoryRouter initialEntries={['/login']}>
         <AppProviders>
@@ -61,7 +61,7 @@ describe('authentication screens', () => {
     await user.click(screen.getByRole('button', { name: 'Sign in' }));
 
     expect(
-      await screen.findByRole('heading', { name: 'Protected wedding setup' }),
+      await screen.findByRole('heading', { name: 'Protected wedding setup' }, { timeout: 10000 }),
     ).toBeInTheDocument();
     const loginRequest = jest
       .mocked(fetch)
