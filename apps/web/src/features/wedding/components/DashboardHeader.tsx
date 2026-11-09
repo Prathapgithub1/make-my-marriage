@@ -116,8 +116,9 @@ export function DashboardHeader({
 
               {/* Chevron Down */}
               <svg
-                className={`w-4 h-4 text-[#86736D] group-hover:text-[#1A1C18] transition-transform ${isDropdownOpen ? 'rotate-180' : ''
-                  }`}
+                className={`w-4 h-4 text-[#86736D] group-hover:text-[#1A1C18] transition-transform ${
+                  isDropdownOpen ? 'rotate-180' : ''
+                }`}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"

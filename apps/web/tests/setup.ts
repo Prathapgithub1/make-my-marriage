@@ -435,6 +435,125 @@ Object.defineProperty(globalThis, 'fetch', {
         }),
       } as Response;
     }
+    if (url.includes('/tasks')) {
+      const method = (init?.method ?? 'GET').toUpperCase();
+      const sampleTasks = [
+        {
+          id: 'task-1',
+          weddingId: 'test-wedding-id',
+          title: 'Finalize floral palette & Mandap structure',
+          description: 'Coordinate with wedding florist for marigold and jasmine selection.',
+          status: 'TO_DO',
+          priority: 'HIGH',
+          dueDate: '2026-11-20T10:00:00.000Z',
+          completedAt: null,
+          eventId: 'event-1',
+          event: { id: 'event-1', name: 'Sangeet & Cocktail' },
+          assignedMemberId: 'member-1',
+          assignedMember: {
+            id: 'member-1',
+            role: 'ADMIN',
+            name: 'Akshitha Rao',
+            email: 'akshitha@example.com',
+          },
+          createdByUserId: 'test-user',
+          isOverdue: false,
+          createdAt: '2026-11-01T10:00:00.000Z',
+          updatedAt: '2026-11-01T10:00:00.000Z',
+        },
+        {
+          id: 'task-2',
+          weddingId: 'test-wedding-id',
+          title: 'Confirm guest dietary requirements with catering',
+          description: 'Ensure Jain and vegan food options are noted.',
+          status: 'IN_PROGRESS',
+          priority: 'MEDIUM',
+          dueDate: '2026-11-25T10:00:00.000Z',
+          completedAt: null,
+          eventId: null,
+          event: null,
+          assignedMemberId: null,
+          assignedMember: null,
+          createdByUserId: 'test-user',
+          isOverdue: false,
+          createdAt: '2026-11-02T10:00:00.000Z',
+          updatedAt: '2026-11-02T10:00:00.000Z',
+        },
+      ];
+
+      if (method === 'POST') {
+        const body = JSON.parse(String(init?.body ?? '{}'));
+        return {
+          ok: true,
+          status: 201,
+          json: async () => ({
+            data: {
+              id: 'task-new-1',
+              weddingId: 'test-wedding-id',
+              title: body.title,
+              description: body.description ?? null,
+              status: body.status ?? 'TO_DO',
+              priority: body.priority ?? 'MEDIUM',
+              dueDate: body.dueDate ?? null,
+              completedAt: null,
+              eventId: body.eventId ?? null,
+              event: null,
+              assignedMemberId: body.assignedMemberId ?? null,
+              assignedMember: null,
+              createdByUserId: 'test-user',
+              isOverdue: false,
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            },
+          }),
+        } as Response;
+      }
+
+      if (method === 'PATCH') {
+        const body = JSON.parse(String(init?.body ?? '{}'));
+        return {
+          ok: true,
+          status: 200,
+          json: async () => ({
+            data: {
+              ...sampleTasks[0],
+              ...body,
+            },
+          }),
+        } as Response;
+      }
+
+      if (method === 'DELETE') {
+        return {
+          ok: true,
+          status: 200,
+          json: async () => ({
+            data: { success: true, id: 'task-1', message: 'Task deleted successfully.' },
+          }),
+        } as Response;
+      }
+
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          data: sampleTasks,
+          pagination: {
+            page: 1,
+            limit: 15,
+            total: 2,
+            totalPages: 1,
+          },
+          summary: {
+            total: 2,
+            todo: 1,
+            inProgress: 1,
+            completed: 0,
+            overdue: 0,
+          },
+        }),
+      } as Response;
+    }
     return { ok: true, status: 200, json: async () => ({ data: { success: true } }) } as Response;
   }),
 });

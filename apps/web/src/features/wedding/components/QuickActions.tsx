@@ -49,14 +49,8 @@ export function QuickActions({ onCreateEvent, onOpenComingSoon }: QuickActionsPr
         </Link>
 
         {/* Card 2: Create Task */}
-        <button
-          type="button"
-          onClick={() =>
-            onOpenComingSoon(
-              'Create Task',
-              'Task assignment, milestone checklist, and calendar reminders are in development.',
-            )
-          }
+        <Link
+          to="/tasks"
           className="flex items-center gap-3 p-2.5 sm:p-3 rounded-2xl bg-white border border-[#EAE6E1] text-[#1A1C18] shadow-2xs hover:border-[#964F38]/40 hover:bg-[#FAF9F5] transition-all text-left group cursor-pointer"
         >
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#FDF0EA] text-[#964F38] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -78,7 +72,7 @@ export function QuickActions({ onCreateEvent, onOpenComingSoon }: QuickActionsPr
             </p>
             <span className="sr-only">Create a Task</span>
           </div>
-        </button>
+        </Link>
 
         {/* Card 3: Add Guest */}
         <button

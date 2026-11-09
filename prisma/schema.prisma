@@ -21,6 +21,7 @@ model User {
   weddingMembership   WeddingMembership?
   weddingsCreated     Wedding[]            @relation("WeddingsCreated")
   invitationsSent     MemberInvitation[]   @relation("InvitationsSent")
+  tasksCreated        Task[]               @relation("TasksCreated")
 
   @@map("users")
 }
@@ -56,6 +57,7 @@ model Wedding {
   memberships         WeddingMembership[]
   memberInvitations   MemberInvitation[]
   events              Event[]
+  tasks               Task[]
   websiteSettings     WebsiteSettings?
   galleryAccessTokens GalleryAccessToken[]
 
@@ -64,14 +66,15 @@ model Wedding {
 }
 
 model WeddingMembership {
-  id        String      @id @default(uuid()) @db.Uuid
-  weddingId String      @map("wedding_id") @db.Uuid
-  userId    String      @unique(map: "wedding_memberships_user_id_key") @map("user_id") @db.Uuid
-  role      WeddingRole @default(MANAGER)
-  joinedAt  DateTime    @default(now()) @map("joined_at") @db.Timestamptz(6)
+  id            String      @id @default(uuid()) @db.Uuid
+  weddingId     String      @map("wedding_id") @db.Uuid
+  userId        String      @unique(map: "wedding_memberships_user_id_key") @map("user_id") @db.Uuid
+  role          WeddingRole @default(MANAGER)
+  joinedAt      DateTime    @default(now()) @map("joined_at") @db.Timestamptz(6)
 
-  wedding   Wedding     @relation(fields: [weddingId], references: [id], onDelete: Cascade)
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  wedding       Wedding     @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasksAssigned Task[]
 
   @@index([weddingId], map: "wedding_memberships_wedding_id_idx")
   @@map("wedding_memberships")
@@ -202,10 +205,51 @@ model Event {
   updatedAt     DateTime    @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   wedding       Wedding     @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  tasks         Task[]
 
   @@index([weddingId, startsAt], map: "events_wedding_id_starts_at_idx")
   @@index([weddingId, status], map: "events_wedding_id_status_idx")
   @@map("events")
+}
+
+enum TaskStatus {
+  TO_DO
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model Task {
+  id               String        @id @default(uuid()) @db.Uuid
+  weddingId        String        @map("wedding_id") @db.Uuid
+  title            String        @db.VarChar(200)
+  description      String?       @db.Text
+  status           TaskStatus    @default(TO_DO)
+  priority         TaskPriority  @default(MEDIUM)
+  dueDate          DateTime?     @map("due_date") @db.Timestamptz(6)
+  completedAt      DateTime?     @map("completed_at") @db.Timestamptz(6)
+  eventId          String?       @map("event_id") @db.Uuid
+  assignedMemberId String?       @map("assigned_member_id") @db.Uuid
+  createdByUserId  String        @map("created_by_user_id") @db.Uuid
+  createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  wedding          Wedding            @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  event            Event?             @relation(fields: [eventId], references: [id], onDelete: SetNull)
+  assignedMember   WeddingMembership? @relation(fields: [assignedMemberId], references: [id], onDelete: SetNull)
+  createdByUser    User               @relation("TasksCreated", fields: [createdByUserId], references: [id], onDelete: Restrict)
+
+  @@index([weddingId, status, dueDate], map: "tasks_wedding_id_status_due_date_idx")
+  @@index([weddingId, dueDate], map: "tasks_wedding_id_due_date_idx")
+  @@index([weddingId, priority], map: "tasks_wedding_id_priority_idx")
+  @@index([weddingId, assignedMemberId], map: "tasks_wedding_id_assigned_member_id_idx")
+  @@index([weddingId, eventId], map: "tasks_wedding_id_event_id_idx")
+  @@map("tasks")
 }
 
 

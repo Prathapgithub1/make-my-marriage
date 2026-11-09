@@ -72,3 +72,8 @@ export type MemberInvitation = Prisma.MemberInvitationModel
  * 
  */
 export type Event = Prisma.EventModel
+/**
+ * Model Task
+ * 
+ */
+export type Task = Prisma.TaskModel

@@ -184,6 +184,7 @@ export type WeddingMembershipWhereInput = {
   joinedAt?: Prisma.DateTimeFilter<"WeddingMembership"> | Date | string
   wedding?: Prisma.XOR<Prisma.WeddingScalarRelationFilter, Prisma.WeddingWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  tasksAssigned?: Prisma.TaskListRelationFilter
 }
 
 export type WeddingMembershipOrderByWithRelationInput = {
@@ -194,6 +195,7 @@ export type WeddingMembershipOrderByWithRelationInput = {
   joinedAt?: Prisma.SortOrder
   wedding?: Prisma.WeddingOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
+  tasksAssigned?: Prisma.TaskOrderByRelationAggregateInput
 }
 
 export type WeddingMembershipWhereUniqueInput = Prisma.AtLeast<{
@@ -207,6 +209,7 @@ export type WeddingMembershipWhereUniqueInput = Prisma.AtLeast<{
   joinedAt?: Prisma.DateTimeFilter<"WeddingMembership"> | Date | string
   wedding?: Prisma.XOR<Prisma.WeddingScalarRelationFilter, Prisma.WeddingWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  tasksAssigned?: Prisma.TaskListRelationFilter
 }, "id" | "userId">
 
 export type WeddingMembershipOrderByWithAggregationInput = {
@@ -237,6 +240,7 @@ export type WeddingMembershipCreateInput = {
   joinedAt?: Date | string
   wedding: Prisma.WeddingCreateNestedOneWithoutMembershipsInput
   user: Prisma.UserCreateNestedOneWithoutWeddingMembershipInput
+  tasksAssigned?: Prisma.TaskCreateNestedManyWithoutAssignedMemberInput
 }
 
 export type WeddingMembershipUncheckedCreateInput = {
@@ -245,6 +249,7 @@ export type WeddingMembershipUncheckedCreateInput = {
   userId: string
   role?: $Enums.WeddingRole
   joinedAt?: Date | string
+  tasksAssigned?: Prisma.TaskUncheckedCreateNestedManyWithoutAssignedMemberInput
 }
 
 export type WeddingMembershipUpdateInput = {
@@ -253,6 +258,7 @@ export type WeddingMembershipUpdateInput = {
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   wedding?: Prisma.WeddingUpdateOneRequiredWithoutMembershipsNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutWeddingMembershipNestedInput
+  tasksAssigned?: Prisma.TaskUpdateManyWithoutAssignedMemberNestedInput
 }
 
 export type WeddingMembershipUncheckedUpdateInput = {
@@ -261,6 +267,7 @@ export type WeddingMembershipUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumWeddingRoleFieldUpdateOperationsInput | $Enums.WeddingRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasksAssigned?: Prisma.TaskUncheckedUpdateManyWithoutAssignedMemberNestedInput
 }
 
 export type WeddingMembershipCreateManyInput = {
@@ -402,11 +409,28 @@ export type EnumWeddingRoleFieldUpdateOperationsInput = {
   set?: $Enums.WeddingRole
 }
 
+export type WeddingMembershipCreateNestedOneWithoutTasksAssignedInput = {
+  create?: Prisma.XOR<Prisma.WeddingMembershipCreateWithoutTasksAssignedInput, Prisma.WeddingMembershipUncheckedCreateWithoutTasksAssignedInput>
+  connectOrCreate?: Prisma.WeddingMembershipCreateOrConnectWithoutTasksAssignedInput
+  connect?: Prisma.WeddingMembershipWhereUniqueInput
+}
+
+export type WeddingMembershipUpdateOneWithoutTasksAssignedNestedInput = {
+  create?: Prisma.XOR<Prisma.WeddingMembershipCreateWithoutTasksAssignedInput, Prisma.WeddingMembershipUncheckedCreateWithoutTasksAssignedInput>
+  connectOrCreate?: Prisma.WeddingMembershipCreateOrConnectWithoutTasksAssignedInput
+  upsert?: Prisma.WeddingMembershipUpsertWithoutTasksAssignedInput
+  disconnect?: Prisma.WeddingMembershipWhereInput | boolean
+  delete?: Prisma.WeddingMembershipWhereInput | boolean
+  connect?: Prisma.WeddingMembershipWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WeddingMembershipUpdateToOneWithWhereWithoutTasksAssignedInput, Prisma.WeddingMembershipUpdateWithoutTasksAssignedInput>, Prisma.WeddingMembershipUncheckedUpdateWithoutTasksAssignedInput>
+}
+
 export type WeddingMembershipCreateWithoutUserInput = {
   id?: string
   role?: $Enums.WeddingRole
   joinedAt?: Date | string
   wedding: Prisma.WeddingCreateNestedOneWithoutMembershipsInput
+  tasksAssigned?: Prisma.TaskCreateNestedManyWithoutAssignedMemberInput
 }
 
 export type WeddingMembershipUncheckedCreateWithoutUserInput = {
@@ -414,6 +438,7 @@ export type WeddingMembershipUncheckedCreateWithoutUserInput = {
   weddingId: string
   role?: $Enums.WeddingRole
   joinedAt?: Date | string
+  tasksAssigned?: Prisma.TaskUncheckedCreateNestedManyWithoutAssignedMemberInput
 }
 
 export type WeddingMembershipCreateOrConnectWithoutUserInput = {
@@ -437,6 +462,7 @@ export type WeddingMembershipUpdateWithoutUserInput = {
   role?: Prisma.EnumWeddingRoleFieldUpdateOperationsInput | $Enums.WeddingRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   wedding?: Prisma.WeddingUpdateOneRequiredWithoutMembershipsNestedInput
+  tasksAssigned?: Prisma.TaskUpdateManyWithoutAssignedMemberNestedInput
 }
 
 export type WeddingMembershipUncheckedUpdateWithoutUserInput = {
@@ -444,6 +470,7 @@ export type WeddingMembershipUncheckedUpdateWithoutUserInput = {
   weddingId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumWeddingRoleFieldUpdateOperationsInput | $Enums.WeddingRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasksAssigned?: Prisma.TaskUncheckedUpdateManyWithoutAssignedMemberNestedInput
 }
 
 export type WeddingMembershipCreateWithoutWeddingInput = {
@@ -451,6 +478,7 @@ export type WeddingMembershipCreateWithoutWeddingInput = {
   role?: $Enums.WeddingRole
   joinedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutWeddingMembershipInput
+  tasksAssigned?: Prisma.TaskCreateNestedManyWithoutAssignedMemberInput
 }
 
 export type WeddingMembershipUncheckedCreateWithoutWeddingInput = {
@@ -458,6 +486,7 @@ export type WeddingMembershipUncheckedCreateWithoutWeddingInput = {
   userId: string
   role?: $Enums.WeddingRole
   joinedAt?: Date | string
+  tasksAssigned?: Prisma.TaskUncheckedCreateNestedManyWithoutAssignedMemberInput
 }
 
 export type WeddingMembershipCreateOrConnectWithoutWeddingInput = {
@@ -497,6 +526,54 @@ export type WeddingMembershipScalarWhereInput = {
   joinedAt?: Prisma.DateTimeFilter<"WeddingMembership"> | Date | string
 }
 
+export type WeddingMembershipCreateWithoutTasksAssignedInput = {
+  id?: string
+  role?: $Enums.WeddingRole
+  joinedAt?: Date | string
+  wedding: Prisma.WeddingCreateNestedOneWithoutMembershipsInput
+  user: Prisma.UserCreateNestedOneWithoutWeddingMembershipInput
+}
+
+export type WeddingMembershipUncheckedCreateWithoutTasksAssignedInput = {
+  id?: string
+  weddingId: string
+  userId: string
+  role?: $Enums.WeddingRole
+  joinedAt?: Date | string
+}
+
+export type WeddingMembershipCreateOrConnectWithoutTasksAssignedInput = {
+  where: Prisma.WeddingMembershipWhereUniqueInput
+  create: Prisma.XOR<Prisma.WeddingMembershipCreateWithoutTasksAssignedInput, Prisma.WeddingMembershipUncheckedCreateWithoutTasksAssignedInput>
+}
+
+export type WeddingMembershipUpsertWithoutTasksAssignedInput = {
+  update: Prisma.XOR<Prisma.WeddingMembershipUpdateWithoutTasksAssignedInput, Prisma.WeddingMembershipUncheckedUpdateWithoutTasksAssignedInput>
+  create: Prisma.XOR<Prisma.WeddingMembershipCreateWithoutTasksAssignedInput, Prisma.WeddingMembershipUncheckedCreateWithoutTasksAssignedInput>
+  where?: Prisma.WeddingMembershipWhereInput
+}
+
+export type WeddingMembershipUpdateToOneWithWhereWithoutTasksAssignedInput = {
+  where?: Prisma.WeddingMembershipWhereInput
+  data: Prisma.XOR<Prisma.WeddingMembershipUpdateWithoutTasksAssignedInput, Prisma.WeddingMembershipUncheckedUpdateWithoutTasksAssignedInput>
+}
+
+export type WeddingMembershipUpdateWithoutTasksAssignedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumWeddingRoleFieldUpdateOperationsInput | $Enums.WeddingRole
+  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  wedding?: Prisma.WeddingUpdateOneRequiredWithoutMembershipsNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutWeddingMembershipNestedInput
+}
+
+export type WeddingMembershipUncheckedUpdateWithoutTasksAssignedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  weddingId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumWeddingRoleFieldUpdateOperationsInput | $Enums.WeddingRole
+  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type WeddingMembershipCreateManyWeddingInput = {
   id?: string
   userId: string
@@ -509,6 +586,7 @@ export type WeddingMembershipUpdateWithoutWeddingInput = {
   role?: Prisma.EnumWeddingRoleFieldUpdateOperationsInput | $Enums.WeddingRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutWeddingMembershipNestedInput
+  tasksAssigned?: Prisma.TaskUpdateManyWithoutAssignedMemberNestedInput
 }
 
 export type WeddingMembershipUncheckedUpdateWithoutWeddingInput = {
@@ -516,6 +594,7 @@ export type WeddingMembershipUncheckedUpdateWithoutWeddingInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumWeddingRoleFieldUpdateOperationsInput | $Enums.WeddingRole
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasksAssigned?: Prisma.TaskUncheckedUpdateManyWithoutAssignedMemberNestedInput
 }
 
 export type WeddingMembershipUncheckedUpdateManyWithoutWeddingInput = {
@@ -526,6 +605,35 @@ export type WeddingMembershipUncheckedUpdateManyWithoutWeddingInput = {
 }
 
 
+/**
+ * Count Type WeddingMembershipCountOutputType
+ */
+
+export type WeddingMembershipCountOutputType = {
+  tasksAssigned: number
+}
+
+export type WeddingMembershipCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  tasksAssigned?: boolean | WeddingMembershipCountOutputTypeCountTasksAssignedArgs
+}
+
+/**
+ * WeddingMembershipCountOutputType without action
+ */
+export type WeddingMembershipCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WeddingMembershipCountOutputType
+   */
+  select?: Prisma.WeddingMembershipCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * WeddingMembershipCountOutputType without action
+ */
+export type WeddingMembershipCountOutputTypeCountTasksAssignedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TaskWhereInput
+}
+
 
 export type WeddingMembershipSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -535,6 +643,8 @@ export type WeddingMembershipSelect<ExtArgs extends runtime.Types.Extensions.Int
   joinedAt?: boolean
   wedding?: boolean | Prisma.WeddingDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  tasksAssigned?: boolean | Prisma.WeddingMembership$tasksAssignedArgs<ExtArgs>
+  _count?: boolean | Prisma.WeddingMembershipCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["weddingMembership"]>
 
 export type WeddingMembershipSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -569,6 +679,8 @@ export type WeddingMembershipOmit<ExtArgs extends runtime.Types.Extensions.Inter
 export type WeddingMembershipInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   wedding?: boolean | Prisma.WeddingDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  tasksAssigned?: boolean | Prisma.WeddingMembership$tasksAssignedArgs<ExtArgs>
+  _count?: boolean | Prisma.WeddingMembershipCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WeddingMembershipIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   wedding?: boolean | Prisma.WeddingDefaultArgs<ExtArgs>
@@ -584,6 +696,7 @@ export type $WeddingMembershipPayload<ExtArgs extends runtime.Types.Extensions.I
   objects: {
     wedding: Prisma.$WeddingPayload<ExtArgs>
     user: Prisma.$UserPayload<ExtArgs>
+    tasksAssigned: Prisma.$TaskPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -987,6 +1100,7 @@ export interface Prisma__WeddingMembershipClient<T, Null = never, ExtArgs extend
   readonly [Symbol.toStringTag]: "PrismaPromise"
   wedding<T extends Prisma.WeddingDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WeddingDefaultArgs<ExtArgs>>): Prisma.Prisma__WeddingClient<runtime.Types.Result.GetResult<Prisma.$WeddingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  tasksAssigned<T extends Prisma.WeddingMembership$tasksAssignedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WeddingMembership$tasksAssignedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1419,6 +1533,30 @@ export type WeddingMembershipDeleteManyArgs<ExtArgs extends runtime.Types.Extens
    * Limit how many WeddingMemberships to delete.
    */
   limit?: number
+}
+
+/**
+ * WeddingMembership.tasksAssigned
+ */
+export type WeddingMembership$tasksAssignedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Task
+   */
+  select?: Prisma.TaskSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Task
+   */
+  omit?: Prisma.TaskOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TaskInclude<ExtArgs> | null
+  where?: Prisma.TaskWhereInput
+  orderBy?: Prisma.TaskOrderByWithRelationInput | Prisma.TaskOrderByWithRelationInput[]
+  cursor?: Prisma.TaskWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TaskScalarFieldEnum | Prisma.TaskScalarFieldEnum[]
 }
 
 /**

@@ -61,7 +61,8 @@ export const ModelName = {
   AuthRateLimit: 'AuthRateLimit',
   EmailVerificationToken: 'EmailVerificationToken',
   MemberInvitation: 'MemberInvitation',
-  Event: 'Event'
+  Event: 'Event',
+  Task: 'Task'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -231,6 +232,25 @@ export const EventScalarFieldEnum = {
 } as const
 
 export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
+
+
+export const TaskScalarFieldEnum = {
+  id: 'id',
+  weddingId: 'weddingId',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  priority: 'priority',
+  dueDate: 'dueDate',
+  completedAt: 'completedAt',
+  eventId: 'eventId',
+  assignedMemberId: 'assignedMemberId',
+  createdByUserId: 'createdByUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]
 
 
 export const SortOrder = {

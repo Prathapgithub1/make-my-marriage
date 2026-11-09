@@ -4,6 +4,7 @@ This file tracks delivered project milestones. The approved PRD, System Design, 
 
 ## Current snapshot
 
+- **Task Management Module (V1):** Complete end-to-end (PRD §9.2, REST API §5.5). Full task lifecycle tracking with `TaskStatus` (`TO_DO`, `IN_PROGRESS`, `COMPLETED`) and `TaskPriority` (`LOW`, `MEDIUM`, `HIGH`). REST API with tenant isolation, assigned member & event cross-wedding validation, paginated filtering, text search, and metrics breakdown. Interactive frontend suite (`/tasks`) matching the approved warm aesthetic (`#FAF8F5`, `#8A4B35`, `#556251`, `Playfair Display`), tabs (All Tasks, My Tasks, Completed), interactive creation/editing modals with dynamic team member and event selectors, task detail viewer, and dashboard quick actions integration. Monorepo verified with 149 passing tests (67 web, 82 api), zero TypeScript errors, and clean production builds.
 - **Lighthouse Performance Audit (V1):** Audit complete; bottlenecks identified; optimization pending user approval. Primary findings: 937 KB hero-image global preload on every page, monolithic 710 KB JS bundle with zero route-level code splitting, and render-blocking Google Fonts stylesheet. Implementation plan prepared; no code changes applied yet.
 - **Secret hygiene fix:** Real credentials (Resend API key, DB password, session/CSRF secrets) removed from `.env.example` and replaced with safe placeholder values before push; commit amended to keep secrets out of GitHub history. Keys should be rotated by the operator.
 - **Global Persistent Application Layout & Viewport Responsiveness:** Complete end-to-end. Unified `AuthenticatedLayout` with static 270px left sidebar (`DashboardSidebar`) and persistent top header (`DashboardHeader`) spanning all authenticated routes (`/dashboard`, `/events`, `/events/:eventId`, `/settings/members`, `/members`, `/tasks`, `/guests`, `/expenses`, `/vendors`, `/website`, `/gallery`, `/settings`). Sidebar never unmounts, reloads, or flickers during navigation. Elimination of duplicate vertical scrollbars, window clipping, and horizontal overflow. Sleeker, well-proportioned hero card and quick actions with fully responsive grid alignment.
@@ -18,6 +19,40 @@ This file tracks delivered project milestones. The approved PRD, System Design, 
 - **Repository foundation & database:** Complete with PostgreSQL and Prisma 7 ORM migrations.
 
 ## Milestones
+
+### 2026-11-09 — Wedding Task Management Module (V1) — Complete
+
+- **Database Architecture & Data Integrity:**
+  - Added `TaskStatus` (`TO_DO`, `IN_PROGRESS`, `COMPLETED`) and `TaskPriority` (`LOW`, `MEDIUM`, `HIGH`) enums in `prisma/schema.prisma`.
+  - Added `Task` model with foreign keys to `Wedding`, `Event` (optional), `WeddingMembership` (optional assignee), and `User` (creator).
+  - Configured cascade deletion on `Wedding` and `ON DELETE SET NULL` on `assignedMember` and `event` to preserve task history on member offboarding or event removal.
+  - Generated Prisma Client 7.10.0 and migration `20261109180000_add_task_management`.
+- **Backend REST API (`/api/v1/tasks`):**
+  - Implemented modular domain structure in `apps/api/src/modules/tasks/`: `schemas.ts`, `service.ts`, `routes.ts`.
+  - `POST /api/v1/tasks`: Validates title, optional description, priority, due date, event association, and assignee membership. Enforces strict wedding tenant boundary and CSRF protection.
+  - `GET /api/v1/tasks`: Supports pagination (`page`, `limit`), filtering by status, priority, eventId, assignedMemberId, `mine=true`, case-insensitive text search on title, dynamic sort ordering, and computed metrics (`total`, `todoCount`, `inProgressCount`, `completedCount`, `overdueCount`).
+  - `GET /api/v1/tasks/:taskId`: Returns single task details with creator, assignee member user details, and linked event metadata.
+  - `PATCH /api/v1/tasks/:taskId`: Updates fields and associations with tenant verification and cross-wedding validation.
+  - `PATCH /api/v1/tasks/:taskId/status`: Quick status update with automatic `completedAt` timestamp tracking.
+  - `DELETE /api/v1/tasks/:taskId`: Deletes task securely within the caller's wedding workspace.
+  - Comprehensive unit test suite in `apps/api/tests/tasks.test.ts` covering validation, CSRF, auth, filtering, pagination, updates, and isolation (12/12 passing).
+- **Frontend UI & Application Integration (`/tasks` & `/wedding/tasks`):**
+  - Implemented `apps/web/src/features/tasks/`: `tasksApi.ts`, `TasksPage.tsx`, `TaskModal.tsx`, `TaskDetailModal.tsx`.
+  - Replaced the `/tasks` roadmap placeholder with the full interactive Task Management suite inside `AuthenticatedLayout`.
+  - Metrics row: Total Tasks, To Do, In Progress, Completed with real-time indicators and overdue warning counter.
+  - Tabs: All Tasks, My Tasks (auto-filtered by caller membership), and Completed Tasks.
+  - Filter and search bar: Search by title, status filter, priority filter, event filter, and sort ordering (Due Date, Priority, Title, Created).
+  - Task List: Instant checkbox toggle for quick completion, priority badges (`HIGH`, `MEDIUM`, `LOW`), due date indicators with overdue highlighting, assignee avatar/initials, and event tags.
+  - `TaskModal`: Clean dialog for creating and editing tasks with real-time validation, due date picker, priority selector, dynamic wedding team member dropdown, and event selector.
+  - `TaskDetailModal`: Task inspection modal with status switcher pills, details breakdown, and delete confirmation.
+  - Workspace dashboard integration: Connected the Quick Action "Create Task" button and the "Tasks to focus on" widget in `apps/web/src/features/wedding/` to `/tasks`.
+  - Frontend test suite in `apps/web/tests/tasks.test.tsx` verifying metric display, task rendering, filtering, and creation (4/4 passing).
+- **Verification:**
+  - Backend tests: 82 passed, 1 skipped (database integration requiring live PG), 0 failed (`npm --workspace @mmm/api test`).
+  - Frontend tests: 67 passed, 8 suites passed (`npm --workspace @mmm/web test`).
+  - Strict typecheck: Passed across all workspaces with 0 errors (`npm run typecheck`).
+  - Production build: Succeeded with Parcel web bundling and TypeScript compilation (`npm run build`).
+  - Lint and code style: 0 ESLint errors and 100% Prettier compliance (`npm run lint`, `npm run format:check`).
 
 ### 2026-11-08 — Secret Hygiene Fix — Complete
 

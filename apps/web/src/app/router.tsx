@@ -12,6 +12,7 @@ import { MembersPage } from '../features/members/MembersPage';
 import { AcceptInvitationPage } from '../features/members/AcceptInvitationPage';
 import { EventsPage } from '../features/events/EventsPage';
 import { EventDetailPage } from '../features/events/EventDetailPage';
+import { TasksPage } from '../features/tasks/TasksPage';
 import { AuthenticatedLayout } from '../components/layout/AuthenticatedLayout';
 import { FeaturePlaceholderPage } from '../features/placeholders/FeaturePlaceholderPage';
 
@@ -58,34 +59,8 @@ export function AppRouter() {
           <Route path="/members" element={<MembersPage />} />
 
           {/* Tasks & Checklists */}
-          <Route
-            path="/tasks"
-            element={
-              <FeaturePlaceholderPage
-                feature="Tasks & Checklists"
-                category="WEDDING COORDINATION"
-                description="Comprehensive wedding preparation checklist, milestone tracking, and task delegation for couples and family."
-                badge="In Active Development"
-                highlights={[
-                  {
-                    title: 'Custom Milestones',
-                    description:
-                      'Define ceremonial deadlines by weeks or days leading up to the main celebration.',
-                  },
-                  {
-                    title: 'Collaborative Delegation',
-                    description:
-                      'Assign tasks to bridesmaids, groomsmen, family members, or event coordinators.',
-                  },
-                  {
-                    title: 'Due-Date Reminders',
-                    description:
-                      'Timely reminders for vendor deposits, venue walk-throughs, and attire fittings.',
-                  },
-                ]}
-              />
-            }
-          />
+          <Route path="/tasks" element={<TasksPage />} />
+          <Route path="/wedding/tasks" element={<TasksPage />} />
 
           {/* Guests & RSVP */}
           <Route

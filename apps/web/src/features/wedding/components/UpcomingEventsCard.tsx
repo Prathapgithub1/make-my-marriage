@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { DEMO_EVENTS, type DemoEvent } from '../dashboardMockData';
+import type { DemoEvent } from '../dashboardMockData';
 
 export interface UpcomingEventItem {
   id: string;
@@ -100,7 +100,9 @@ export function UpcomingEventsCard({ events }: UpcomingEventsCardProps) {
                     >
                       {evt.month}
                     </span>
-                    <span className="font-serif text-lg font-bold mt-1 leading-none">{evt.day}</span>
+                    <span className="font-serif text-lg font-bold mt-1 leading-none">
+                      {evt.day}
+                    </span>
                   </div>
 
                   {/* Event Details */}
@@ -135,7 +137,9 @@ export function UpcomingEventsCard({ events }: UpcomingEventsCardProps) {
                 {/* Guest Count & Options Menu */}
                 <div className="flex items-center gap-3 shrink-0">
                   {evt.guestCount ? (
-                    <span className="text-xs text-[#86736D] hidden sm:inline">{evt.guestCount}</span>
+                    <span className="text-xs text-[#86736D] hidden sm:inline">
+                      {evt.guestCount}
+                    </span>
                   ) : null}
 
                   <div className="relative">

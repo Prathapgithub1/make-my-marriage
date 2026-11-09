@@ -70,8 +70,7 @@ export function DashboardSidebar({
           />
         </svg>
       ),
-      badge:
-        typeof eventsCount === 'number' && eventsCount > 0 ? String(eventsCount) : null,
+      badge: typeof eventsCount === 'number' && eventsCount > 0 ? String(eventsCount) : null,
       badgeType: 'neutral',
       isRealRoute: true,
     },
@@ -216,8 +215,7 @@ export function DashboardSidebar({
           />
         </svg>
       ),
-      badge:
-        typeof membersCount === 'number' && membersCount > 0 ? String(membersCount) : null,
+      badge: typeof membersCount === 'number' && membersCount > 0 ? String(membersCount) : null,
       badgeType: 'neutral',
       isRealRoute: true,
     },

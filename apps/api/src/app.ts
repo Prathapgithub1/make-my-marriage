@@ -21,6 +21,7 @@ import {
   memberInvitationsRouter,
 } from './modules/members/routes';
 import { eventsRouter } from './modules/events/routes';
+import { tasksRouter } from './modules/tasks/routes';
 import { AppError } from './shared/app-error';
 
 export function createApp(applicationLogger: Logger = logger) {
@@ -57,6 +58,7 @@ export function createApp(applicationLogger: Logger = logger) {
   apiRouter.use('/dashboard', dashboardRouter);
   apiRouter.use('/members', membersRouter);
   apiRouter.use('/events', eventsRouter);
+  apiRouter.use('/tasks', tasksRouter);
   apiRouter.use('/public/member-invitations', publicMemberInvitationsRouter);
   apiRouter.use('/member-invitations', memberInvitationsRouter);
   app.use('/api/v1', apiRouter);
