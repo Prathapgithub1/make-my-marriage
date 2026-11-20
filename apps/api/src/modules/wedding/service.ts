@@ -3,6 +3,7 @@ import type { PrismaClient } from '../../generated/prisma/client';
 import { WeddingRole, WebsiteTheme } from '../../generated/prisma/client';
 import { AppError } from '../../shared/app-error';
 import { hashToken } from '../auth/security';
+import { formatPaiseToDecimal, parseMoneyToPaise } from '../expenses/money';
 import type { CreateWeddingInput, UpdateWeddingInput } from './schemas';
 import { generateWeddingSlug } from './slug';
 
@@ -50,11 +51,18 @@ export type DashboardData = {
   };
   summary: {
     events: number;
-    tasks: { total: number; completed: number };
+    tasks: { total: number; completed: number; due?: number };
     guests: number;
     rsvps: { pending: number; attending: number; notAttending: number };
     totalExpenseAmount: string;
     vendors: number;
+    budget?: {
+      totalBudget: string;
+      totalPaidAmount: string;
+      remainingBudget: string;
+      hasBudgetConfigured: boolean;
+      expenseCount: number;
+    };
   };
   upcomingEvents: Array<{
     id: string;
@@ -356,35 +364,137 @@ export function createWeddingService(db: PrismaClient | undefined): WeddingServi
       const weddingDateStr = w.weddingDate ? w.weddingDate.toISOString().slice(0, 10) : null;
       const daysRemaining = calculateDaysRemaining(w.weddingDate);
 
-      // Query real event count and upcoming events for this wedding
-      const [eventsCount, rawUpcomingEvents] = await Promise.all([
-        database.event.count({
-          where: { weddingId: w.id, status: { not: 'CANCELLED' } },
-        }),
-        database.event.findMany({
-          where: {
-            weddingId: w.id,
-            status: { not: 'CANCELLED' },
-          },
-          orderBy: [{ startsAt: 'asc' }, { createdAt: 'asc' }],
-          take: 5,
-          select: {
-            id: true,
-            name: true,
-            startsAt: true,
-            venueName: true,
-          },
-        }),
+      // Query real event count, upcoming events, and task metrics for this wedding
+      const [
+        eventsCount,
+        rawUpcomingEvents,
+        totalTasksCount,
+        completedTasksCount,
+        dueTasksCount,
+        rawUpcomingTasks,
+        totalGuestsCount,
+        pendingRsvpsCount,
+        attendingRsvpsCount,
+        notAttendingRsvpsCount,
+        rawActiveExpenses,
+        vendorsCount,
+        weddingBudgetRow,
+      ] = await Promise.all([
+        database.event?.count
+          ? database.event
+              .count({
+                where: { weddingId: w.id, status: { not: 'CANCELLED' } },
+              })
+              .catch(() => 0)
+          : Promise.resolve(0),
+        database.event?.findMany
+          ? database.event
+              .findMany({
+                where: {
+                  weddingId: w.id,
+                  status: { not: 'CANCELLED' },
+                },
+                orderBy: [{ startsAt: 'asc' }, { createdAt: 'asc' }],
+                take: 5,
+                select: {
+                  id: true,
+                  name: true,
+                  startsAt: true,
+                  venueName: true,
+                },
+              })
+              .catch(() => [])
+          : Promise.resolve([]),
+        database.task?.count
+          ? database.task.count({ where: { weddingId: w.id } }).catch(() => 0)
+          : Promise.resolve(0),
+        database.task?.count
+          ? database.task.count({ where: { weddingId: w.id, status: 'COMPLETED' } }).catch(() => 0)
+          : Promise.resolve(0),
+        database.task?.count
+          ? database.task.count({ where: { weddingId: w.id, status: { not: 'COMPLETED' } } }).catch(() => 0)
+          : Promise.resolve(0),
+        database.task?.findMany
+          ? database.task
+              .findMany({
+                where: { weddingId: w.id, status: { not: 'COMPLETED' } },
+                orderBy: [{ dueDate: 'asc' }, { createdAt: 'desc' }],
+                take: 5,
+                select: {
+                  id: true,
+                  title: true,
+                  dueDate: true,
+                  status: true,
+                },
+              })
+              .catch(() => [])
+          : Promise.resolve([]),
+        database.guest?.count
+          ? database.guest.count({ where: { weddingId: w.id } }).catch(() => 0)
+          : Promise.resolve(0),
+        database.guest?.count
+          ? database.guest.count({ where: { weddingId: w.id, rsvpStatus: 'PENDING' } }).catch(() => 0)
+          : Promise.resolve(0),
+        database.guest?.count
+          ? database.guest.count({ where: { weddingId: w.id, rsvpStatus: 'ATTENDING' } }).catch(() => 0)
+          : Promise.resolve(0),
+        database.guest?.count
+          ? database.guest.count({ where: { weddingId: w.id, rsvpStatus: 'NOT_ATTENDING' } }).catch(() => 0)
+          : Promise.resolve(0),
+        database.expense?.findMany
+          ? database.expense
+              .findMany({
+                where: { weddingId: w.id, paymentStatus: { not: 'CANCELLED' } },
+                select: { amount: true, paidAmount: true },
+              })
+              .catch(() => [])
+          : Promise.resolve([]),
+        database.vendor?.count
+          ? database.vendor.count({ where: { weddingId: w.id } }).catch(() => 0)
+          : Promise.resolve(0),
+        database.weddingBudget?.findUnique
+          ? database.weddingBudget
+              .findUnique({
+                where: { weddingId: w.id },
+                select: { totalBudget: true },
+              })
+              .catch(() => null)
+          : Promise.resolve(null),
       ]);
 
-      const upcomingEvents = rawUpcomingEvents.map((evt) => ({
+      const upcomingEvents = (rawUpcomingEvents || []).map((evt) => ({
         id: evt.id,
         name: evt.name,
-        startsAt: evt.startsAt ? evt.startsAt.toISOString() : '',
+        startsAt: evt.startsAt
+          ? evt.startsAt instanceof Date
+            ? evt.startsAt.toISOString()
+            : String(evt.startsAt)
+          : '',
         venueName: evt.venueName,
       }));
 
-      // Honest counts: V1 schema has 0 records until each module is populated
+      const upcomingTasks = (rawUpcomingTasks || []).map((t) => ({
+        id: t.id,
+        title: t.title,
+        dueDate: t.dueDate
+          ? t.dueDate instanceof Date
+            ? t.dueDate.toISOString()
+            : String(t.dueDate)
+          : null,
+        status: t.status,
+      }));
+
+      let totalExpensePaise = 0;
+      let totalPaidPaise = 0;
+      for (const exp of rawActiveExpenses || []) {
+        totalExpensePaise += parseMoneyToPaise(exp.amount ? exp.amount.toString() : '0');
+        totalPaidPaise += parseMoneyToPaise(exp.paidAmount ? exp.paidAmount.toString() : '0');
+      }
+      const hasBudgetConfigured = Boolean(weddingBudgetRow);
+      const totalBudgetPaise = weddingBudgetRow
+        ? parseMoneyToPaise(weddingBudgetRow.totalBudget.toString())
+        : 0;
+
       return {
         wedding: {
           id: w.id,
@@ -404,14 +514,29 @@ export function createWeddingService(db: PrismaClient | undefined): WeddingServi
         },
         summary: {
           events: eventsCount,
-          tasks: { total: 0, completed: 0 },
-          guests: 0,
-          rsvps: { pending: 0, attending: 0, notAttending: 0 },
-          totalExpenseAmount: '0.00',
-          vendors: 0,
+          tasks: {
+            total: totalTasksCount,
+            completed: completedTasksCount,
+            due: dueTasksCount,
+          },
+          guests: totalGuestsCount,
+          rsvps: {
+            pending: pendingRsvpsCount,
+            attending: attendingRsvpsCount,
+            notAttending: notAttendingRsvpsCount,
+          },
+          totalExpenseAmount: formatPaiseToDecimal(totalExpensePaise),
+          vendors: vendorsCount,
+          budget: {
+            totalBudget: formatPaiseToDecimal(totalBudgetPaise),
+            totalPaidAmount: formatPaiseToDecimal(totalPaidPaise),
+            remainingBudget: formatPaiseToDecimal(totalBudgetPaise - totalExpensePaise),
+            hasBudgetConfigured,
+            expenseCount: rawActiveExpenses.length,
+          },
         },
         upcomingEvents,
-        upcomingTasks: [],
+        upcomingTasks,
       };
     },
   };

@@ -9,6 +9,7 @@ import {
   TASK_STATUS_LABELS,
   TASK_STATUS_STYLES,
   TASK_PRIORITY_STYLES,
+  getTaskDueDateInfo,
 } from './tasksApi';
 import { TaskModal } from './TaskModal';
 import { TaskDetailModal, formatTaskDisplayDate } from './TaskDetailModal';
@@ -104,6 +105,7 @@ export function TasksPage() {
     },
     onSuccess: (updated) => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
       if (selectedTask?.id === updated.id) {
         setSelectedTask(updated);
       }
@@ -140,148 +142,136 @@ export function TasksPage() {
 
   return (
     <div
-      className={`min-h-screen bg-[#FAFAF3] ${
-        isInsideLayout ? 'p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto' : 'p-6 max-w-7xl mx-auto'
-      }`}
+      className={`min-h-screen bg-[#FAFAF3] ${isInsideLayout ? 'p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto' : 'p-6 max-w-7xl mx-auto'
+        }`}
     >
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#556251]" />
-            <span className="text-xs font-semibold uppercase tracking-widest text-[#8D493A]">
-              Wedding Workspace
-            </span>
+      {/* Page Header with Right-Aligned Task Statistics */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 mb-6">
+        {/* Left Side: Title, Subtitle, and Create Task Action */}
+        <div className="space-y-3 lg:max-w-md xl:max-w-lg">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#556251]" />
+              <span className="text-xs font-semibold uppercase tracking-widest text-[#8D493A]">
+                Wedding Workspace
+              </span>
+            </div>
+            <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#1A1C18] mt-1">
+              Tasks & Checklists
+            </h1>
+            <p className="text-xs sm:text-sm text-[#716B64] mt-1 leading-relaxed">
+              Organize ceremony deadlines, assign roles to family members, and track wedding
+              milestones.
+            </p>
           </div>
-          <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#1A1C18] mt-1">
-            Tasks & Checklists
-          </h1>
-          <p className="text-xs sm:text-sm text-[#716B64] mt-1">
-            Organize ceremony deadlines, assign roles to family members, and track wedding
-            milestones.
-          </p>
-        </div>
 
-        <button
-          type="button"
-          onClick={() => {
-            setEditingTask(null);
-            setIsCreateModalOpen(true);
-          }}
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#8D493A] hover:bg-[#723B2F] text-white text-xs font-semibold transition-all shadow-xs cursor-pointer shrink-0"
-        >
-          <span className="text-base leading-none">+</span>
-          <span>Create Task</span>
-        </button>
-      </div>
-
-      {/* Metrics Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
-        {/* Card 1: Total Tasks */}
-        <div className="bg-white rounded-2xl border border-[#EAE6E1] p-4 sm:p-5 shadow-2xs">
-          <span className="text-[11px] font-semibold text-[#86736D] uppercase tracking-wider block">
-            Total Tasks
-          </span>
-          <div className="flex items-baseline gap-2 mt-1">
-            <span className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1C18]">
-              {summary.total}
-            </span>
-            <span className="text-xs text-[#716B64]">scheduled</span>
-          </div>
-        </div>
-
-        {/* Card 2: To Do */}
-        <div className="bg-white rounded-2xl border border-[#EAE6E1] p-4 sm:p-5 shadow-2xs">
-          <span className="text-[11px] font-semibold text-[#86736D] uppercase tracking-wider block">
-            To Do
-          </span>
-          <div className="flex items-baseline gap-2 mt-1">
-            <span className="font-serif text-2xl sm:text-3xl font-bold text-[#716B64]">
-              {summary.todo}
-            </span>
-            <span className="text-xs text-[#716B64]">pending action</span>
-          </div>
-        </div>
-
-        {/* Card 3: In Progress */}
-        <div className="bg-white rounded-2xl border border-[#EAE6E1] p-4 sm:p-5 shadow-2xs">
-          <span className="text-[11px] font-semibold text-[#86736D] uppercase tracking-wider block">
-            In Progress
-          </span>
-          <div className="flex items-baseline gap-2 mt-1">
-            <span className="font-serif text-2xl sm:text-3xl font-bold text-[#1D4ED8]">
-              {summary.inProgress}
-            </span>
-            <span className="text-xs text-[#1D4ED8]">active</span>
-          </div>
-        </div>
-
-        {/* Card 4: Completed */}
-        <div className="bg-white rounded-2xl border border-[#EAE6E1] p-4 sm:p-5 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-[#86736D] uppercase tracking-wider block">
-              Completed
-            </span>
-            <span className="text-xs font-bold text-[#2E7D32]">{completionPercentage}%</span>
-          </div>
-          <div className="flex items-baseline gap-2 mt-1">
-            <span className="font-serif text-2xl sm:text-3xl font-bold text-[#2E7D32]">
-              {summary.completed}
-            </span>
-            <span className="text-xs text-[#716B64]">of {summary.total}</span>
-          </div>
-          {/* Progress bar */}
-          <div className="w-full bg-[#EAE6E1] rounded-full h-1.5 mt-2 overflow-hidden">
-            <div
-              className="bg-[#2E7D32] h-full rounded-full transition-all duration-500"
-              style={{ width: `${completionPercentage}%` }}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Overdue Banner if any */}
-      {summary.overdue > 0 && (
-        <div className="mb-6 p-3.5 rounded-2xl bg-[#FEF0F0] border border-[#F8D7DA] flex items-center justify-between gap-3 text-xs text-[#D32F2F]">
-          <div className="flex items-center gap-2">
-            <span className="text-base">⚠️</span>
-            <span>
-              <strong>
-                {summary.overdue} task{summary.overdue > 1 ? 's are' : ' is'} overdue.
-              </strong>{' '}
-              Review deadlines to keep ceremony preparation on schedule.
-            </span>
-          </div>
           <button
             type="button"
             onClick={() => {
-              setActiveTab('ALL');
-              setStatusFilter('TO_DO');
+              setEditingTask(null);
+              setIsCreateModalOpen(true);
             }}
-            className="underline font-semibold hover:text-[#B71C1C] cursor-pointer"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#8D493A] hover:bg-[#723B2F] text-white text-xs font-semibold transition-all shadow-xs cursor-pointer shrink-0"
           >
-            Show Pending Tasks
+            <span className="text-base leading-none">+</span>
+            <span>Create Task</span>
           </button>
         </div>
-      )}
+
+        {/* Right Side: Compact Summary Statistics Ribbon */}
+        <div className="bg-white rounded-2xl border border-[#EAE6E1] p-3 sm:p-4 shadow-2xs w-full lg:w-auto shrink-0">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:flex lg:items-center gap-3 sm:gap-4 lg:gap-0 lg:divide-x lg:divide-[#EAE6E1]">
+            {/* Total Tasks */}
+            <div className="lg:px-4 py-1 flex flex-col items-center sm:items-start text-center sm:text-left">
+              <span className="text-[10px] font-bold text-[#86736D] uppercase tracking-wider block">
+                Total Tasks
+              </span>
+              <div className="flex items-baseline gap-1.5 mt-0.5">
+                <span className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1C18]">
+                  {summary.total}
+                </span>
+                <span className="text-[11px] text-[#716B64]">scheduled</span>
+              </div>
+            </div>
+
+            {/* To Do */}
+            <div className="lg:px-4 py-1 flex flex-col items-center sm:items-start text-center sm:text-left">
+              <span className="text-[10px] font-bold text-[#86736D] uppercase tracking-wider block">
+                To Do
+              </span>
+              <div className="flex items-baseline gap-1.5 mt-0.5">
+                <span className="font-serif text-2xl sm:text-3xl font-bold text-[#716B64]">
+                  {summary.todo}
+                </span>
+                <span className="text-[11px] text-[#716B64]">pending</span>
+              </div>
+            </div>
+
+            {/* In Progress */}
+            <div className="lg:px-4 py-1 flex flex-col items-center sm:items-start text-center sm:text-left">
+              <span className="text-[10px] font-bold text-[#86736D] uppercase tracking-wider block">
+                In Progress
+              </span>
+              <div className="flex items-baseline gap-1.5 mt-0.5">
+                <span className="font-serif text-2xl sm:text-3xl font-bold text-[#1D4ED8]">
+                  {summary.inProgress}
+                </span>
+                <span className="text-[11px] text-[#1D4ED8]">active</span>
+              </div>
+            </div>
+
+            {/* Completed */}
+            <div className="lg:px-4 py-1 flex flex-col items-center sm:items-start text-center sm:text-left min-w-[130px]">
+              <div className="flex items-center justify-between w-full gap-2">
+                <span className="text-[10px] font-bold text-[#86736D] uppercase tracking-wider block">
+                  Completed
+                </span>
+                <span className="text-[10px] font-bold text-[#2E7D32] bg-[#EDF7EE] px-1.5 py-0.2 rounded-full">
+                  {completionPercentage}%
+                </span>
+              </div>
+              <div className="flex items-baseline gap-1.5 mt-0.5">
+                <span className="font-serif text-2xl sm:text-3xl font-bold text-[#2E7D32]">
+                  {summary.completed}
+                </span>
+                <span className="text-[11px] text-[#716B64]">of {summary.total}</span>
+              </div>
+              {/* Progress bar */}
+              <div className="w-full bg-[#EAE6E1] rounded-full h-1 mt-1.5 overflow-hidden">
+                <div
+                  className="bg-[#2E7D32] h-full rounded-full transition-all duration-500"
+                  style={{ width: `${completionPercentage}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Main Container */}
       <div className="bg-white rounded-3xl border border-[#EAE6E1] shadow-xs overflow-hidden">
-        {/* Navigation Tabs */}
-        <div className="flex items-center gap-2 px-5 sm:px-6 pt-5 border-b border-[#EAE6E1]">
+        {/* Navigation Tabs with balanced horizontal spacing */}
+        <div className="flex items-center gap-6 sm:gap-8 px-6 pt-4 border-b border-[#EAE6E1] overflow-x-auto scrollbar-none">
           <button
             type="button"
             onClick={() => {
               setActiveTab('ALL');
               setPage(1);
             }}
-            className={`pb-3 text-xs sm:text-sm font-semibold border-b-2 transition-all cursor-pointer ${
-              activeTab === 'ALL'
+            className={`pb-3.5 pt-1 text-xs sm:text-sm font-semibold border-b-2 transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 relative -mb-px ${activeTab === 'ALL'
                 ? 'border-[#8D493A] text-[#8D493A]'
                 : 'border-transparent text-[#716B64] hover:text-[#1A1C18]'
-            }`}
+              }`}
           >
-            All Tasks ({summary.total})
+            <span>All Tasks</span>
+            <span
+              className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${activeTab === 'ALL'
+                  ? 'bg-[#8D493A]/10 text-[#8D493A]'
+                  : 'bg-[#F4F2EE] text-[#716B64]'
+                }`}
+            >
+              ({summary.total})
+            </span>
           </button>
           <button
             type="button"
@@ -289,13 +279,12 @@ export function TasksPage() {
               setActiveTab('MINE');
               setPage(1);
             }}
-            className={`pb-3 text-xs sm:text-sm font-semibold border-b-2 transition-all cursor-pointer ${
-              activeTab === 'MINE'
+            className={`pb-3.5 pt-1 text-xs sm:text-sm font-semibold border-b-2 transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 relative -mb-px ${activeTab === 'MINE'
                 ? 'border-[#8D493A] text-[#8D493A]'
                 : 'border-transparent text-[#716B64] hover:text-[#1A1C18]'
-            }`}
+              }`}
           >
-            My Tasks
+            <span>My Tasks</span>
           </button>
           <button
             type="button"
@@ -303,22 +292,36 @@ export function TasksPage() {
               setActiveTab('COMPLETED');
               setPage(1);
             }}
-            className={`pb-3 text-xs sm:text-sm font-semibold border-b-2 transition-all cursor-pointer ${
-              activeTab === 'COMPLETED'
+            className={`pb-3.5 pt-1 text-xs sm:text-sm font-semibold border-b-2 transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 relative -mb-px ${activeTab === 'COMPLETED'
                 ? 'border-[#8D493A] text-[#8D493A]'
                 : 'border-transparent text-[#716B64] hover:text-[#1A1C18]'
-            }`}
+              }`}
           >
-            Completed ({summary.completed})
+            <span>Completed</span>
+            <span
+              className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${activeTab === 'COMPLETED'
+                  ? 'bg-[#8D493A]/10 text-[#8D493A]'
+                  : 'bg-[#F4F2EE] text-[#716B64]'
+                }`}
+            >
+              ({summary.completed})
+            </span>
           </button>
         </div>
 
         {/* Filter Bar */}
         <div className="p-4 sm:p-5 bg-[#FAF9F5] border-b border-[#EAE6E1] flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
-          {/* Search Input */}
-          <div className="relative flex-1 min-w-[200px]">
-            <span className="absolute inset-y-0 left-3 flex items-center text-[#A09890] pointer-events-none">
-              🔍
+          {/* Redesigned Search Input with SVG icon and Clear button */}
+          <div className="relative flex-1 min-w-[220px]">
+            <span className="absolute inset-y-0 left-3 flex items-center text-[#86736D] pointer-events-none">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
             </span>
             <input
               type="text"
@@ -328,8 +331,28 @@ export function TasksPage() {
                 setPage(1);
               }}
               placeholder="Search tasks by title..."
-              className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-[#D8C2BB] bg-white text-xs text-[#1A1C18] placeholder-[#A09890] focus:outline-hidden focus:ring-2 focus:ring-[#8D493A]/20"
+              className="w-full pl-9 pr-9 py-2 h-10 rounded-xl border border-[#D8C2BB] bg-white text-xs text-[#1A1C18] placeholder-[#A09890] hover:border-[#8D493A]/40 focus:border-[#8D493A] focus:outline-hidden focus:ring-2 focus:ring-[#8D493A]/15 transition-all shadow-2xs"
             />
+            {search.trim() !== '' && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearch('');
+                  setPage(1);
+                }}
+                className="absolute inset-y-0 right-2.5 flex items-center text-[#A09890] hover:text-[#1A1C18] p-1 cursor-pointer transition-colors"
+                aria-label="Clear search"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            )}
           </div>
 
           {/* Dropdown Filters */}
@@ -475,9 +498,8 @@ export function TasksPage() {
               return (
                 <div
                   key={task.id}
-                  className={`p-4 sm:p-5 hover:bg-[#FAF9F5]/70 transition-all flex items-start justify-between gap-3 sm:gap-4 ${
-                    isCompleted ? 'bg-[#FAF9F5]/40 opacity-75' : ''
-                  }`}
+                  className={`p-4 sm:p-5 hover:bg-[#FAF9F5]/70 transition-all flex items-start justify-between gap-3 sm:gap-4 ${isCompleted ? 'bg-[#FAF9F5]/40 opacity-75' : ''
+                    }`}
                 >
                   <div className="flex items-start gap-3.5 min-w-0 flex-1">
                     {/* Status Checkbox */}
@@ -494,11 +516,10 @@ export function TasksPage() {
                           ? `Mark ${task.title} as incomplete`
                           : `Mark ${task.title} as completed`
                       }
-                      className={`w-5 h-5 rounded-lg border mt-0.5 flex items-center justify-center transition-all shrink-0 cursor-pointer ${
-                        isCompleted
+                      className={`w-5 h-5 rounded-lg border mt-0.5 flex items-center justify-center transition-all shrink-0 cursor-pointer ${isCompleted
                           ? 'bg-[#8D493A] border-[#8D493A] text-white'
                           : 'border-[#D8C2BB] hover:border-[#8D493A] bg-white'
-                      }`}
+                        }`}
                     >
                       {isCompleted && (
                         <svg
@@ -517,72 +538,80 @@ export function TasksPage() {
                       )}
                     </button>
 
-                    {/* Task Info */}
+                    {/* Task Info - Left side: Title, Description, and Metadata */}
                     <div
                       className="min-w-0 flex-1 cursor-pointer"
                       onClick={() => handleOpenDetail(task)}
                     >
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h3
-                          className={`font-medium text-sm text-[#1A1C18] hover:text-[#8D493A] transition-colors truncate ${
-                            isCompleted ? 'line-through text-[#86736D]' : ''
+                      {/* Task Title on its own clear line */}
+                      <h3
+                        className={`font-semibold text-sm sm:text-base text-[#1A1C18] hover:text-[#8D493A] transition-colors ${isCompleted ? 'line-through text-[#86736D]' : ''
                           }`}
-                        >
-                          {task.title}
-                        </h3>
+                      >
+                        {task.title}
+                      </h3>
 
-                        {/* Priority Badge */}
-                        <span
-                          className={`px-2 py-0.5 rounded text-[10px] font-bold border tracking-wide uppercase shrink-0 ${priorityStyle.bg} ${priorityStyle.text} ${priorityStyle.border}`}
-                        >
-                          {priorityStyle.label}
-                        </span>
-
-                        {/* Status Badge */}
-                        <span
-                          className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold border shrink-0 ${statusStyle.bg} ${statusStyle.text} ${statusStyle.border}`}
-                        >
-                          <span className={`w-1.5 h-1.5 rounded-full ${statusStyle.dot}`} />
-                          {TASK_STATUS_LABELS[task.status]}
-                        </span>
-                      </div>
-
-                      {/* Description Preview */}
+                      {/* Description Preview on its own line */}
                       {task.description && (
-                        <p className="text-xs text-[#716B64] mt-1 line-clamp-1">
+                        <p className="text-xs text-[#716B64] mt-0.5 line-clamp-1">
                           {task.description}
                         </p>
                       )}
 
-                      {/* Metadata Chips */}
-                      <div className="flex items-center gap-4 mt-2 flex-wrap text-[11px] text-[#716B64]">
-                        {/* Due Date */}
-                        <span
-                          className={`inline-flex items-center gap-1 ${
-                            task.isOverdue ? 'text-[#D32F2F] font-bold' : ''
-                          }`}
-                        >
-                          <span>📅</span>
-                          <span>{formatTaskDisplayDate(task.dueDate)}</span>
-                          {task.isOverdue && (
-                            <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-[#FEF0F0] text-[#D32F2F] border border-[#F8D7DA]">
-                              OVERDUE
+                      {/* Metadata Chips: Due Date | Assignee | Ceremony */}
+                      <div className="flex items-center gap-3 sm:gap-4 mt-2 flex-wrap text-[11px] text-[#716B64]">
+                        {/* Due Date with improved states */}
+                        {(() => {
+                          const dueInfo = getTaskDueDateInfo(task.dueDate, task.status);
+                          return (
+                            <span
+                              className={`inline-flex items-center gap-1.5 ${dueInfo.className}`}
+                            >
+                              <svg
+                                className="w-3.5 h-3.5 shrink-0"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="1.8"
+                                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                />
+                              </svg>
+                              <span>{dueInfo.text}</span>
+                              {dueInfo.badgeLabel && (
+                                <span className={dueInfo.badgeClassName}>{dueInfo.badgeLabel}</span>
+                              )}
                             </span>
-                          )}
-                        </span>
+                          );
+                        })()}
 
                         {/* Related Ceremony */}
                         {task.event && (
-                          <span className="inline-flex items-center gap-1">
-                            <span>🎪</span>
+                          <span className="inline-flex items-center gap-1 text-[#53433E]">
+                            <svg
+                              className="w-3.5 h-3.5 text-[#8D493A] shrink-0"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="1.8"
+                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                              />
+                            </svg>
                             <span className="font-medium text-[#1A1C18]">{task.event.name}</span>
                           </span>
                         )}
 
                         {/* Assignee */}
                         {task.assignedMember ? (
-                          <span className="inline-flex items-center gap-1">
-                            <span className="w-4.5 h-4.5 rounded-full bg-[#8D493A]/10 text-[#8D493A] font-bold text-[9px] flex items-center justify-center">
+                          <span className="inline-flex items-center gap-1.5 text-[#53433E]">
+                            <span className="w-4.5 h-4.5 rounded-full bg-[#8D493A]/10 text-[#8D493A] font-bold text-[9px] flex items-center justify-center shrink-0">
                               {task.assignedMember.name.slice(0, 2).toUpperCase()}
                             </span>
                             <span>{task.assignedMember.name}</span>
@@ -594,25 +623,73 @@ export function TasksPage() {
                     </div>
                   </div>
 
-                  {/* Actions Dropdown / Quick Buttons */}
-                  <div className="flex items-center gap-1 shrink-0">
+                  {/* Right Side: [Priority Badge] [Status Badge] [Edit] [View] */}
+                  <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 self-start sm:self-center flex-wrap sm:flex-nowrap justify-end pt-0.5 sm:pt-0">
+                    {/* Priority Badge */}
+                    <span
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold border tracking-wide uppercase shrink-0 ${priorityStyle.bg} ${priorityStyle.text} ${priorityStyle.border}`}
+                    >
+                      {priorityStyle.label}
+                    </span>
+
+                    {/* Status Badge */}
+                    <span
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold border shrink-0 ${statusStyle.bg} ${statusStyle.text} ${statusStyle.border}`}
+                    >
+                      <span className={`w-1.5 h-1.5 rounded-full ${statusStyle.dot}`} />
+                      {TASK_STATUS_LABELS[task.status]}
+                    </span>
+
+                    {/* Edit Icon Button */}
                     <button
                       type="button"
                       onClick={() => handleOpenEdit(task)}
                       aria-label={`Edit ${task.title}`}
-                      className="p-1.5 rounded-lg text-[#716B64] hover:text-[#1A1C18] hover:bg-[#FAF8F5] transition-colors cursor-pointer text-xs"
+                      className="p-1.5 rounded-lg text-[#716B64] hover:text-[#8D493A] hover:bg-[#FAF8F5] transition-colors cursor-pointer"
                       title="Edit task"
                     >
-                      ✏️
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="1.8"
+                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                        />
+                      </svg>
                     </button>
+
+                    {/* View Details Icon Button */}
                     <button
                       type="button"
                       onClick={() => handleOpenDetail(task)}
                       aria-label={`View details for ${task.title}`}
-                      className="p-1.5 rounded-lg text-[#716B64] hover:text-[#1A1C18] hover:bg-[#FAF8F5] transition-colors cursor-pointer text-xs"
+                      className="p-1.5 rounded-lg text-[#716B64] hover:text-[#8D493A] hover:bg-[#FAF8F5] transition-colors cursor-pointer"
                       title="View details"
                     >
-                      👁️
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="1.8"
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="1.8"
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
+                      </svg>
                     </button>
                   </div>
                 </div>
@@ -660,6 +737,7 @@ export function TasksPage() {
         }}
         onSuccess={() => {
           queryClient.invalidateQueries({ queryKey: ['tasks'] });
+          queryClient.invalidateQueries({ queryKey: ['dashboard'] });
         }}
       />
 
@@ -675,10 +753,12 @@ export function TasksPage() {
         onTaskUpdated={(updated) => {
           setSelectedTask(updated);
           queryClient.invalidateQueries({ queryKey: ['tasks'] });
+          queryClient.invalidateQueries({ queryKey: ['dashboard'] });
         }}
         onTaskDeleted={() => {
           setSelectedTask(null);
           queryClient.invalidateQueries({ queryKey: ['tasks'] });
+          queryClient.invalidateQueries({ queryKey: ['dashboard'] });
         }}
       />
     </div>

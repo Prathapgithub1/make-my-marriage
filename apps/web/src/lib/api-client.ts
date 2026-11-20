@@ -36,7 +36,7 @@ export async function apiRequest<T>(
   isRetry = false,
 ): Promise<T> {
   const baseUrl = API_BASE_URL.replace(/\/$/, '');
-  const resourcePath = path.replace(/^\//, '');
+  const resourcePath = path.replace(/^\/?(?:api\/v1\/)?/, '').replace(/^\//, '');
   const headers = new Headers(init.headers);
   const method = (init.method ?? 'GET').toUpperCase();
   const needsCsrf = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method);

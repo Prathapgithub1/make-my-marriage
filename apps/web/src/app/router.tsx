@@ -13,6 +13,13 @@ import { AcceptInvitationPage } from '../features/members/AcceptInvitationPage';
 import { EventsPage } from '../features/events/EventsPage';
 import { EventDetailPage } from '../features/events/EventDetailPage';
 import { TasksPage } from '../features/tasks/TasksPage';
+import { GuestsPage } from '../features/guests/GuestsPage';
+import { ExpensesPage } from '../features/expenses/ExpensesPage';
+import { VendorsPage } from '../features/vendors/VendorsPage';
+import { WeddingWebsitePage } from '../features/website/WeddingWebsitePage';
+import { PublicWeddingWebsitePage } from '../features/website/PublicWeddingWebsitePage';
+import { PublicInvitationPage } from '../features/invitations/PublicInvitationPage';
+import { GalleryPage } from '../features/gallery/GalleryPage';
 import { AuthenticatedLayout } from '../components/layout/AuthenticatedLayout';
 import { FeaturePlaceholderPage } from '../features/placeholders/FeaturePlaceholderPage';
 
@@ -27,6 +34,10 @@ export function AppRouter() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/invitations/members/:token" element={<AcceptInvitationPage />} />
+        <Route path="/invite/:token" element={<PublicInvitationPage />} />
+        <Route path="/invitations/:token" element={<PublicInvitationPage />} />
+        <Route path="/w/:slug" element={<PublicWeddingWebsitePage />} />
+        <Route path="/website/:slug" element={<PublicWeddingWebsitePage />} />
 
         {/* Wedding Setup (Authenticated without wedding) */}
         <Route
@@ -63,153 +74,24 @@ export function AppRouter() {
           <Route path="/wedding/tasks" element={<TasksPage />} />
 
           {/* Guests & RSVP */}
-          <Route
-            path="/guests"
-            element={
-              <FeaturePlaceholderPage
-                feature="Guests & RSVP Management"
-                category="GUEST HOSPITALITY"
-                description="Centralized wedding guest list, personalized digital invitations, dietary preference collection, and real-time RSVP attendance tracking."
-                badge="Next Sprint Priority"
-                highlights={[
-                  {
-                    title: 'Digital RSVP Links',
-                    description:
-                      'Shareable personalized invitation links with party size and attendance options.',
-                  },
-                  {
-                    title: 'Dietary & Travel Notes',
-                    description:
-                      'Track meal preferences, flight details, and hotel accommodation requirements.',
-                  },
-                  {
-                    title: 'Event-Level Access',
-                    description:
-                      'Invite select guests to intimate ceremonies like Haldi or Mehendi while reserving Reception for all.',
-                  },
-                ]}
-              />
-            }
-          />
+          <Route path="/guests" element={<GuestsPage />} />
+          <Route path="/wedding/guests" element={<GuestsPage />} />
 
           {/* Expenses & Budget */}
-          <Route
-            path="/expenses"
-            element={
-              <FeaturePlaceholderPage
-                feature="Wedding Expenses & Budget"
-                category="FINANCIAL SUITE"
-                description="Track venue deposits, vendor payments, shared family contributions, and total wedding expenditure in INR."
-                badge="Coming Soon"
-                highlights={[
-                  {
-                    title: 'Category Allocation',
-                    description:
-                      'Break down budgets by Catering, Decor, Attire, Photography, and Venue hire.',
-                  },
-                  {
-                    title: 'Payment Schedules',
-                    description:
-                      'Track upcoming installment milestones and record advance token receipts.',
-                  },
-                  {
-                    title: 'Family Contribution Split',
-                    description:
-                      'Transparently manage expenses paid by bride family, groom family, or couple.',
-                  },
-                ]}
-              />
-            }
-          />
+          <Route path="/expenses" element={<ExpensesPage />} />
+          <Route path="/wedding/expenses" element={<ExpensesPage />} />
 
           {/* Vendors & Partners */}
-          <Route
-            path="/vendors"
-            element={
-              <FeaturePlaceholderPage
-                feature="Vendors & Partners"
-                category="VENDOR DIRECTORY"
-                description="Directory of vetted wedding photographers, caterers, makeup artists, decorators, and musicians."
-                badge="Coming Soon"
-                highlights={[
-                  {
-                    title: 'Contract Management',
-                    description:
-                      'Store signed contracts, contact numbers, and service agreements in one place.',
-                  },
-                  {
-                    title: 'Day-of Schedule',
-                    description:
-                      'Coordinate arrival times and stage setup schedules for every vendor partner.',
-                  },
-                  {
-                    title: 'Vendor Reviews & Quotes',
-                    description: 'Compare quotations and track shortlisted vendor portfolios.',
-                  },
-                ]}
-              />
-            }
-          />
+          <Route path="/vendors" element={<VendorsPage />} />
+          <Route path="/wedding/vendors" element={<VendorsPage />} />
 
           {/* Wedding Website */}
-          <Route
-            path="/website"
-            element={
-              <FeaturePlaceholderPage
-                feature="Wedding Website Builder"
-                category="DIGITAL CONCIERGE"
-                description="Design a bespoke editorial wedding website for your guests with ceremony timelines, hotel recommendations, and love story."
-                badge="Live Preview Soon"
-                highlights={[
-                  {
-                    title: 'Editorial Themes',
-                    description:
-                      'Crafted typography and royal palette themes suited for traditional & destination weddings.',
-                  },
-                  {
-                    title: 'Interactive Maps & Dress Codes',
-                    description:
-                      'Guide guests with Google Maps venue pins and ceremony dress code suggestions.',
-                  },
-                  {
-                    title: 'Custom Domain & Privacy',
-                    description:
-                      'Password-protect your wedding website or connect a custom celebration domain.',
-                  },
-                ]}
-              />
-            }
-          />
+          <Route path="/website" element={<WeddingWebsitePage />} />
+          <Route path="/wedding/website" element={<WeddingWebsitePage />} />
 
           {/* Gallery */}
-          <Route
-            path="/gallery"
-            element={
-              <FeaturePlaceholderPage
-                feature="Photo & Memory Gallery"
-                category="CELEBRATION ARCHIVE"
-                description="Private cloud photo gallery for high-resolution ceremony photos, guest uploads, and candid moments."
-                badge="Coming Soon"
-                highlights={[
-                  {
-                    title: 'Guest Photo Drops',
-                    description:
-                      'QR codes at reception tables allowing guests to upload candid moments instantly.',
-                  },
-                  {
-                    title: 'Album Categorization',
-                    description:
-                      'Separate photo collections for Roka, Sangeet, Wedding, and Reception rituals.',
-                  },
-                  {
-                    title: 'High-Res Cloud Storage',
-                    description:
-                      'AWS S3 encrypted cloud storage preserving full-resolution memories forever.',
-                  },
-                ]}
-              />
-            }
-          />
+          <Route path="/gallery" element={<GalleryPage />} />
+          <Route path="/wedding/gallery" element={<GalleryPage />} />
 
           {/* Settings */}
           <Route

@@ -44,11 +44,17 @@ Treat those documents as the source of truth. Do not invent product requirements
 3. **Wedding Member Management & Team Invitations (V1):** Role-based access control (`ADMIN`, `MANAGER`), secure team invitations with rate-limited endpoints, cryptographically hashed tokens and Resend email dispatch, atomic race-condition-protected acceptance flow, member role management with sole admin protection, and clean UI for roster and pending invitations.
 4. **Security Hardening & QA Audit Fixes (V1):** Open redirect (CWE-601) mitigation with strict local path sanitization, environment-gated invitation acceptance verification, clean Parcel bundle module resolution, and expanded frontend/backend test suites (112 tests passing).
 5. **Wedding Events Management (V1):** Multi-event scheduling with preset chips (Roka, Engagement, Mehendi, Haldi, Sangeet, Cocktail, Wedding, Reception) and custom names, date/time and venue tracking, dress code management, status lifecycle (`PLANNED`, `CONFIRMED`, `COMPLETED`, `CANCELLED`), overview page with informational metrics, event details page with tabbed associations, and workspace dashboard timeline integration (133 tests passing).
+6. **Guest List & RSVP Management (V1):** Full attendee lifecycle tracking with `RsvpStatus` (`PENDING`, `ATTENDING`, `NOT_ATTENDING`), per-guest party capacity constraints (`maxGuests`), multi-event ceremony invitations, Resend email dispatch, batch reminder capabilities, and public mobile-first RSVP submission.
+7. **Task Management (V1):** Full task lifecycle tracking with `TaskStatus` (`TO_DO`, `IN_PROGRESS`, `COMPLETED`) and `TaskPriority` (`LOW`, `MEDIUM`, `HIGH`), tenant isolation, assigned member & event cross-wedding validation, paginated filtering, text search, and metrics breakdown.
+8. **Expenses, Budget & Vendor Management (V1):** Integer-paise arithmetic to eliminate floating-point drift, installment payment tracking (`PENDING`, `PARTIAL`, `PAID`, `OVERDUE`, `CANCELLED`), overall wedding and ceremony-specific budgets, over-budget alerts, category/vendor analytics, and live Workspace Dashboard integration.
+9. **Vendor Management Production Suite (V1):** Comprehensive vendor pipeline based on Google Stitch design reference, booking lifecycle management, contract tracking, payments ledger, side-by-side comparison matrix, production schedule timeline, and bidirectional expense synchronization.
+10. **Wedding Website Builder (V1):** Multi-template website studio (`Royal Heritage`, `Modern Minimal`, `Floral Romance`, `Bohemian Sunset`) with 3-panel visual editor, collapsible page sections, live desktop/tablet/mobile device framing, custom subdomain/slug routing, and public mobile-first guest RSVP portal (`/w/:slug`).
+11. **Photo & Video Gallery Module (Production AWS S3 Cloud Architecture):** Cloud-native architecture with PostgreSQL storing metadata and AWS S3 (`make-my-marriage-gallery-dev-rana-2026`) storing all media binaries. Full elimination of mock storage and server-side file proxies. Direct browser-to-S3 uploads using pre-signed PUT URLs with progress tracking, independent backend existence verification via `HeadObjectCommand` before marking `UPLOADED`, dynamic pre-signed GET URLs with 300s expiry, resilient deletion, and React 19 image fallback hardening.
 
 ## Next planned implementation
 
-- **Guest List & RSVP Management (PRD §9.3, REST API §5.6):**
-  - Guest records, party size, attendance tracking, dietary requirements, and invitation link generation.
+- **Production Deployment & Cloud Infrastructure Preparation:**
+  - Production environment configuration, AWS S3 bucket CORS validation, and multi-part video uploads for large files (>100MB).
 
 ## Decisions that remain open for future milestones
 

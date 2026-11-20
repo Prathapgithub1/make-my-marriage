@@ -77,3 +77,68 @@ export type Event = Prisma.EventModel
  * 
  */
 export type Task = Prisma.TaskModel
+/**
+ * Model Guest
+ * 
+ */
+export type Guest = Prisma.GuestModel
+/**
+ * Model GuestEvent
+ * 
+ */
+export type GuestEvent = Prisma.GuestEventModel
+/**
+ * Model Vendor
+ * 
+ */
+export type Vendor = Prisma.VendorModel
+/**
+ * Model VendorService
+ * 
+ */
+export type VendorService = Prisma.VendorServiceModel
+/**
+ * Model VendorEvent
+ * 
+ */
+export type VendorEvent = Prisma.VendorEventModel
+/**
+ * Model VendorBooking
+ * 
+ */
+export type VendorBooking = Prisma.VendorBookingModel
+/**
+ * Model VendorPayment
+ * 
+ */
+export type VendorPayment = Prisma.VendorPaymentModel
+/**
+ * Model VendorDocument
+ * 
+ */
+export type VendorDocument = Prisma.VendorDocumentModel
+/**
+ * Model WeddingBudget
+ * 
+ */
+export type WeddingBudget = Prisma.WeddingBudgetModel
+/**
+ * Model EventBudget
+ * 
+ */
+export type EventBudget = Prisma.EventBudgetModel
+/**
+ * Model Expense
+ * 
+ */
+export type Expense = Prisma.ExpenseModel
+/**
+ * Model GalleryAlbum
+ * 
+ */
+export type GalleryAlbum = Prisma.GalleryAlbumModel
+/**
+ * Model GalleryMedia
+ * 
+ */
+export type GalleryMedia = Prisma.GalleryMediaModel

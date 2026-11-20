@@ -192,6 +192,8 @@ export async function listEvents(query: ListEventsQuery = {}): Promise<EventsLis
   return { events, metrics, pagination };
 }
 
+export const getEvents = listEvents;
+
 export async function getEvent(eventId: string): Promise<WeddingEvent> {
   const response = await apiRequest<Envelope<WeddingEvent>>(`events/${eventId}`);
   return response.data;

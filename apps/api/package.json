@@ -3,13 +3,15 @@
   "version": "0.2.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon --watch src --ext ts --exec \"node --env-file-if-exists=../../.env --import tsx\" src/server.ts",
+    "dev": "nodemon --watch src --watch ../../.env --watch ../.env --watch .env --ext ts,env --exec \"node --env-file-if-exists=../.env --env-file-if-exists=.env --env-file-if-exists=../../.env --import tsx\" src/server.ts",
     "build": "tsc -p tsconfig.build.json",
-    "start": "node --env-file-if-exists=../../.env dist/server.js",
+    "start": "node --env-file-if-exists=../.env --env-file-if-exists=.env --env-file-if-exists=../../.env dist/server.js",
     "test": "jest --config jest.config.cjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1170.0",
+    "@aws-sdk/s3-request-presigner": "^3.1170.0",
     "@prisma/adapter-pg": "7.10.0",
     "@prisma/client": "7.10.0",
     "argon2": "^0.45.1",

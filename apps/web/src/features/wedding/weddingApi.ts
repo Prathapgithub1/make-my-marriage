@@ -51,11 +51,18 @@ export type DashboardData = {
   };
   summary: {
     events: number;
-    tasks: { total: number; completed: number };
+    tasks: { total: number; completed: number; due?: number };
     guests: number;
     rsvps: { pending: number; attending: number; notAttending: number };
     totalExpenseAmount: string;
     vendors: number;
+    budget?: {
+      totalBudget: string;
+      totalPaidAmount: string;
+      remainingBudget: string;
+      hasBudgetConfigured: boolean;
+      expenseCount: number;
+    };
   };
   upcomingEvents: Array<{
     id: string;

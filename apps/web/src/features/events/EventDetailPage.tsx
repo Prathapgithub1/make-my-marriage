@@ -13,6 +13,14 @@ import {
 } from './eventsApi';
 import { EventModal } from './EventModal';
 import { formatEventDate, formatEventTimeRange } from './EventsPage';
+import {
+  CATEGORY_META,
+  PAYMENT_STATUS_META,
+  formatCurrencyINR,
+  formatShortDate,
+  getBudgetOverview,
+  listExpenses,
+} from '../expenses/expensesApi';
 import { ApiRequestError } from '../../lib/api-client';
 import { useIsInsideAuthenticatedLayout } from '../../components/layout/AuthenticatedLayoutContext';
 
@@ -43,6 +51,24 @@ export function EventDetailPage() {
     enabled: Boolean(eventId),
     staleTime: 30_000,
   });
+
+  const eventExpensesQuery = useQuery({
+    queryKey: ['expenses', { eventFilter: eventId }],
+    queryFn: () => listExpenses({ eventId: eventId!, limit: 50 }),
+    enabled: Boolean(eventId),
+    staleTime: 30_000,
+  });
+
+  const budgetOverviewQuery = useQuery({
+    queryKey: ['expenses-budget'],
+    queryFn: getBudgetOverview,
+    enabled: Boolean(eventId),
+    staleTime: 30_000,
+  });
+
+  const eventBudget = budgetOverviewQuery.data?.eventBudgets.find(
+    (item) => item.eventId === eventId,
+  );
 
   const statusMutation = useMutation({
     mutationFn: (newStatus: WeddingEvent['status']) => updateEvent(eventId!, { status: newStatus }),
@@ -424,16 +450,92 @@ export function EventDetailPage() {
 
       {/* Tab 4: Related Expenses */}
       {activeTab === 'expenses' && (
-        <div className="bg-white rounded-2xl border border-dashed border-[#d8c2bb] p-10 text-center shadow-xs">
-          <div className="w-12 h-12 rounded-full bg-[#f4ede6] text-[#8a4b35] flex items-center justify-center text-xl mx-auto mb-3">
-            💳
+        <div className="space-y-4">
+          <div className="bg-white rounded-2xl border border-[#EAE6E1] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
+            <div className="space-y-1">
+              <h3 className="font-serif text-lg font-bold text-[#1c1d1b]">
+                Event Expenses & Budget
+              </h3>
+              <p className="text-xs sm:text-sm text-[#5c5d59]">
+                {event.name}:{' '}
+                {eventBudget?.hasAllocatedBudget
+                  ? `Allocated ${formatCurrencyINR(eventBudget.allocatedBudget)} · Spent ${formatCurrencyINR(eventBudget.spentAmount)} · Remaining ${formatCurrencyINR(eventBudget.remainingBudget)}`
+                  : `Total Spent: ${formatCurrencyINR(eventExpensesQuery.data?.totals.filteredAmount ?? '0')} · Paid: ${formatCurrencyINR(eventExpensesQuery.data?.totals.filteredPaidAmount ?? '0')}`}
+              </p>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <Link
+                to={`/expenses?eventId=${event.id}`}
+                className="px-4 py-2 rounded-xl border border-[#DED8D0] text-xs font-semibold text-[#1c1d1b] hover:bg-[#FAF8F5]"
+              >
+                Open Full Ledger
+              </Link>
+              <Link
+                to={`/expenses?eventId=${event.id}&action=add`}
+                className="px-4 py-2 rounded-xl bg-[#8d493a] text-white text-xs font-semibold hover:bg-[#763b2e]"
+              >
+                + Add Ceremony Expense
+              </Link>
+            </div>
           </div>
-          <h3 className="font-serif text-lg font-bold text-[#1c1d1b] mb-1">
-            Event Expenses & Budget
-          </h3>
-          <p className="text-xs sm:text-sm text-[#5c5d59] max-w-md mx-auto">
-            Track invoices, advances, and final vendor payments allocated to {event.name}.
-          </p>
+
+          {eventExpensesQuery.isLoading ? (
+            <div className="bg-white rounded-2xl border border-[#EAE6E1] p-8 text-center text-sm text-[#5c5d59]">
+              Loading expenses for {event.name}...
+            </div>
+          ) : (eventExpensesQuery.data?.expenses ?? []).length === 0 ? (
+            <div className="bg-white rounded-2xl border border-dashed border-[#d8c2bb] p-10 text-center space-y-3 shadow-xs">
+              <div className="w-12 h-12 rounded-full bg-[#f4ede6] text-[#8a4b35] flex items-center justify-center text-xl mx-auto">
+                💳
+              </div>
+              <h4 className="font-serif text-lg font-bold text-[#1c1d1b]">
+                No expenses linked to {event.name} yet
+              </h4>
+              <p className="text-xs sm:text-sm text-[#5c5d59] max-w-md mx-auto">
+                Record venue deposits, decor advances, or artist fees tied directly to {event.name}.
+              </p>
+            </div>
+          ) : (
+            <div className="bg-white rounded-2xl border border-[#EAE6E1] divide-y divide-[#F4F2EE] shadow-2xs overflow-hidden">
+              {(eventExpensesQuery.data?.expenses ?? []).map((exp) => {
+                const cat = CATEGORY_META[exp.category] ?? CATEGORY_META.OTHER;
+                const status =
+                  PAYMENT_STATUS_META[exp.paymentStatus] ?? PAYMENT_STATUS_META.PENDING;
+                return (
+                  <div
+                    key={exp.id}
+                    className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                  >
+                    <div>
+                      <p className="font-semibold text-sm text-[#1c1d1b]">{exp.title}</p>
+                      <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-[#6B5F57]">
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${cat.pillBg} ${cat.pillText}`}
+                        >
+                          {cat.label}
+                        </span>
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${status.badgeClass}`}
+                        >
+                          {status.label}
+                        </span>
+                        <span>{formatShortDate(exp.spentAt)}</span>
+                        {exp.vendorName && <span>· {exp.vendorName}</span>}
+                      </div>
+                    </div>
+                    <div className="text-left sm:text-right shrink-0">
+                      <p className="font-serif text-base font-bold text-[#1c1d1b]">
+                        {formatCurrencyINR(exp.amount)}
+                      </p>
+                      <p className="text-xs text-[#2F6B38]">
+                        Paid {formatCurrencyINR(exp.paidAmount)}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
 

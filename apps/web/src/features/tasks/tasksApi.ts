@@ -127,9 +127,9 @@ export const TASK_PRIORITY_STYLES: Record<
     label: 'MED',
   },
   LOW: {
-    bg: 'bg-[#F4F2EE]',
-    text: 'text-[#716B64]',
-    border: 'border-[#EAE6E1]',
+    bg: 'bg-[#EDF7EE]',
+    text: 'text-[#2E7D32]',
+    border: 'border-[#C8E6C9]',
     label: 'LOW',
   },
 };
@@ -201,4 +201,83 @@ export async function deleteTask(
     },
   );
   return res.data;
+}
+
+export interface TaskDueDateInfo {
+  text: string;
+  state: 'none' | 'completed' | 'overdue' | 'due_soon' | 'upcoming';
+  badgeLabel?: string;
+  className: string;
+  badgeClassName?: string;
+}
+
+export function getTaskDueDateInfo(dueDate: string | null, status: TaskStatus): TaskDueDateInfo {
+  if (!dueDate) {
+    return {
+      text: 'No due date',
+      state: 'none',
+      className: 'text-[#A09890] italic',
+    };
+  }
+
+  const d = new Date(dueDate);
+  if (isNaN(d.getTime())) {
+    return {
+      text: 'Invalid date',
+      state: 'none',
+      className: 'text-[#A09890]',
+    };
+  }
+
+  const formattedDate = d.toLocaleDateString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  });
+
+  // Completed tasks are never marked as overdue
+  if (status === 'COMPLETED') {
+    return {
+      text: formattedDate,
+      state: 'completed',
+      className: 'text-[#86736D]',
+    };
+  }
+
+  // Calculate day difference relative to start of today in local date
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const targetDayStart = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  const diffDays = Math.round((targetDayStart - todayStart) / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 0) {
+    const daysOverdue = Math.abs(diffDays);
+    return {
+      text: formattedDate,
+      state: 'overdue',
+      badgeLabel: daysOverdue === 1 ? '1 day overdue' : `${daysOverdue} days overdue`,
+      className: 'text-[#C0392B] font-medium',
+      badgeClassName:
+        'bg-[#FDF2F2] text-[#C0392B] border border-[#FADBD8] font-semibold text-[10px] px-1.5 py-0.5 rounded',
+    };
+  }
+
+  if (diffDays <= 3) {
+    const soonLabel =
+      diffDays === 0 ? 'Due Today' : diffDays === 1 ? 'Due Tomorrow' : `Due in ${diffDays}d`;
+    return {
+      text: formattedDate,
+      state: 'due_soon',
+      badgeLabel: soonLabel,
+      className: 'text-[#B7791F] font-medium',
+      badgeClassName:
+        'bg-[#FEF9E7] text-[#B7791F] border border-[#FCF3CF] font-semibold text-[10px] px-1.5 py-0.2 rounded',
+    };
+  }
+
+  return {
+    text: formattedDate,
+    state: 'upcoming',
+    className: 'text-[#716B64]',
+  };
 }

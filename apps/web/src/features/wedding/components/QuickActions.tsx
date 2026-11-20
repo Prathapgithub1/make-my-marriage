@@ -2,10 +2,10 @@ import { Link } from 'react-router';
 
 export interface QuickActionsProps {
   onCreateEvent: () => void;
-  onOpenComingSoon: (featureName: string, description: string) => void;
+  onOpenComingSoon?: (featureName: string, description: string) => void;
 }
 
-export function QuickActions({ onCreateEvent, onOpenComingSoon }: QuickActionsProps) {
+export function QuickActions({ onCreateEvent }: QuickActionsProps) {
   return (
     <div className="mb-4 sm:mb-4.5">
       {/* Section Header matching Screenshot 1 */}
@@ -75,14 +75,8 @@ export function QuickActions({ onCreateEvent, onOpenComingSoon }: QuickActionsPr
         </Link>
 
         {/* Card 3: Add Guest */}
-        <button
-          type="button"
-          onClick={() =>
-            onOpenComingSoon(
-              'Add Guest',
-              'Guest registry, postal address collection, and RSVP invites are launching soon.',
-            )
-          }
+        <Link
+          to="/guests"
           className="flex items-center gap-3 p-2.5 sm:p-3 rounded-2xl bg-white border border-[#EAE6E1] text-[#1A1C18] shadow-2xs hover:border-[#964F38]/40 hover:bg-[#FAF9F5] transition-all text-left group cursor-pointer"
         >
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#EAF5EB] text-[#2F6B38] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -104,17 +98,11 @@ export function QuickActions({ onCreateEvent, onOpenComingSoon }: QuickActionsPr
             </p>
             <span className="sr-only">Manage Guests</span>
           </div>
-        </button>
+        </Link>
 
         {/* Card 4: Add Expense */}
-        <button
-          type="button"
-          onClick={() =>
-            onOpenComingSoon(
-              'Add Expense',
-              'Vendor budget allocation and payment receipt tracking are in development.',
-            )
-          }
+        <Link
+          to="/expenses?action=add"
           className="flex items-center gap-3 p-2.5 sm:p-3 rounded-2xl bg-white border border-[#EAE6E1] text-[#1A1C18] shadow-2xs hover:border-[#964F38]/40 hover:bg-[#FAF9F5] transition-all text-left group cursor-pointer"
         >
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#FEF4E6] text-[#A66E22] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -137,7 +125,7 @@ export function QuickActions({ onCreateEvent, onOpenComingSoon }: QuickActionsPr
             <span className="sr-only">Track Expenses</span>
             <span className="sr-only">Explore Vendors</span>
           </div>
-        </button>
+        </Link>
       </div>
     </div>
   );

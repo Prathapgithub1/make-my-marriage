@@ -4,6 +4,12 @@ This file tracks delivered project milestones. The approved PRD, System Design, 
 
 ## Current snapshot
 
+- **Photo & Video Gallery Module (Production AWS S3 Cloud Architecture Redevelopment):** Complete end-to-end (2026-11-20). Production-ready cloud storage architecture where PostgreSQL stores only metadata and references to S3 objects, and AWS S3 (`make-my-marriage-gallery-dev-rana-2026`) stores all binary photos and videos. Complete removal of mock storage, `.storage/` disk directories, and server-side file proxies. Direct browser-to-S3 uploads using AWS SDK v3 pre-signed PUT URLs with client-side progress reporting. Mandatory independent backend verification via `s3Service.headObject()` (`HeadObjectCommand`) before marking media records as `UPLOADED`, preventing false-positive uploads. Solved AWS SDK v3 automatic CRC32 empty-payload checksum injection (`x-amz-checksum-crc32=AAAAAA==`) via `requestChecksumCalculation: 'WHEN_REQUIRED'`. Dynamic pre-signed GET URLs with short expiry for private media streaming and attachment download headers. Resilient non-blocking media deletion with automatic album cover reassignment. Resolved React 19 empty `src=""` rendering warnings with image fallback placeholders. Verified with 0 TypeScript errors across monorepo and 93/93 frontend tests passing.
+- **Photo & Video Gallery Module (V1 — Stitch Design Reference & AWS S3 Integration):** Complete end-to-end (2026-11-17). Comprehensive wedding media management module based on the Google Stitch prototype and system architecture. PostgreSQL tables `gallery_albums` and `gallery_media` backed by Prisma migration `20261117140000_add_gallery_management` with relations to `Wedding`, `Event`, and `User`. Direct browser-to-S3 uploads via AWS SDK v3 presigned PUT URLs, presigned GET URLs for secure streaming and downloads with attachment headers, tenant isolation (`weddings/{weddingId}/gallery/...`), and offline/dev mock storage fallback. Complete backend REST API under `/api/v1/gallery` (12 endpoints: summary, albums CRUD, media listing/filtering, upload URL request, upload confirmation, download URL, delete) with 14 passing backend tests. Frontend suite at `/gallery` inside `AuthenticatedLayout` with Dashboard metrics (Total Photos, Total Videos, Event Albums, Storage Used with visual progress bar), Event Albums carousel/grid with preset chips and custom album creation/editing, multi-file drag-and-drop direct S3 upload dialog with individual & overall progress bars, responsive Media Grid with Photo/Video tabs, search and Grid/List view switchers, and full-screen luxury Media Lightbox viewer supporting photos and HTML5 video playback with Esc/Arrow keyboard navigation. Verified with 14 backend and 7 frontend tests passing (93 web tests total passing), 0 TypeScript errors across monorepo, and clean Parcel production build in 8.64s.
+- **Wedding Website Builder Module (V1 — Stitch Design Reference & UX Hardening):** Complete end-to-end (2026-11-17). Comprehensive editorial wedding website builder and guest-facing celebration portal inspired by Google Stitch prototype. Database-backed with `website_settings` table and structured `content` JSONB. Backend REST API under `/api/v1/website` and public rate-limited endpoints under `/api/v1/public/weddings/:slug` supporting custom slug validation, template switching, draft saving, live publishing/unpublishing, guest RSVP lookup by name/email/token, and real-time attendance syncing directly into `Guest` and `GuestEvent` PostgreSQL records. Full frontend at `/website` and `/wedding/website` with persistent layout, overview KPI cards (Invited, Attending, Declined, Pending, Response Rate), 4 curated architectural templates (`Royal Heritage`, `Modern Minimal`, `Floral Romance`, `Bohemian Sunset`), 3-panel visual editor with collapsible Page Sections panel (shrinks to slim vertical rail for maximal canvas space), dedicated section form controls & Theme Styler, and interactive live studio canvas with Desktop (1020px with browser URL bar), Tablet (768px frame), and Mobile (375px frame) device framing. Includes Domain & Privacy settings modal, Publish confirmation dialog with shareable links and QR code generation, resilient production URL generator (`https://make-my-marriage.shop/w/{slug}` with isolated copy action), persistent sidebar collapse tooltips with pointer arrows and elevated z-index, and standalone public routes at `/w/:slug` and `/website/:slug` with full mobile-first guest RSVP interaction. Verified with 135 backend tests and 86 frontend tests passing, 0 TypeScript errors across all workspaces, and zero regressions.
+- **Vendor Management Module (V1 — Stitch Design Reference):** Complete end-to-end (2026-11-14). Comprehensive vendor production suite based on Google Stitch design reference (`Curated Wedding Partners & Production`). Full PostgreSQL schema with tables `vendors`, `vendor_services`, `vendor_events`, `vendor_bookings`, `vendor_payments`, and `vendor_documents` via Prisma migration `20261114120000_add_vendor_management_suite`. REST API under `/api/v1/vendors` with tenant isolation, CSRF protection, integer-paise math, and bidirectional expense synchronization (creating/updating bookings and payments updates the wedding expense ledger atomically). Complete frontend at `/vendors` with persistent sidebar, sub-nav VIEW STATE tabs, live sync badge, 8 KPI cards, Booking Pipeline Funnel (5 stages), Budget Allocation by Tier (segmented progress bar & top categories), Upcoming Vendor Milestones, Activity & Audit Trail, Vendor Directory with Grid/Table views, 18 Curated Categories, Vendor Profile Deep Dive (4 sub-tabs), Payments & Ledger, Side-by-Side Comparison matrix, and Production Schedule Timeline with conflict detection. Verified with 13 backend and 4 frontend vendor tests passing, 0 TypeScript errors, and 0 ESLint errors.
+- **Expenses, Budget & Vendor Management Module (V1):** Complete end-to-end (2026-11-12). PostgreSQL tables (`wedding_budgets`, `event_budgets`, `expenses`) with `NUMERIC(12,2)` monetary columns and SQL `CHECK` constraints via Prisma migration `20261112215000_add_expenses_budgets_vendors`. Modular backend REST API under `/api/v1/expenses` and `/api/v1/vendors` featuring integer-paise arithmetic to avoid floating-point drift, tenant-isolated CRUD, cross-wedding association checks, installment payment tracking (`PENDING`, `PARTIAL`, `PAID`, `OVERDUE`, `CANCELLED`), overall wedding & ceremony-specific budgets, over-budget detection, pagination, filtering, and analytics (category, event, payment status/method, vendor, and monthly breakdowns). Full frontend suite at `/expenses` inside `AuthenticatedLayout` with KPI cards, utilization progress bar, filterable ledger, Add/Edit/Detail/Budget modals, inline Quick Add Vendor, CSV report export, pure SVG/CSS analytics visualizations, and live integration across the Workspace Dashboard (`SummaryCard`, `QuickActions`, checklist) and `EventDetailPage` Expenses tab.
+- **Guest List & RSVP Management Module (V1):** Complete end-to-end (PRD §9.3, REST API §5.6). Full attendee lifecycle tracking with `RsvpStatus` (`PENDING`, `ATTENDING`, `NOT_ATTENDING`), per-guest party capacity constraints (`maxGuests`), multi-event ceremony invitations, Resend email dispatch, batch reminder capabilities, and public mobile-first RSVP submission. REST API under `/api/v1/guests` and `/api/v1/public/invitations/:token` with tenant isolation, rate limiting, and CSRF protection. Interactive organizer frontend at `/guests` with KPI metrics ribbon (Total, Attending, Pending, Declined, Invitations Sent), search & multi-event filters, Add/Edit modal, Guest Detail modal, one-click WhatsApp sharing, and invitation link generation. Public invitation experience at `/invite/:token` with traditional Indian auspicious invocation, wedding itinerary timeline, and interactive attendance form. Monorepo verified with passing tests (72 web, 17 api guest tests), zero TypeScript errors, and clean Parcel & API production builds.
 - **Task Management Module (V1):** Complete end-to-end (PRD §9.2, REST API §5.5). Full task lifecycle tracking with `TaskStatus` (`TO_DO`, `IN_PROGRESS`, `COMPLETED`) and `TaskPriority` (`LOW`, `MEDIUM`, `HIGH`). REST API with tenant isolation, assigned member & event cross-wedding validation, paginated filtering, text search, and metrics breakdown. Interactive frontend suite (`/tasks`) matching the approved warm aesthetic (`#FAF8F5`, `#8A4B35`, `#556251`, `Playfair Display`), tabs (All Tasks, My Tasks, Completed), interactive creation/editing modals with dynamic team member and event selectors, task detail viewer, and dashboard quick actions integration. Monorepo verified with 149 passing tests (67 web, 82 api), zero TypeScript errors, and clean production builds.
 - **Lighthouse Performance Audit (V1):** Audit complete; bottlenecks identified; optimization pending user approval. Primary findings: 937 KB hero-image global preload on every page, monolithic 710 KB JS bundle with zero route-level code splitting, and render-blocking Google Fonts stylesheet. Implementation plan prepared; no code changes applied yet.
 - **Secret hygiene fix:** Real credentials (Resend API key, DB password, session/CSRF secrets) removed from `.env.example` and replaced with safe placeholder values before push; commit amended to keep secrets out of GitHub history. Keys should be rotated by the operator.
@@ -19,6 +25,194 @@ This file tracks delivered project milestones. The approved PRD, System Design, 
 - **Repository foundation & database:** Complete with PostgreSQL and Prisma 7 ORM migrations.
 
 ## Milestones
+
+### 2026-11-20 — Photo & Video Gallery Module (Production AWS S3 Cloud Architecture Redevelopment) — Complete
+
+- **Production Cloud Architecture & Mock Storage Removal:**
+  - Strictly redeveloped using cloud-native direct-to-S3 storage: PostgreSQL stores only metadata and S3 object keys; AWS S3 (`make-my-marriage-gallery-dev-rana-2026`) stores all binary media.
+  - Totally eliminated local mock-storage route handlers (`/api/v1/gallery/mock-storage`), local file streams, and disk persistence directories (`apps/api/.storage/`).
+  - The Node.js Express server does not serve or accept media binaries, keeping memory and bandwidth consumption minimal.
+- **Direct S3 Upload & Pre-signed Put URLs:**
+  - Client-side uploads bypass the Node.js backend entirely, streaming directly from the browser to AWS S3 using pre-signed PUT URLs with real-time `XMLHttpRequest` progress reporting (0% to 100%).
+  - Resolved AWS SDK v3 flexible checksum parameter (`x-amz-checksum-crc32: AAAAAA==`) by configuring `requestChecksumCalculation: 'WHEN_REQUIRED'` and `responseChecksumValidation: 'WHEN_REQUIRED'` on `S3Client`.
+  - Object keys strictly formatted as `weddings/{weddingId}/gallery/{albumId}/{mediaId}/{sanitizedFileName}` ensuring tenant isolation and collision prevention.
+- **Mandatory Independent Backend Verification:**
+  - `POST /api/v1/gallery/media/confirm` executes `s3Service.headObject(media.s3ObjectKey)` (`HeadObjectCommand`) to confirm the object physically exists in the AWS S3 bucket before marking `uploadStatus: 'UPLOADED'`.
+  - If S3 verification fails (404 / NotFound), the database record is updated to `uploadStatus: 'FAILED'` and rejected with `400 UPLOAD_VERIFICATION_FAILED`. False-positive confirmations are prevented.
+- **Dynamic Secure Media Viewing & Downloads:**
+  - The S3 bucket remains private with Block Public Access enabled.
+  - Ephemeral pre-signed GET URLs (300-second expiry) are generated dynamically on query, preventing stale or expired links upon page reload.
+  - Downloads use `ResponseContentDisposition: attachment; filename="..."` for clean user downloads.
+- **Resilient Media Deletion & Album Cover Fallback:**
+  - S3 deletion via `DeleteObjectCommand` is wrapped in safe exception handling so that missing S3 objects do not prevent database cleanup.
+  - Album covers are automatically reset or reassigned upon deletion of their cover image.
+- **Frontend Hardening & DX Improvements:**
+  - Guarded `<img src="">` and `<video src="">` in `MediaGrid.tsx` and `MediaLightboxModal.tsx` against empty strings, eliminating React DOM hydration/download warnings.
+  - Fixed Parcel `PublicInvitationPage.tsx` hero image import with `url:` prefix.
+  - Updated `apps/api/package.json` nodemon command to watch `.env` for automatic process reload upon credential updates.
+  - Added safe, masked diagnostic logging in `apps/api/src/modules/gallery/s3.ts`.
+- **Verification & Test Coverage:**
+  - `npm run typecheck` &rarr; 0 errors across `@mmm/api` and `@mmm/web`.
+  - `npm --workspace @mmm/web test` &rarr; 13/13 test suites passed, 93/93 tests passing.
+  - S3 pre-signed PUT and GET URL generation verified live against AWS S3 bucket `make-my-marriage-gallery-dev-rana-2026`.
+
+### 2026-11-17 — Photo & Video Gallery Module (V1 — Stitch Design Reference & AWS S3 Integration) — Complete
+
+- **Database Architecture & Data Persistence:**
+  - Backed by PostgreSQL `gallery_albums` and `gallery_media` tables via Prisma migration `20261117140000_add_gallery_management`.
+  - Added enums `MediaType` (`IMAGE`, `VIDEO`) and `MediaUploadStatus` (`PENDING`, `UPLOADED`, `FAILED`, `DELETED`).
+  - Added foreign key relations to `Wedding`, `Event`, and `User`.
+  - Enforced unique album names per wedding (`[weddingId, name]`) and unique S3 object keys.
+  - Comprehensive index coverage on `[weddingId, uploadStatus, createdAt]`, `[weddingId, albumId]`, `[weddingId, eventId]`, and `[weddingId, mediaType]`.
+- **AWS S3 Direct Upload Architecture:**
+  - Client-side uploads bypass server memory bottlenecks by uploading directly from browser to AWS S3 using pre-signed PUT URLs generated via `@aws-sdk/s3-request-presigner` and `@aws-sdk/client-s3`.
+  - Object keys strictly structured under `weddings/${weddingId}/gallery/${mediaType.toLowerCase()}s/${mediaId}/${sanitizedFileName}` ensuring tenant isolation.
+  - Pre-signed GET URLs for secure, authenticated media streaming and downloads with `Content-Disposition: attachment`.
+  - Offline / local development emulation fallback (`/api/v1/gallery/mock-storage/:s3Key`) ensuring local tests and development run smoothly without requiring live AWS credentials.
+  - Environment variables: `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_S3_BUCKET_NAME`, `AWS_S3_PUBLIC_BASE_URL`, `AWS_S3_PRESIGNED_EXPIRES_SECONDS`, `AWS_S3_UPLOAD_MAX_SIZE_BYTES`.
+- **Backend REST API (`/api/v1/gallery`):**
+  - Modular domain architecture in `apps/api/src/modules/gallery/`: `s3.ts`, `schemas.ts`, `service.ts`, `routes.ts`.
+  - Endpoints:
+    - `GET /api/v1/gallery/summary`: Returns total photos, total videos, total albums, storage bytes used, formatted storage string, and recent media items.
+    - `GET /api/v1/gallery/albums`: Returns all albums with live media count and event links.
+    - `POST /api/v1/gallery/albums`: Creates an album with wedding tenant validation and duplicate name prevention.
+    - `GET /api/v1/gallery/albums/:albumId`: Returns single album details.
+    - `PATCH /api/v1/gallery/albums/:albumId`: Updates album details.
+    - `DELETE /api/v1/gallery/albums/:albumId`: Safely deletes album while preserving media items.
+    - `GET /api/v1/gallery/media`: Paginated media listing with album, event, type, and search filters.
+    - `POST /api/v1/gallery/media/upload-url`: Validates MIME types (JPEG, PNG, WebP, MP4, MOV, WebM) and file size (<= 100MB), creates `PENDING` staging record, and returns signed S3 PUT URL.
+    - `POST /api/v1/gallery/media/confirm`: Marks upload as `UPLOADED`, records dimensions and duration, auto-assigns cover photo if album has none.
+    - `GET /api/v1/gallery/media/:mediaId/download`: Issues presigned download URL.
+    - `PATCH /api/v1/gallery/media/:mediaId`: Updates caption, album, or event associations.
+    - `DELETE /api/v1/gallery/media/:mediaId`: Deletes object from S3 and marks deleted in database.
+  - 14 backend unit/integration tests in `apps/api/tests/gallery.test.ts` passing (14/14).
+- **Frontend UI & Stitch Design Reference (`/gallery` & `/wedding/gallery`):**
+  - Implemented in `apps/web/src/features/gallery/`:
+    - `GalleryPage.tsx`: Main page orchestrator with sticky header, action buttons, summary cards, album grid, and media viewer.
+    - `GalleryStats.tsx`: 4 luxury metric cards with visual storage progress bar and custom SVG icon vector accents.
+    - `AlbumCard.tsx` & `AlbumModal.tsx`: Event-based album cards with cover photos or elegant editorial fallbacks, item count badges, event chips, and creation/editing modals with preset chips (Engagement, Haldi, Mehendi, Sangeet, Cocktail, Wedding Ceremony, Reception).
+    - `MediaUploadModal.tsx`: Multi-file drag-and-drop zone, file type/size validation, local preview thumbnails, individual and overall progress bars, album/event selection, and concurrent direct S3 upload engine via `uploadFileDirectToS3`.
+    - `MediaGrid.tsx`: Filterable media grid with All/Photos/Videos tabs, text search, Grid vs List view switcher, and hover action pills.
+    - `MediaLightboxModal.tsx`: Full-screen luxury viewer with image zoom/fit, custom HTML5 video player, thumbnail filmstrip, download trigger, delete action, and Esc/Arrow keyboard navigation.
+  - Integrated into persistent sidebar navigation in `DashboardSidebar.tsx` as a live first-class feature.
+  - All Parcel asset conventions respected (`url:` prefix used for static images; no static images imported as plain JS modules).
+  - 7 frontend unit/integration tests in `apps/web/tests/gallery.test.tsx` passing (7/7; 93 web tests total passing).
+- **Verification & Build Health:**
+  - `npm --workspace @mmm/api run typecheck` &rarr; 0 errors.
+  - `npm --workspace @mmm/web run typecheck` &rarr; 0 errors.
+  - `npm --workspace @mmm/api test -- gallery.test.ts` &rarr; 14 tests passing.
+  - `npm --workspace @mmm/web test` &rarr; 13 test suites, 93 tests passing.
+  - `npm --workspace @mmm/web run build` &rarr; Built cleanly in 8.64s (`dist/wedding-hero.2233e765.jpg` bundled cleanly, zero resolution errors).
+
+
+### 2026-11-17 — Wedding Website Builder Module (V1 — Stitch Design Reference) — Complete
+
+- **Database Architecture & Data Persistence:**
+  - Backed by PostgreSQL `website_settings` table (`id`, `wedding_id`, `slug`, `theme`, `is_published`, `content` JSONB, `published_at`, `created_at`, `updated_at`).
+  - Zero brittle schema migrations needed; structured `content` JSONB stores rich sections, color palettes, custom typography, and SEO metadata with strict Zod validation.
+- **Backend REST API (`/api/v1/website` & `/api/v1/public/weddings`):**
+  - Modular domain architecture in `apps/api/src/modules/website/`: `schemas.ts`, `service.ts`, `routes.ts`.
+  - 8 core endpoints:
+    - `GET /api/v1/website`: Returns full configuration, live sections, active theme, settings, and calculated RSVP metrics.
+    - `GET /api/v1/website/templates`: Returns curated architectural templates with styles.
+    - `PATCH /api/v1/website`: Updates custom slug, sections content, theme parameters, with CSRF and same-origin protection.
+    - `POST /api/v1/website/publish` & `/unpublish`: Toggles public accessibility and sets `published_at` timestamp.
+    - `POST /api/v1/website/template`: Applies an architectural template preset atomically without overwriting couple names or ceremony schedules.
+    - `GET /api/v1/public/weddings/:slug`: Public guest endpoint returning sanitized, published celebration data and ceremony timelines. Rate limited to 120 req/min.
+    - `POST /api/v1/public/weddings/:slug/rsvp/lookup`: Guest attendance lookup by name, email, or invitation token. Rate limited to 30 req/min.
+    - `POST /api/v1/public/weddings/:slug/rsvp`: Public guest RSVP submission that automatically syncs into PostgreSQL `Guest` and `GuestEvent` tables. Rate limited to 20 req/15min.
+  - 11 backend unit/integration tests in `apps/api/tests/website.test.ts` passing (11/11).
+- **Frontend UI & Stitch Design Reference (`/website` & `/w/:slug`):**
+  - Implemented in `apps/web/src/features/website/`:
+    - `WeddingWebsitePage.tsx`: Main page orchestrator with sub-navigation tabs (`Dashboard`, `Visual Editor`, `Templates Gallery`), live status badge, and sticky header.
+    - `WebsiteDashboardView.tsx`: Overview KPI ribbon (Total Guest List, Attending, Declined, Pending, Response Rate), shareable URL bar with 1-click copy, Quick Actions, and 11-section page status breakdown.
+    - `TemplateGalleryView.tsx`: 4 architectural style cards (`Royal Heritage`, `Modern Minimal`, `Floral Romance`, `Bohemian Sunset`) with detail modals and "Apply Design" workflow.
+    - `WebsiteEditorView.tsx`: Three-panel layout:
+      - Left: 11 reorderable sections with drag/move controls and eye visibility toggles.
+      - Center: Dedicated section controls (`Hero`, `Couple`, `Story`, `Events`, `Venue`, `Gallery`, `Family`, `Travel`, `RSVP`, `Contact`, `Footer`) and `ThemeStylerPanel` (5 palette presets, custom hex pickers, typography pairings, button shapes, card styles, background linen patterns).
+      - Right: Live reactive preview canvas with Desktop (100%), Tablet (768px), and Mobile (375px) device frames.
+    - `WebsiteSettingsModal.tsx`: Custom slug management (`/w/[slug]`), password protection, SEO tags, and display overrides.
+    - `PublishSuccessModal.tsx`: Published celebration modal with shareable link, SVG QR code generator, and WhatsApp broadcast button.
+    - `PublicWeddingWebsitePage.tsx`: Standalone guest celebration portal at `/w/:slug` and `/website/:slug` with password gate (when enabled) and full interactive RSVP modal.
+  - 5 frontend integration tests in `apps/web/tests/website.test.tsx` passing (5/5).
+- **Verification Outcomes:**
+  - `npm --workspace @mmm/api run typecheck`: Passed (0 errors).
+  - `npm --workspace @mmm/web run typecheck`: Passed (0 errors).
+  - `npm --workspace @mmm/api test -- tests/website.test.ts`: Passed (11/11 tests).
+  - `npm --workspace @mmm/web test -- tests/website.test.tsx`: Passed (5/5 tests).
+  - Full backend test suite (`npm --workspace @mmm/api test`): 135 passed, 0 failed.
+  - Full frontend test suite (`npm --workspace @mmm/web test`): 86 passed, 0 failed.
+  - Total repository tests passing: 221 tests. Zero regressions.
+
+### 2026-11-14 — Vendor Management Suite (V1 — Stitch Design Reference) — Complete
+
+- **Database Architecture & Data Integrity:**
+  - Added Prisma models `Vendor`, `VendorService`, `VendorEvent`, `VendorBooking`, `VendorPayment`, and `VendorDocument` with integer-paise math and `NUMERIC(12,2)` columns.
+  - Added enums `VendorCategory` (18 verticals), `VendorPriceRange`, `VendorStatus`, and `VendorBookingStatus`.
+  - Applied migration `20261114120000_add_vendor_management_suite` to PostgreSQL with non-negative constraints and relational foreign keys.
+  - Regenerated Prisma Client 7.10.0 with full type safety.
+- **Backend REST API (`/api/v1/vendors`):**
+  - Modular domain architecture in `apps/api/src/modules/vendors/`: `schemas.ts`, `service.ts`, `routes.ts`.
+  - Implemented 17 endpoints covering vendor CRUD, booking creation, payment disbursements, itemized services, pipeline status changes, favorite shortlist toggling, Stitch KPI dashboard analytics, comparison matrix, and production calendar.
+  - Automatic bidirectional synchronization between `VendorBooking` / `VendorPayment` and `Expense`: creating or updating vendor bookings immediately updates the master wedding expense ledger in atomic transactions.
+  - 13 backend unit/integration tests in `apps/api/tests/vendors.test.ts` passing (13/13).
+- **Frontend UI & Stitch Design Reference (`/vendors`):**
+  - Implemented full vendor management suite in `apps/web/src/features/vendors/`:
+    - `VendorsPage.tsx`: Main page orchestrator with persistent layout, top sub-nav `VIEW STATE:` tabs, and `Live Sync Enabled` badge.
+    - `VendorDashboardView.tsx`: 8 KPI cards, Booking Pipeline Funnel (5 stages), Budget Allocation by Tier (segmented progress bar & category cards), Upcoming Vendor Milestones, Activity & Audit Trail.
+    - `VendorDirectoryView.tsx`: Search bar, category filter, status tabs, grid/table view toggle, rating stars, favorite toggle heart, and quick booking triggers.
+    - `VendorCategoriesView.tsx`: Interactive grid of 18 wedding categories with allocation totals and settlement bars.
+    - `VendorProfileDeepDiveView.tsx`: Selected vendor hero card and 4 deep-dive sub-tabs (Overview & Packages, Bookings & Contracts, Payment History, Team Notes & Riders).
+    - `VendorPaymentsLedgerView.tsx`: 4 financial ledger KPI cards and transaction table with search, vendor, and method filters.
+    - `VendorComparisonView.tsx`: Checkbox selector for 2–4 vendors with side-by-side metric evaluation matrix.
+    - `VendorScheduleTimelineView.tsx`: Chronological production schedule with milestone cards, ceremony tags, and conflict detection banner.
+    - Modals: `AddEditVendorModal.tsx`, `VendorBookingModal.tsx`, and `RecordVendorPaymentModal.tsx`.
+  - Wired `/vendors` and `/wedding/vendors` routes in `apps/web/src/app/router.tsx` and updated `DashboardSidebar.tsx` to remove "Coming Soon" and display dynamic vendor count badge.
+  - 4 frontend tests in `apps/web/tests/vendors.test.tsx` passing (4/4).
+- **Verification:**
+  - TypeScript typecheck (`npm run typecheck`): 0 errors across `@mmm/api` and `@mmm/web`.
+  - ESLint (`npx eslint`): 0 errors across all vendor source and test files.
+  - Backend tests (`npm --workspace @mmm/api test -- tests/vendors.test.ts`): 13 passed, 13 total.
+  - Frontend tests (`npm --workspace @mmm/web test -- tests/vendors.test.tsx`): 4 passed, 4 total.
+  - Cross-module regression tests (`tests/expenses.test.ts` and `tests/expenses.test.tsx`): 17 passed, 17 total.
+
+- **Database Architecture & Data Integrity:**
+  - Added `RsvpStatus` (`PENDING`, `ATTENDING`, `NOT_ATTENDING`) enum in `prisma/schema.prisma`.
+  - Added `Guest` model with party capacity (`maxGuests`, default 1), attendance tally (`attendingCount`), secure token tracking (`invitationToken`, `invitationTokenHash`), email dispatch timestamps (`invitationSentAt`, `lastReminderSentAt`), and reminder count.
+  - Added `GuestEvent` join table for granular multi-ceremony access (inviting select guests to specific ceremonies like Haldi or Mehendi while reserving general ceremonies for all).
+  - Applied migration `20261111180000_add_guest_management` to PostgreSQL and regenerated Prisma Client 7.10.0.
+- **Backend REST API (`/api/v1/guests` & `/api/v1/public/invitations`):**
+  - Modular domain architecture in `apps/api/src/modules/guests/`: `schemas.ts`, `service.ts`, `routes.ts`.
+  - `POST /api/v1/guests`: Creates guest party with cross-wedding event validation and tenant boundary enforcement.
+  - `GET /api/v1/guests`: Paginated list with filtering by RSVP status, event assignment, invitation delivery status, and text search.
+  - `GET /api/v1/guests/dashboard`: Returns aggregate metrics (`totalGuests`, `pendingRsvps`, `attendingGuests`, `notAttendingGuests`, `expectedAttendeeCount`, `invitationsSentCount`).
+  - `GET /api/v1/guests/:guestId`: Returns single guest details with ceremony schedule.
+  - `PATCH /api/v1/guests/:guestId`: Updates party size, contact info, notes, and ceremony assignments.
+  - `DELETE /api/v1/guests/:guestId`: Removes guest within the wedding workspace.
+  - `GET /api/v1/guests/:guestId/invitation-link`: Generates and retrieves stable personal share link.
+  - `POST /api/v1/guests/:guestId/invitation/send`: Sends digital invitation via Resend email.
+  - `POST /api/v1/guests/reminders/send`: Batch dispatches courteous follow-up reminder emails to all pending guests.
+  - `GET /api/v1/public/invitations/:token`: Public rate-limited invitation inspection.
+  - `POST /api/v1/public/invitations/:token/rsvp`: Public rate-limited RSVP submission with party size validation constrained to `maxGuests`.
+  - Dashboard integration: Updated `getDashboard` in `wedding/service.ts` to compute real guest headcount and RSVP status counts directly from the database.
+  - 17 unit/integration tests in `apps/api/tests/guests.test.ts` passing.
+- **Frontend UI & Application Integration (`/guests` & `/invite/:token`):**
+  - Implemented `apps/web/src/features/guests/`: `guestsApi.ts`, `GuestsPage.tsx`, `GuestModal.tsx`, `GuestDetailModal.tsx`, `SendRemindersModal.tsx`.
+  - Implemented public invitation view: `apps/web/src/features/invitations/PublicInvitationPage.tsx`.
+  - Replaced the `/guests` roadmap placeholder with the interactive Guest Management suite inside `AuthenticatedLayout`.
+  - Top KPI Ribbon: Total Parties, Attending Headcount, Pending RSVPs, Declined, and Invitations Sent percentage.
+  - Filter and search bar: Search by guest name/email/phone, RSVP status tabs with counts, ceremony dropdown filter, dispatch status filter, and sort direction.
+  - Guest table: Displays name, contact details, RSVP status badge, party size, ceremony chips, one-click link copy, and WhatsApp share button.
+  - `GuestModal`: Dialog for adding and editing guests with multi-event ceremony selection and capacity stepper.
+  - `GuestDetailModal`: Comprehensive guest view with invitation actions, WhatsApp sharing, and Resend email triggers.
+  - `SendRemindersModal`: Confirmation modal for batch RSVP follow-ups.
+  - `PublicInvitationPage`: Mobile-first responsive invitation with couple banner, auspicious Ganesh invocation, itinerary schedule, and RSVP response form.
+  - Dashboard & Sidebar Integration: Dynamic guest count badge in `DashboardSidebar`, real metrics in `SummaryCard` GUESTS & RSVP card, and direct routing in `QuickActions` "Add Guest".
+  - Frontend test suite in `apps/web/tests/guests.test.tsx` verifying metric display, guest table rendering, modal workflows, and public RSVP submission (5/5 passing).
+- **Verification:**
+  - TypeScript strict typecheck across monorepo: `npm run typecheck` passed (code 0).
+  - Web test suite: `npm --workspace @mmm/web test` passed (72/72 tests passing).
+  - Production build: `npm run build` passed (Parcel client bundle and API server build completed cleanly).
 
 ### 2026-11-09 — Wedding Task Management Module (V1) — Complete
 

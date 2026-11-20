@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../auth/AuthProvider';
-import weddingHeroImage from '../../assets/images/wedding-hero.jpg';
+import weddingHeroImage from 'url:../../assets/images/wedding-hero.jpg';
 import {
   getDashboard,
   updateWedding,
@@ -196,6 +196,7 @@ export function DashboardPage() {
         guestsCount={dashboard.summary.guests}
         rsvpsSummary={dashboard.summary.rsvps}
         totalExpenseAmount={dashboard.summary.totalExpenseAmount}
+        budgetSummary={dashboard.summary.budget}
         weddingDate={wedding.weddingDate}
         onOpenComingSoon={handleOpenComingSoon}
       />
@@ -373,12 +374,7 @@ export function DashboardPage() {
               </div>
 
               <div
-                onClick={() =>
-                  handleOpenComingSoon(
-                    'Track Expenses',
-                    'Budget tracking and vendor deposits are launching soon.',
-                  )
-                }
+                onClick={() => navigate('/expenses?tab=budgets')}
                 className="group flex items-center justify-between p-3 rounded-xl border border-[#d8c2bb]/40 hover:border-[#8a4b35]/50 hover:bg-[#f4f4ed]/40 transition-all cursor-pointer"
               >
                 <div className="flex items-center gap-3 min-w-0">
@@ -460,6 +456,11 @@ export function DashboardPage() {
       {/* 1. SIDEBAR NAVIGATION */}
       <DashboardSidebar
         eventsCount={dashboard.summary.events}
+        guestsCount={dashboard.summary.guests}
+        tasksDueCount={
+          dashboard.summary.tasks.due ??
+          Math.max(0, dashboard.summary.tasks.total - dashboard.summary.tasks.completed)
+        }
         onOpenComingSoon={handleOpenComingSoon}
         isMobileOpen={isMobileSidebarOpen}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}

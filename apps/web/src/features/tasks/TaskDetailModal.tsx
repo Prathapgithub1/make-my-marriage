@@ -7,6 +7,7 @@ import {
   TASK_PRIORITY_STYLES,
   updateTaskStatus,
   deleteTask,
+  getTaskDueDateInfo,
 } from './tasksApi';
 
 export interface TaskDetailModalProps {
@@ -109,8 +110,8 @@ export function TaskDetailModal({
                 <span className={`w-1.5 h-1.5 rounded-full ${statusStyle.dot}`} />
                 {TASK_STATUS_LABELS[task.status]}
               </span>
-              {task.isOverdue && (
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#FEF0F0] text-[#D32F2F] border border-[#F8D7DA] tracking-wide uppercase">
+              {task.isOverdue && task.status !== 'COMPLETED' && (
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#FDF2F2] text-[#C0392B] border border-[#FADBD8] tracking-wide uppercase">
                   Overdue
                 </span>
               )}
@@ -161,13 +162,19 @@ export function TaskDetailModal({
               <span className="text-[11px] font-semibold text-[#86736D] uppercase tracking-wider block">
                 Due Date
               </span>
-              <p
-                className={`text-sm font-medium mt-0.5 ${
-                  task.isOverdue ? 'text-[#D32F2F] font-bold' : 'text-[#1A1C18]'
-                }`}
-              >
-                {formatTaskDisplayDate(task.dueDate)}
-              </p>
+              <div className="flex items-center gap-2 mt-1">
+                {(() => {
+                  const dueInfo = getTaskDueDateInfo(task.dueDate, task.status);
+                  return (
+                    <>
+                      <span className={`text-sm ${dueInfo.className}`}>{dueInfo.text}</span>
+                      {dueInfo.badgeLabel && (
+                        <span className={dueInfo.badgeClassName}>{dueInfo.badgeLabel}</span>
+                      )}
+                    </>
+                  );
+                })()}
+              </div>
             </div>
 
             {/* Ceremony */}
@@ -229,11 +236,10 @@ export function TaskDetailModal({
                     type="button"
                     onClick={() => handleStatusChange(st)}
                     disabled={isUpdatingStatus}
-                    className={`flex-1 py-2 text-xs font-semibold rounded-xl border transition-all cursor-pointer ${
-                      isActive
+                    className={`flex-1 py-2 text-xs font-semibold rounded-xl border transition-all cursor-pointer ${isActive
                         ? 'bg-[#8D493A] text-white border-[#8D493A] shadow-xs'
                         : 'bg-white border-[#D8C2BB] text-[#716B64] hover:bg-[#FAF8F5]'
-                    }`}
+                      }`}
                   >
                     {TASK_STATUS_LABELS[st]}
                   </button>
