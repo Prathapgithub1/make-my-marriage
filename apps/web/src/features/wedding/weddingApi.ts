@@ -10,6 +10,7 @@ export type CreateWeddingInput = {
   state?: string | null;
   country?: string | null;
   description?: string | null;
+  coverImageKey?: string | null;
 };
 
 export type UpdateWeddingInput = Partial<CreateWeddingInput>;
@@ -25,6 +26,11 @@ export type WeddingDetail = {
   state: string | null;
   country: string | null;
   description: string | null;
+  coverImageKey?: string | null;
+  coverImageUrl?: string | null;
+  role?: 'ADMIN' | 'MANAGER';
+  membersCount?: number;
+  createdAt?: string;
   website: {
     slug: string;
     isPublished: boolean;
@@ -95,6 +101,44 @@ export function updateWedding(input: UpdateWeddingInput): Promise<WeddingDetail>
   return apiRequest<Envelope<WeddingDetail>>('wedding', {
     method: 'PATCH',
     body: JSON.stringify(input),
+  }).then((res) => res.data);
+}
+
+export function getCoverUploadUrl(
+  fileName: string,
+  contentType: string,
+  fileSize: number,
+): Promise<{ uploadUrl: string; s3ObjectKey: string; uploadHeaders: Record<string, string> }> {
+  return apiRequest<
+    Envelope<{ uploadUrl: string; s3ObjectKey: string; uploadHeaders: Record<string, string> }>
+  >('wedding/cover/upload-url', {
+    method: 'POST',
+    body: JSON.stringify({ fileName, contentType, fileSize }),
+  }).then((res) => res.data);
+}
+
+export async function uploadCoverToS3(
+  uploadUrl: string,
+  file: File,
+  headers: Record<string, string> = {},
+): Promise<void> {
+  const response = await fetch(uploadUrl, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': file.type,
+      ...headers,
+    },
+    body: file,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to upload cover image to cloud storage (${response.status})`);
+  }
+}
+
+export function deleteWeddingWorkspace(): Promise<{ success: boolean; message: string }> {
+  return apiRequest<Envelope<{ success: boolean; message: string }>>('wedding', {
+    method: 'DELETE',
   }).then((res) => res.data);
 }
 

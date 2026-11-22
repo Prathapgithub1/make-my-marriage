@@ -72,6 +72,12 @@ function buildWeddingApp(
     createWedding: jest.fn(async () => mockWedding),
     getWeddingByUserId: jest.fn(async () => mockWedding),
     updateWedding: jest.fn(async () => mockWedding),
+    deleteWedding: jest.fn(async () => ({ success: true, message: 'Deleted' })),
+    getCoverUploadUrl: jest.fn(async () => ({
+      uploadUrl: 'https://s3.example.com/presigned',
+      s3ObjectKey: 'weddings/123/branding/cover.jpg',
+      uploadHeaders: { 'Content-Type': 'image/jpeg' },
+    })),
     getDashboard: jest.fn(async () => mockDashboard),
     ...serviceOverrides,
   };
@@ -251,6 +257,74 @@ describe('Wedding & Dashboard Routes', () => {
         .patch('/api/v1/wedding')
         .set(validHeaders)
         .send({ title: 'Unauthorized Modification' });
+
+      expect(res.status).toBe(403);
+      expect(res.body.error.code).toBe('FORBIDDEN');
+    });
+  });
+
+  describe('POST /api/v1/wedding/cover/upload-url', () => {
+    it('generates pre-signed upload URL for valid cover image parameters', async () => {
+      const { app, weddingService } = buildWeddingApp();
+
+      const res = await request(app)
+        .post('/api/v1/wedding/cover/upload-url')
+        .set(validHeaders)
+        .send({
+          fileName: 'palace-cover.jpg',
+          contentType: 'image/jpeg',
+          fileSize: 2 * 1024 * 1024,
+        });
+
+      expect(res.status).toBe(200);
+      expect(res.body.data.uploadUrl).toBe('https://s3.example.com/presigned');
+      expect(weddingService.getCoverUploadUrl).toHaveBeenCalledWith(
+        mockUser.id,
+        'palace-cover.jpg',
+        'image/jpeg',
+      );
+    });
+
+    it('rejects unsupported file formats with 400', async () => {
+      const { app } = buildWeddingApp();
+
+      const res = await request(app)
+        .post('/api/v1/wedding/cover/upload-url')
+        .set(validHeaders)
+        .send({
+          fileName: 'document.pdf',
+          contentType: 'application/pdf',
+          fileSize: 1024,
+        });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error.code).toBe('VALIDATION_ERROR');
+    });
+  });
+
+  describe('DELETE /api/v1/wedding', () => {
+    it('allows workspace administrators to delete wedding workspace', async () => {
+      const { app, weddingService } = buildWeddingApp();
+
+      const res = await request(app).delete('/api/v1/wedding').set(validHeaders);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data.success).toBe(true);
+      expect(weddingService.deleteWedding).toHaveBeenCalledWith(mockUser.id);
+    });
+
+    it('rejects deletion from non-admin members with 403', async () => {
+      const { app } = buildWeddingApp({
+        deleteWedding: jest.fn(async () => {
+          throw new AppError(
+            403,
+            'FORBIDDEN',
+            'Only wedding administrators can delete this wedding workspace.',
+          );
+        }),
+      });
+
+      const res = await request(app).delete('/api/v1/wedding').set(validHeaders);
 
       expect(res.status).toBe(403);
       expect(res.body.error.code).toBe('FORBIDDEN');

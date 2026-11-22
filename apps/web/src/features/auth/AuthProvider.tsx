@@ -10,6 +10,7 @@ type AuthContextValue = {
   isLoading: boolean;
   error: Error | null;
   logout: () => Promise<void>;
+  refreshSession: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -48,6 +49,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
           queryClient.removeQueries({ queryKey: sessionQueryKey });
           queryClient.clear();
         }
+      },
+      refreshSession: async () => {
+        await queryClient.invalidateQueries({ queryKey: sessionQueryKey });
       },
     }),
     [queryClient, sessionQuery.data, sessionQuery.error, sessionQuery.isPending],

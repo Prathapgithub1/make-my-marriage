@@ -206,7 +206,6 @@ export function DashboardSidebar({
         </svg>
       ),
       isRealRoute: true,
-      comingSoonDesc: 'Workspace timezone and notification settings are in development.',
     },
     {
       name: 'Wedding Members',

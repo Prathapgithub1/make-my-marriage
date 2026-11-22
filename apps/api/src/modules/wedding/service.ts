@@ -3,6 +3,7 @@ import type { PrismaClient } from '../../generated/prisma/client';
 import { WeddingRole, WebsiteTheme } from '../../generated/prisma/client';
 import { AppError } from '../../shared/app-error';
 import { hashToken } from '../auth/security';
+import { defaultS3Service, type S3ServiceOperations } from '../gallery/s3';
 import { formatPaiseToDecimal, parseMoneyToPaise } from '../expenses/money';
 import type { CreateWeddingInput, UpdateWeddingInput } from './schemas';
 import { generateWeddingSlug } from './slug';
@@ -11,6 +12,12 @@ export interface WeddingServiceOperations {
   createWedding(userId: string, input: CreateWeddingInput): Promise<WeddingDetail>;
   getWeddingByUserId(userId: string): Promise<WeddingDetail>;
   updateWedding(userId: string, input: UpdateWeddingInput): Promise<WeddingDetail>;
+  deleteWedding(userId: string): Promise<{ success: boolean; message: string }>;
+  getCoverUploadUrl(
+    userId: string,
+    fileName: string,
+    contentType: string,
+  ): Promise<{ uploadUrl: string; s3ObjectKey: string; uploadHeaders: Record<string, string> }>;
   getDashboard(userId: string): Promise<DashboardData>;
 }
 
@@ -25,6 +32,11 @@ export type WeddingDetail = {
   state: string | null;
   country: string | null;
   description: string | null;
+  coverImageKey?: string | null;
+  coverImageUrl?: string | null;
+  role?: WeddingRole;
+  membersCount?: number;
+  createdAt?: string;
   website: {
     slug: string;
     isPublished: boolean;
@@ -117,7 +129,10 @@ export function calculateDaysRemaining(
   return Math.ceil((targetUtc - todayUtc) / (1000 * 60 * 60 * 24));
 }
 
-export function createWeddingService(db: PrismaClient | undefined): WeddingServiceOperations {
+export function createWeddingService(
+  db: PrismaClient | undefined,
+  s3: S3ServiceOperations = defaultS3Service,
+): WeddingServiceOperations {
   function requireDatabase(): PrismaClient {
     if (!db) {
       throw new AppError(503, 'DATABASE_UNAVAILABLE', 'Database connection is unavailable.');
@@ -271,6 +286,25 @@ export function createWeddingService(db: PrismaClient | undefined): WeddingServi
       }
 
       const w = membership.wedding;
+      let coverImageUrl: string | null = null;
+      if (w.coverImageKey) {
+        if (w.coverImageKey.startsWith('http://') || w.coverImageKey.startsWith('https://')) {
+          coverImageUrl = w.coverImageKey;
+        } else {
+          try {
+            coverImageUrl = await s3.createPresignedGetUrl(w.coverImageKey, {
+              expiresInSeconds: 86400,
+            });
+          } catch {
+            coverImageUrl = null;
+          }
+        }
+      }
+
+      const membersCount = await database.weddingMembership.count({
+        where: { weddingId: w.id },
+      });
+
       return {
         id: w.id,
         title: w.title,
@@ -282,6 +316,11 @@ export function createWeddingService(db: PrismaClient | undefined): WeddingServi
         state: w.state,
         country: w.country,
         description: w.description,
+        coverImageKey: w.coverImageKey ?? null,
+        coverImageUrl,
+        role: membership.role,
+        membersCount,
+        createdAt: w.createdAt.toISOString(),
         website: w.websiteSettings
           ? {
               slug: w.websiteSettings.slug,
@@ -322,12 +361,31 @@ export function createWeddingService(db: PrismaClient | undefined): WeddingServi
       if (input.state !== undefined) updateData.state = input.state;
       if (input.country !== undefined) updateData.country = input.country;
       if (input.description !== undefined) updateData.description = input.description;
+      if (input.coverImageKey !== undefined) updateData.coverImageKey = input.coverImageKey;
 
       const updated = await database.wedding.update({
         where: { id: membership.weddingId },
         data: updateData,
         include: { websiteSettings: true },
       });
+
+      let coverImageUrl: string | null = null;
+      if (updated.coverImageKey) {
+        if (
+          updated.coverImageKey.startsWith('http://') ||
+          updated.coverImageKey.startsWith('https://')
+        ) {
+          coverImageUrl = updated.coverImageKey;
+        } else {
+          try {
+            coverImageUrl = await s3.createPresignedGetUrl(updated.coverImageKey, {
+              expiresInSeconds: 86400,
+            });
+          } catch {
+            coverImageUrl = null;
+          }
+        }
+      }
 
       return {
         id: updated.id,
@@ -340,12 +398,81 @@ export function createWeddingService(db: PrismaClient | undefined): WeddingServi
         state: updated.state,
         country: updated.country,
         description: updated.description,
+        coverImageKey: updated.coverImageKey ?? null,
+        coverImageUrl,
+        role: membership.role,
         website: updated.websiteSettings
           ? {
               slug: updated.websiteSettings.slug,
               isPublished: updated.websiteSettings.isPublished,
             }
           : null,
+      };
+    },
+
+    async deleteWedding(userId: string): Promise<{ success: boolean; message: string }> {
+      const database = requireDatabase();
+      const membership = await database.weddingMembership.findUnique({
+        where: { userId },
+        select: { weddingId: true, role: true },
+      });
+
+      if (!membership) {
+        throw new AppError(404, 'NOT_FOUND', 'You do not belong to a wedding workspace.');
+      }
+
+      if (membership.role !== WeddingRole.ADMIN) {
+        throw new AppError(
+          403,
+          'FORBIDDEN',
+          'Only wedding administrators can delete this wedding workspace.',
+        );
+      }
+
+      await database.wedding.delete({
+        where: { id: membership.weddingId },
+      });
+
+      return {
+        success: true,
+        message: 'Wedding workspace deleted successfully.',
+      };
+    },
+
+    async getCoverUploadUrl(
+      userId: string,
+      fileName: string,
+      contentType: string,
+    ): Promise<{ uploadUrl: string; s3ObjectKey: string; uploadHeaders: Record<string, string> }> {
+      const database = requireDatabase();
+      const membership = await database.weddingMembership.findUnique({
+        where: { userId },
+        select: { weddingId: true, role: true },
+      });
+
+      if (!membership) {
+        throw new AppError(404, 'NOT_FOUND', 'You do not belong to a wedding workspace.');
+      }
+
+      if (membership.role !== WeddingRole.ADMIN) {
+        throw new AppError(
+          403,
+          'FORBIDDEN',
+          'Only wedding administrators can update the celebration cover.',
+        );
+      }
+
+      const safeExt = fileName.includes('.') ? fileName.split('.').pop()!.toLowerCase() : 'jpg';
+      const s3ObjectKey = `weddings/${membership.weddingId}/branding/cover-${Date.now()}.${safeExt}`;
+
+      const uploadUrl = await s3.createPresignedPutUrl(s3ObjectKey, contentType, 300);
+
+      return {
+        uploadUrl,
+        s3ObjectKey,
+        uploadHeaders: {
+          'Content-Type': contentType,
+        },
       };
     },
 

@@ -98,8 +98,63 @@ Object.defineProperty(globalThis, 'fetch', {
         }),
       } as Response;
     }
+    if (url.includes('/wedding/cover/upload-url')) {
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          data: {
+            uploadUrl: 'https://test-bucket.s3.amazonaws.com/test-key.jpg',
+            s3ObjectKey: 'weddings/test-wedding-id/covers/test-cover.jpg',
+            expiresInSeconds: 300,
+            uploadHeaders: { 'Content-Type': 'image/jpeg' },
+          },
+        }),
+      } as Response;
+    }
     if (url.endsWith('/wedding')) {
       const method = (init?.method ?? 'GET').toUpperCase();
+      if (method === 'DELETE') {
+        return {
+          ok: true,
+          status: 200,
+          json: async () => ({
+            data: { deleted: true },
+          }),
+        } as Response;
+      }
+      if (method === 'PATCH') {
+        const body = JSON.parse(String(init?.body ?? '{}')) as {
+          title?: string;
+          brideName?: string;
+          groomName?: string;
+          weddingDate?: string;
+          location?: string;
+          story?: string;
+          coverImageKey?: string;
+        };
+        return {
+          ok: true,
+          status: 200,
+          json: async () => ({
+            data: {
+              id: 'test-wedding-id',
+              title: body.title ?? "Prathap & Akshitha's Wedding",
+              brideName: body.brideName ?? 'Akshitha Rao',
+              groomName: body.groomName ?? 'Prathap Kumar',
+              weddingDate: body.weddingDate ?? '2025-11-24',
+              location: body.location ?? 'Bangalore Palace',
+              story: body.story ?? '',
+              coverImageKey: body.coverImageKey ?? null,
+              coverImageUrl: null,
+              role: 'ADMIN',
+              membersCount: 6,
+              createdAt: '2025-01-01T00:00:00Z',
+              website: { slug: 'akshitha-prathap-14112025', isPublished: false },
+            },
+          }),
+        } as Response;
+      }
       if (method === 'POST') {
         const body = JSON.parse(String(init?.body ?? '{}')) as {
           title?: string;
@@ -159,6 +214,8 @@ Object.defineProperty(globalThis, 'fetch', {
             weddingDate: '2025-11-14',
             location: 'The Oberoi Udaivilas, Udaipur',
             website: { slug: 'akshitha-prathap-14112025', isPublished: false },
+            role: 'ADMIN',
+            membersCount: 6,
           },
         }),
       } as Response;

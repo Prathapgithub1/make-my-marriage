@@ -20,6 +20,7 @@ import { WeddingWebsitePage } from '../features/website/WeddingWebsitePage';
 import { PublicWeddingWebsitePage } from '../features/website/PublicWeddingWebsitePage';
 import { PublicInvitationPage } from '../features/invitations/PublicInvitationPage';
 import { GalleryPage } from '../features/gallery/GalleryPage';
+import { WorkspaceSettingsPage } from '../features/settings/WorkspaceSettingsPage';
 import { AuthenticatedLayout } from '../components/layout/AuthenticatedLayout';
 import { FeaturePlaceholderPage } from '../features/placeholders/FeaturePlaceholderPage';
 
@@ -94,34 +95,8 @@ export function AppRouter() {
           <Route path="/wedding/gallery" element={<GalleryPage />} />
 
           {/* Settings */}
-          <Route
-            path="/settings"
-            element={
-              <FeaturePlaceholderPage
-                feature="Workspace Settings"
-                category="WORKSPACE CONFIGURATION"
-                description="Manage workspace preferences, notification channels, time zones, and wedding privacy rules."
-                badge="Settings Hub"
-                highlights={[
-                  {
-                    title: 'Timezone & Localization',
-                    description:
-                      'Default Asia/Kolkata timezone and Indian wedding celebration presets.',
-                  },
-                  {
-                    title: 'Notification Preferences',
-                    description:
-                      'WhatsApp and email digest alerts for new RSVP responses and task updates.',
-                  },
-                  {
-                    title: 'Team Permissions',
-                    description:
-                      'Configure Admin and Manager roles across family members and organizers.',
-                  },
-                ]}
-              />
-            }
-          />
+          <Route path="/settings" element={<WorkspaceSettingsPage />} />
+          <Route path="/wedding/settings" element={<WorkspaceSettingsPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />

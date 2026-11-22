@@ -9,7 +9,7 @@ import {
   requireSameOrigin,
   type AuthOperations,
 } from '../auth/routes';
-import { createWeddingSchema, updateWeddingSchema } from './schemas';
+import { createWeddingSchema, updateWeddingSchema, coverUploadUrlSchema } from './schemas';
 import { createWeddingService, type WeddingServiceOperations } from './service';
 
 const defaultWeddingService = createWeddingService(prisma);
@@ -89,6 +89,56 @@ export function createWeddingRouter(
       }
 
       const result = await service.updateWedding(user.id, parsed.data);
+      res.json({
+        data: result,
+        requestId: getRequestId(res),
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  router.post(
+    '/cover/upload-url',
+    requireSameOrigin,
+    requireCsrf,
+    async (req: Request, res: Response, next) => {
+      try {
+        const user = await requireAuthUser(req, auth);
+        const parsed = coverUploadUrlSchema.safeParse(req.body);
+        if (!parsed.success) {
+          const details = parsed.error.issues.reduce<Record<string, string>>((acc, issue) => {
+            const field = issue.path[0];
+            if (typeof field === 'string') acc[field] = issue.message;
+            return acc;
+          }, {});
+          throw new AppError(
+            400,
+            'VALIDATION_ERROR',
+            'Invalid cover upload parameters.',
+            details,
+          );
+        }
+
+        const result = await service.getCoverUploadUrl(
+          user.id,
+          parsed.data.fileName,
+          parsed.data.contentType,
+        );
+        res.status(200).json({
+          data: result,
+          requestId: getRequestId(res),
+        });
+      } catch (error) {
+        next(error);
+      }
+    },
+  );
+
+  router.delete('/', requireSameOrigin, requireCsrf, async (req: Request, res: Response, next) => {
+    try {
+      const user = await requireAuthUser(req, auth);
+      const result = await service.deleteWedding(user.id);
       res.json({
         data: result,
         requestId: getRequestId(res),
