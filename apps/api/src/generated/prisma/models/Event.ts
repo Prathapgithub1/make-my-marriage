@@ -247,6 +247,14 @@ export type EventWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Event"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Event"> | Date | string
   wedding?: Prisma.XOR<Prisma.WeddingScalarRelationFilter, Prisma.WeddingWhereInput>
+  tasks?: Prisma.TaskListRelationFilter
+  guestEvents?: Prisma.GuestEventListRelationFilter
+  vendorEvents?: Prisma.VendorEventListRelationFilter
+  vendorBookings?: Prisma.VendorBookingListRelationFilter
+  expenses?: Prisma.ExpenseListRelationFilter
+  eventBudget?: Prisma.XOR<Prisma.EventBudgetNullableScalarRelationFilter, Prisma.EventBudgetWhereInput> | null
+  galleryAlbums?: Prisma.GalleryAlbumListRelationFilter
+  galleryMedia?: Prisma.GalleryMediaListRelationFilter
 }
 
 export type EventOrderByWithRelationInput = {
@@ -264,6 +272,14 @@ export type EventOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   wedding?: Prisma.WeddingOrderByWithRelationInput
+  tasks?: Prisma.TaskOrderByRelationAggregateInput
+  guestEvents?: Prisma.GuestEventOrderByRelationAggregateInput
+  vendorEvents?: Prisma.VendorEventOrderByRelationAggregateInput
+  vendorBookings?: Prisma.VendorBookingOrderByRelationAggregateInput
+  expenses?: Prisma.ExpenseOrderByRelationAggregateInput
+  eventBudget?: Prisma.EventBudgetOrderByWithRelationInput
+  galleryAlbums?: Prisma.GalleryAlbumOrderByRelationAggregateInput
+  galleryMedia?: Prisma.GalleryMediaOrderByRelationAggregateInput
 }
 
 export type EventWhereUniqueInput = Prisma.AtLeast<{
@@ -284,6 +300,14 @@ export type EventWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Event"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Event"> | Date | string
   wedding?: Prisma.XOR<Prisma.WeddingScalarRelationFilter, Prisma.WeddingWhereInput>
+  tasks?: Prisma.TaskListRelationFilter
+  guestEvents?: Prisma.GuestEventListRelationFilter
+  vendorEvents?: Prisma.VendorEventListRelationFilter
+  vendorBookings?: Prisma.VendorBookingListRelationFilter
+  expenses?: Prisma.ExpenseListRelationFilter
+  eventBudget?: Prisma.XOR<Prisma.EventBudgetNullableScalarRelationFilter, Prisma.EventBudgetWhereInput> | null
+  galleryAlbums?: Prisma.GalleryAlbumListRelationFilter
+  galleryMedia?: Prisma.GalleryMediaListRelationFilter
 }, "id">
 
 export type EventOrderByWithAggregationInput = {
@@ -338,6 +362,14 @@ export type EventCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   wedding: Prisma.WeddingCreateNestedOneWithoutEventsInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutEventInput
+  guestEvents?: Prisma.GuestEventCreateNestedManyWithoutEventInput
+  vendorEvents?: Prisma.VendorEventCreateNestedManyWithoutEventInput
+  vendorBookings?: Prisma.VendorBookingCreateNestedManyWithoutEventInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutEventInput
+  eventBudget?: Prisma.EventBudgetCreateNestedOneWithoutEventInput
+  galleryAlbums?: Prisma.GalleryAlbumCreateNestedManyWithoutEventInput
+  galleryMedia?: Prisma.GalleryMediaCreateNestedManyWithoutEventInput
 }
 
 export type EventUncheckedCreateInput = {
@@ -354,6 +386,14 @@ export type EventUncheckedCreateInput = {
   status?: $Enums.EventStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutEventInput
+  guestEvents?: Prisma.GuestEventUncheckedCreateNestedManyWithoutEventInput
+  vendorEvents?: Prisma.VendorEventUncheckedCreateNestedManyWithoutEventInput
+  vendorBookings?: Prisma.VendorBookingUncheckedCreateNestedManyWithoutEventInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutEventInput
+  eventBudget?: Prisma.EventBudgetUncheckedCreateNestedOneWithoutEventInput
+  galleryAlbums?: Prisma.GalleryAlbumUncheckedCreateNestedManyWithoutEventInput
+  galleryMedia?: Prisma.GalleryMediaUncheckedCreateNestedManyWithoutEventInput
 }
 
 export type EventUpdateInput = {
@@ -370,6 +410,14 @@ export type EventUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   wedding?: Prisma.WeddingUpdateOneRequiredWithoutEventsNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutEventNestedInput
+  guestEvents?: Prisma.GuestEventUpdateManyWithoutEventNestedInput
+  vendorEvents?: Prisma.VendorEventUpdateManyWithoutEventNestedInput
+  vendorBookings?: Prisma.VendorBookingUpdateManyWithoutEventNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutEventNestedInput
+  eventBudget?: Prisma.EventBudgetUpdateOneWithoutEventNestedInput
+  galleryAlbums?: Prisma.GalleryAlbumUpdateManyWithoutEventNestedInput
+  galleryMedia?: Prisma.GalleryMediaUpdateManyWithoutEventNestedInput
 }
 
 export type EventUncheckedUpdateInput = {
@@ -386,6 +434,14 @@ export type EventUncheckedUpdateInput = {
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutEventNestedInput
+  guestEvents?: Prisma.GuestEventUncheckedUpdateManyWithoutEventNestedInput
+  vendorEvents?: Prisma.VendorEventUncheckedUpdateManyWithoutEventNestedInput
+  vendorBookings?: Prisma.VendorBookingUncheckedUpdateManyWithoutEventNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutEventNestedInput
+  eventBudget?: Prisma.EventBudgetUncheckedUpdateOneWithoutEventNestedInput
+  galleryAlbums?: Prisma.GalleryAlbumUncheckedUpdateManyWithoutEventNestedInput
+  galleryMedia?: Prisma.GalleryMediaUncheckedUpdateManyWithoutEventNestedInput
 }
 
 export type EventCreateManyInput = {
@@ -493,6 +549,16 @@ export type EventMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type EventNullableScalarRelationFilter = {
+  is?: Prisma.EventWhereInput | null
+  isNot?: Prisma.EventWhereInput | null
+}
+
+export type EventScalarRelationFilter = {
+  is?: Prisma.EventWhereInput
+  isNot?: Prisma.EventWhereInput
+}
+
 export type EventCreateNestedManyWithoutWeddingInput = {
   create?: Prisma.XOR<Prisma.EventCreateWithoutWeddingInput, Prisma.EventUncheckedCreateWithoutWeddingInput> | Prisma.EventCreateWithoutWeddingInput[] | Prisma.EventUncheckedCreateWithoutWeddingInput[]
   connectOrCreate?: Prisma.EventCreateOrConnectWithoutWeddingInput | Prisma.EventCreateOrConnectWithoutWeddingInput[]
@@ -539,6 +605,128 @@ export type EnumEventStatusFieldUpdateOperationsInput = {
   set?: $Enums.EventStatus
 }
 
+export type EventCreateNestedOneWithoutTasksInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutTasksInput, Prisma.EventUncheckedCreateWithoutTasksInput>
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutTasksInput
+  connect?: Prisma.EventWhereUniqueInput
+}
+
+export type EventUpdateOneWithoutTasksNestedInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutTasksInput, Prisma.EventUncheckedCreateWithoutTasksInput>
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutTasksInput
+  upsert?: Prisma.EventUpsertWithoutTasksInput
+  disconnect?: Prisma.EventWhereInput | boolean
+  delete?: Prisma.EventWhereInput | boolean
+  connect?: Prisma.EventWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EventUpdateToOneWithWhereWithoutTasksInput, Prisma.EventUpdateWithoutTasksInput>, Prisma.EventUncheckedUpdateWithoutTasksInput>
+}
+
+export type EventCreateNestedOneWithoutGuestEventsInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutGuestEventsInput, Prisma.EventUncheckedCreateWithoutGuestEventsInput>
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutGuestEventsInput
+  connect?: Prisma.EventWhereUniqueInput
+}
+
+export type EventUpdateOneRequiredWithoutGuestEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutGuestEventsInput, Prisma.EventUncheckedCreateWithoutGuestEventsInput>
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutGuestEventsInput
+  upsert?: Prisma.EventUpsertWithoutGuestEventsInput
+  connect?: Prisma.EventWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EventUpdateToOneWithWhereWithoutGuestEventsInput, Prisma.EventUpdateWithoutGuestEventsInput>, Prisma.EventUncheckedUpdateWithoutGuestEventsInput>
+}
+
+export type EventCreateNestedOneWithoutVendorEventsInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutVendorEventsInput, Prisma.EventUncheckedCreateWithoutVendorEventsInput>
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutVendorEventsInput
+  connect?: Prisma.EventWhereUniqueInput
+}
+
+export type EventUpdateOneRequiredWithoutVendorEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutVendorEventsInput, Prisma.EventUncheckedCreateWithoutVendorEventsInput>
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutVendorEventsInput
+  upsert?: Prisma.EventUpsertWithoutVendorEventsInput
+  connect?: Prisma.EventWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EventUpdateToOneWithWhereWithoutVendorEventsInput, Prisma.EventUpdateWithoutVendorEventsInput>, Prisma.EventUncheckedUpdateWithoutVendorEventsInput>
+}
+
+export type EventCreateNestedOneWithoutVendorBookingsInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutVendorBookingsInput, Prisma.EventUncheckedCreateWithoutVendorBookingsInput>
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutVendorBookingsInput
+  connect?: Prisma.EventWhereUniqueInput
+}
+
+export type EventUpdateOneWithoutVendorBookingsNestedInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutVendorBookingsInput, Prisma.EventUncheckedCreateWithoutVendorBookingsInput>
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutVendorBookingsInput
+  upsert?: Prisma.EventUpsertWithoutVendorBookingsInput
+  disconnect?: Prisma.EventWhereInput | boolean
+  delete?: Prisma.EventWhereInput | boolean
+  connect?: Prisma.EventWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EventUpdateToOneWithWhereWithoutVendorBookingsInput, Prisma.EventUpdateWithoutVendorBookingsInput>, Prisma.EventUncheckedUpdateWithoutVendorBookingsInput>
+}
+
+export type EventCreateNestedOneWithoutEventBudgetInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutEventBudgetInput, Prisma.EventUncheckedCreateWithoutEventBudgetInput>
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutEventBudgetInput
+  connect?: Prisma.EventWhereUniqueInput
+}
+
+export type EventUpdateOneRequiredWithoutEventBudgetNestedInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutEventBudgetInput, Prisma.EventUncheckedCreateWithoutEventBudgetInput>
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutEventBudgetInput
+  upsert?: Prisma.EventUpsertWithoutEventBudgetInput
+  connect?: Prisma.EventWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EventUpdateToOneWithWhereWithoutEventBudgetInput, Prisma.EventUpdateWithoutEventBudgetInput>, Prisma.EventUncheckedUpdateWithoutEventBudgetInput>
+}
+
+export type EventCreateNestedOneWithoutExpensesInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutExpensesInput, Prisma.EventUncheckedCreateWithoutExpensesInput>
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutExpensesInput
+  connect?: Prisma.EventWhereUniqueInput
+}
+
+export type EventUpdateOneWithoutExpensesNestedInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutExpensesInput, Prisma.EventUncheckedCreateWithoutExpensesInput>
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutExpensesInput
+  upsert?: Prisma.EventUpsertWithoutExpensesInput
+  disconnect?: Prisma.EventWhereInput | boolean
+  delete?: Prisma.EventWhereInput | boolean
+  connect?: Prisma.EventWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EventUpdateToOneWithWhereWithoutExpensesInput, Prisma.EventUpdateWithoutExpensesInput>, Prisma.EventUncheckedUpdateWithoutExpensesInput>
+}
+
+export type EventCreateNestedOneWithoutGalleryAlbumsInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutGalleryAlbumsInput, Prisma.EventUncheckedCreateWithoutGalleryAlbumsInput>
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutGalleryAlbumsInput
+  connect?: Prisma.EventWhereUniqueInput
+}
+
+export type EventUpdateOneWithoutGalleryAlbumsNestedInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutGalleryAlbumsInput, Prisma.EventUncheckedCreateWithoutGalleryAlbumsInput>
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutGalleryAlbumsInput
+  upsert?: Prisma.EventUpsertWithoutGalleryAlbumsInput
+  disconnect?: Prisma.EventWhereInput | boolean
+  delete?: Prisma.EventWhereInput | boolean
+  connect?: Prisma.EventWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EventUpdateToOneWithWhereWithoutGalleryAlbumsInput, Prisma.EventUpdateWithoutGalleryAlbumsInput>, Prisma.EventUncheckedUpdateWithoutGalleryAlbumsInput>
+}
+
+export type EventCreateNestedOneWithoutGalleryMediaInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutGalleryMediaInput, Prisma.EventUncheckedCreateWithoutGalleryMediaInput>
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutGalleryMediaInput
+  connect?: Prisma.EventWhereUniqueInput
+}
+
+export type EventUpdateOneWithoutGalleryMediaNestedInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutGalleryMediaInput, Prisma.EventUncheckedCreateWithoutGalleryMediaInput>
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutGalleryMediaInput
+  upsert?: Prisma.EventUpsertWithoutGalleryMediaInput
+  disconnect?: Prisma.EventWhereInput | boolean
+  delete?: Prisma.EventWhereInput | boolean
+  connect?: Prisma.EventWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EventUpdateToOneWithWhereWithoutGalleryMediaInput, Prisma.EventUpdateWithoutGalleryMediaInput>, Prisma.EventUncheckedUpdateWithoutGalleryMediaInput>
+}
+
 export type EventCreateWithoutWeddingInput = {
   id?: string
   name: string
@@ -552,6 +740,14 @@ export type EventCreateWithoutWeddingInput = {
   status?: $Enums.EventStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  tasks?: Prisma.TaskCreateNestedManyWithoutEventInput
+  guestEvents?: Prisma.GuestEventCreateNestedManyWithoutEventInput
+  vendorEvents?: Prisma.VendorEventCreateNestedManyWithoutEventInput
+  vendorBookings?: Prisma.VendorBookingCreateNestedManyWithoutEventInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutEventInput
+  eventBudget?: Prisma.EventBudgetCreateNestedOneWithoutEventInput
+  galleryAlbums?: Prisma.GalleryAlbumCreateNestedManyWithoutEventInput
+  galleryMedia?: Prisma.GalleryMediaCreateNestedManyWithoutEventInput
 }
 
 export type EventUncheckedCreateWithoutWeddingInput = {
@@ -567,6 +763,14 @@ export type EventUncheckedCreateWithoutWeddingInput = {
   status?: $Enums.EventStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutEventInput
+  guestEvents?: Prisma.GuestEventUncheckedCreateNestedManyWithoutEventInput
+  vendorEvents?: Prisma.VendorEventUncheckedCreateNestedManyWithoutEventInput
+  vendorBookings?: Prisma.VendorBookingUncheckedCreateNestedManyWithoutEventInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutEventInput
+  eventBudget?: Prisma.EventBudgetUncheckedCreateNestedOneWithoutEventInput
+  galleryAlbums?: Prisma.GalleryAlbumUncheckedCreateNestedManyWithoutEventInput
+  galleryMedia?: Prisma.GalleryMediaUncheckedCreateNestedManyWithoutEventInput
 }
 
 export type EventCreateOrConnectWithoutWeddingInput = {
@@ -614,6 +818,870 @@ export type EventScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Event"> | Date | string
 }
 
+export type EventCreateWithoutTasksInput = {
+  id?: string
+  name: string
+  description?: string | null
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  venueName?: string | null
+  venueAddress?: string | null
+  dressCode?: string | null
+  coverImageKey?: string | null
+  status?: $Enums.EventStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  wedding: Prisma.WeddingCreateNestedOneWithoutEventsInput
+  guestEvents?: Prisma.GuestEventCreateNestedManyWithoutEventInput
+  vendorEvents?: Prisma.VendorEventCreateNestedManyWithoutEventInput
+  vendorBookings?: Prisma.VendorBookingCreateNestedManyWithoutEventInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutEventInput
+  eventBudget?: Prisma.EventBudgetCreateNestedOneWithoutEventInput
+  galleryAlbums?: Prisma.GalleryAlbumCreateNestedManyWithoutEventInput
+  galleryMedia?: Prisma.GalleryMediaCreateNestedManyWithoutEventInput
+}
+
+export type EventUncheckedCreateWithoutTasksInput = {
+  id?: string
+  weddingId: string
+  name: string
+  description?: string | null
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  venueName?: string | null
+  venueAddress?: string | null
+  dressCode?: string | null
+  coverImageKey?: string | null
+  status?: $Enums.EventStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  guestEvents?: Prisma.GuestEventUncheckedCreateNestedManyWithoutEventInput
+  vendorEvents?: Prisma.VendorEventUncheckedCreateNestedManyWithoutEventInput
+  vendorBookings?: Prisma.VendorBookingUncheckedCreateNestedManyWithoutEventInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutEventInput
+  eventBudget?: Prisma.EventBudgetUncheckedCreateNestedOneWithoutEventInput
+  galleryAlbums?: Prisma.GalleryAlbumUncheckedCreateNestedManyWithoutEventInput
+  galleryMedia?: Prisma.GalleryMediaUncheckedCreateNestedManyWithoutEventInput
+}
+
+export type EventCreateOrConnectWithoutTasksInput = {
+  where: Prisma.EventWhereUniqueInput
+  create: Prisma.XOR<Prisma.EventCreateWithoutTasksInput, Prisma.EventUncheckedCreateWithoutTasksInput>
+}
+
+export type EventUpsertWithoutTasksInput = {
+  update: Prisma.XOR<Prisma.EventUpdateWithoutTasksInput, Prisma.EventUncheckedUpdateWithoutTasksInput>
+  create: Prisma.XOR<Prisma.EventCreateWithoutTasksInput, Prisma.EventUncheckedCreateWithoutTasksInput>
+  where?: Prisma.EventWhereInput
+}
+
+export type EventUpdateToOneWithWhereWithoutTasksInput = {
+  where?: Prisma.EventWhereInput
+  data: Prisma.XOR<Prisma.EventUpdateWithoutTasksInput, Prisma.EventUncheckedUpdateWithoutTasksInput>
+}
+
+export type EventUpdateWithoutTasksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  venueName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  venueAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  wedding?: Prisma.WeddingUpdateOneRequiredWithoutEventsNestedInput
+  guestEvents?: Prisma.GuestEventUpdateManyWithoutEventNestedInput
+  vendorEvents?: Prisma.VendorEventUpdateManyWithoutEventNestedInput
+  vendorBookings?: Prisma.VendorBookingUpdateManyWithoutEventNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutEventNestedInput
+  eventBudget?: Prisma.EventBudgetUpdateOneWithoutEventNestedInput
+  galleryAlbums?: Prisma.GalleryAlbumUpdateManyWithoutEventNestedInput
+  galleryMedia?: Prisma.GalleryMediaUpdateManyWithoutEventNestedInput
+}
+
+export type EventUncheckedUpdateWithoutTasksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  weddingId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  venueName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  venueAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  guestEvents?: Prisma.GuestEventUncheckedUpdateManyWithoutEventNestedInput
+  vendorEvents?: Prisma.VendorEventUncheckedUpdateManyWithoutEventNestedInput
+  vendorBookings?: Prisma.VendorBookingUncheckedUpdateManyWithoutEventNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutEventNestedInput
+  eventBudget?: Prisma.EventBudgetUncheckedUpdateOneWithoutEventNestedInput
+  galleryAlbums?: Prisma.GalleryAlbumUncheckedUpdateManyWithoutEventNestedInput
+  galleryMedia?: Prisma.GalleryMediaUncheckedUpdateManyWithoutEventNestedInput
+}
+
+export type EventCreateWithoutGuestEventsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  venueName?: string | null
+  venueAddress?: string | null
+  dressCode?: string | null
+  coverImageKey?: string | null
+  status?: $Enums.EventStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  wedding: Prisma.WeddingCreateNestedOneWithoutEventsInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutEventInput
+  vendorEvents?: Prisma.VendorEventCreateNestedManyWithoutEventInput
+  vendorBookings?: Prisma.VendorBookingCreateNestedManyWithoutEventInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutEventInput
+  eventBudget?: Prisma.EventBudgetCreateNestedOneWithoutEventInput
+  galleryAlbums?: Prisma.GalleryAlbumCreateNestedManyWithoutEventInput
+  galleryMedia?: Prisma.GalleryMediaCreateNestedManyWithoutEventInput
+}
+
+export type EventUncheckedCreateWithoutGuestEventsInput = {
+  id?: string
+  weddingId: string
+  name: string
+  description?: string | null
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  venueName?: string | null
+  venueAddress?: string | null
+  dressCode?: string | null
+  coverImageKey?: string | null
+  status?: $Enums.EventStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutEventInput
+  vendorEvents?: Prisma.VendorEventUncheckedCreateNestedManyWithoutEventInput
+  vendorBookings?: Prisma.VendorBookingUncheckedCreateNestedManyWithoutEventInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutEventInput
+  eventBudget?: Prisma.EventBudgetUncheckedCreateNestedOneWithoutEventInput
+  galleryAlbums?: Prisma.GalleryAlbumUncheckedCreateNestedManyWithoutEventInput
+  galleryMedia?: Prisma.GalleryMediaUncheckedCreateNestedManyWithoutEventInput
+}
+
+export type EventCreateOrConnectWithoutGuestEventsInput = {
+  where: Prisma.EventWhereUniqueInput
+  create: Prisma.XOR<Prisma.EventCreateWithoutGuestEventsInput, Prisma.EventUncheckedCreateWithoutGuestEventsInput>
+}
+
+export type EventUpsertWithoutGuestEventsInput = {
+  update: Prisma.XOR<Prisma.EventUpdateWithoutGuestEventsInput, Prisma.EventUncheckedUpdateWithoutGuestEventsInput>
+  create: Prisma.XOR<Prisma.EventCreateWithoutGuestEventsInput, Prisma.EventUncheckedCreateWithoutGuestEventsInput>
+  where?: Prisma.EventWhereInput
+}
+
+export type EventUpdateToOneWithWhereWithoutGuestEventsInput = {
+  where?: Prisma.EventWhereInput
+  data: Prisma.XOR<Prisma.EventUpdateWithoutGuestEventsInput, Prisma.EventUncheckedUpdateWithoutGuestEventsInput>
+}
+
+export type EventUpdateWithoutGuestEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  venueName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  venueAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  wedding?: Prisma.WeddingUpdateOneRequiredWithoutEventsNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutEventNestedInput
+  vendorEvents?: Prisma.VendorEventUpdateManyWithoutEventNestedInput
+  vendorBookings?: Prisma.VendorBookingUpdateManyWithoutEventNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutEventNestedInput
+  eventBudget?: Prisma.EventBudgetUpdateOneWithoutEventNestedInput
+  galleryAlbums?: Prisma.GalleryAlbumUpdateManyWithoutEventNestedInput
+  galleryMedia?: Prisma.GalleryMediaUpdateManyWithoutEventNestedInput
+}
+
+export type EventUncheckedUpdateWithoutGuestEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  weddingId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  venueName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  venueAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutEventNestedInput
+  vendorEvents?: Prisma.VendorEventUncheckedUpdateManyWithoutEventNestedInput
+  vendorBookings?: Prisma.VendorBookingUncheckedUpdateManyWithoutEventNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutEventNestedInput
+  eventBudget?: Prisma.EventBudgetUncheckedUpdateOneWithoutEventNestedInput
+  galleryAlbums?: Prisma.GalleryAlbumUncheckedUpdateManyWithoutEventNestedInput
+  galleryMedia?: Prisma.GalleryMediaUncheckedUpdateManyWithoutEventNestedInput
+}
+
+export type EventCreateWithoutVendorEventsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  venueName?: string | null
+  venueAddress?: string | null
+  dressCode?: string | null
+  coverImageKey?: string | null
+  status?: $Enums.EventStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  wedding: Prisma.WeddingCreateNestedOneWithoutEventsInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutEventInput
+  guestEvents?: Prisma.GuestEventCreateNestedManyWithoutEventInput
+  vendorBookings?: Prisma.VendorBookingCreateNestedManyWithoutEventInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutEventInput
+  eventBudget?: Prisma.EventBudgetCreateNestedOneWithoutEventInput
+  galleryAlbums?: Prisma.GalleryAlbumCreateNestedManyWithoutEventInput
+  galleryMedia?: Prisma.GalleryMediaCreateNestedManyWithoutEventInput
+}
+
+export type EventUncheckedCreateWithoutVendorEventsInput = {
+  id?: string
+  weddingId: string
+  name: string
+  description?: string | null
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  venueName?: string | null
+  venueAddress?: string | null
+  dressCode?: string | null
+  coverImageKey?: string | null
+  status?: $Enums.EventStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutEventInput
+  guestEvents?: Prisma.GuestEventUncheckedCreateNestedManyWithoutEventInput
+  vendorBookings?: Prisma.VendorBookingUncheckedCreateNestedManyWithoutEventInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutEventInput
+  eventBudget?: Prisma.EventBudgetUncheckedCreateNestedOneWithoutEventInput
+  galleryAlbums?: Prisma.GalleryAlbumUncheckedCreateNestedManyWithoutEventInput
+  galleryMedia?: Prisma.GalleryMediaUncheckedCreateNestedManyWithoutEventInput
+}
+
+export type EventCreateOrConnectWithoutVendorEventsInput = {
+  where: Prisma.EventWhereUniqueInput
+  create: Prisma.XOR<Prisma.EventCreateWithoutVendorEventsInput, Prisma.EventUncheckedCreateWithoutVendorEventsInput>
+}
+
+export type EventUpsertWithoutVendorEventsInput = {
+  update: Prisma.XOR<Prisma.EventUpdateWithoutVendorEventsInput, Prisma.EventUncheckedUpdateWithoutVendorEventsInput>
+  create: Prisma.XOR<Prisma.EventCreateWithoutVendorEventsInput, Prisma.EventUncheckedCreateWithoutVendorEventsInput>
+  where?: Prisma.EventWhereInput
+}
+
+export type EventUpdateToOneWithWhereWithoutVendorEventsInput = {
+  where?: Prisma.EventWhereInput
+  data: Prisma.XOR<Prisma.EventUpdateWithoutVendorEventsInput, Prisma.EventUncheckedUpdateWithoutVendorEventsInput>
+}
+
+export type EventUpdateWithoutVendorEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  venueName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  venueAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  wedding?: Prisma.WeddingUpdateOneRequiredWithoutEventsNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutEventNestedInput
+  guestEvents?: Prisma.GuestEventUpdateManyWithoutEventNestedInput
+  vendorBookings?: Prisma.VendorBookingUpdateManyWithoutEventNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutEventNestedInput
+  eventBudget?: Prisma.EventBudgetUpdateOneWithoutEventNestedInput
+  galleryAlbums?: Prisma.GalleryAlbumUpdateManyWithoutEventNestedInput
+  galleryMedia?: Prisma.GalleryMediaUpdateManyWithoutEventNestedInput
+}
+
+export type EventUncheckedUpdateWithoutVendorEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  weddingId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  venueName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  venueAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutEventNestedInput
+  guestEvents?: Prisma.GuestEventUncheckedUpdateManyWithoutEventNestedInput
+  vendorBookings?: Prisma.VendorBookingUncheckedUpdateManyWithoutEventNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutEventNestedInput
+  eventBudget?: Prisma.EventBudgetUncheckedUpdateOneWithoutEventNestedInput
+  galleryAlbums?: Prisma.GalleryAlbumUncheckedUpdateManyWithoutEventNestedInput
+  galleryMedia?: Prisma.GalleryMediaUncheckedUpdateManyWithoutEventNestedInput
+}
+
+export type EventCreateWithoutVendorBookingsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  venueName?: string | null
+  venueAddress?: string | null
+  dressCode?: string | null
+  coverImageKey?: string | null
+  status?: $Enums.EventStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  wedding: Prisma.WeddingCreateNestedOneWithoutEventsInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutEventInput
+  guestEvents?: Prisma.GuestEventCreateNestedManyWithoutEventInput
+  vendorEvents?: Prisma.VendorEventCreateNestedManyWithoutEventInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutEventInput
+  eventBudget?: Prisma.EventBudgetCreateNestedOneWithoutEventInput
+  galleryAlbums?: Prisma.GalleryAlbumCreateNestedManyWithoutEventInput
+  galleryMedia?: Prisma.GalleryMediaCreateNestedManyWithoutEventInput
+}
+
+export type EventUncheckedCreateWithoutVendorBookingsInput = {
+  id?: string
+  weddingId: string
+  name: string
+  description?: string | null
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  venueName?: string | null
+  venueAddress?: string | null
+  dressCode?: string | null
+  coverImageKey?: string | null
+  status?: $Enums.EventStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutEventInput
+  guestEvents?: Prisma.GuestEventUncheckedCreateNestedManyWithoutEventInput
+  vendorEvents?: Prisma.VendorEventUncheckedCreateNestedManyWithoutEventInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutEventInput
+  eventBudget?: Prisma.EventBudgetUncheckedCreateNestedOneWithoutEventInput
+  galleryAlbums?: Prisma.GalleryAlbumUncheckedCreateNestedManyWithoutEventInput
+  galleryMedia?: Prisma.GalleryMediaUncheckedCreateNestedManyWithoutEventInput
+}
+
+export type EventCreateOrConnectWithoutVendorBookingsInput = {
+  where: Prisma.EventWhereUniqueInput
+  create: Prisma.XOR<Prisma.EventCreateWithoutVendorBookingsInput, Prisma.EventUncheckedCreateWithoutVendorBookingsInput>
+}
+
+export type EventUpsertWithoutVendorBookingsInput = {
+  update: Prisma.XOR<Prisma.EventUpdateWithoutVendorBookingsInput, Prisma.EventUncheckedUpdateWithoutVendorBookingsInput>
+  create: Prisma.XOR<Prisma.EventCreateWithoutVendorBookingsInput, Prisma.EventUncheckedCreateWithoutVendorBookingsInput>
+  where?: Prisma.EventWhereInput
+}
+
+export type EventUpdateToOneWithWhereWithoutVendorBookingsInput = {
+  where?: Prisma.EventWhereInput
+  data: Prisma.XOR<Prisma.EventUpdateWithoutVendorBookingsInput, Prisma.EventUncheckedUpdateWithoutVendorBookingsInput>
+}
+
+export type EventUpdateWithoutVendorBookingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  venueName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  venueAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  wedding?: Prisma.WeddingUpdateOneRequiredWithoutEventsNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutEventNestedInput
+  guestEvents?: Prisma.GuestEventUpdateManyWithoutEventNestedInput
+  vendorEvents?: Prisma.VendorEventUpdateManyWithoutEventNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutEventNestedInput
+  eventBudget?: Prisma.EventBudgetUpdateOneWithoutEventNestedInput
+  galleryAlbums?: Prisma.GalleryAlbumUpdateManyWithoutEventNestedInput
+  galleryMedia?: Prisma.GalleryMediaUpdateManyWithoutEventNestedInput
+}
+
+export type EventUncheckedUpdateWithoutVendorBookingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  weddingId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  venueName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  venueAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutEventNestedInput
+  guestEvents?: Prisma.GuestEventUncheckedUpdateManyWithoutEventNestedInput
+  vendorEvents?: Prisma.VendorEventUncheckedUpdateManyWithoutEventNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutEventNestedInput
+  eventBudget?: Prisma.EventBudgetUncheckedUpdateOneWithoutEventNestedInput
+  galleryAlbums?: Prisma.GalleryAlbumUncheckedUpdateManyWithoutEventNestedInput
+  galleryMedia?: Prisma.GalleryMediaUncheckedUpdateManyWithoutEventNestedInput
+}
+
+export type EventCreateWithoutEventBudgetInput = {
+  id?: string
+  name: string
+  description?: string | null
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  venueName?: string | null
+  venueAddress?: string | null
+  dressCode?: string | null
+  coverImageKey?: string | null
+  status?: $Enums.EventStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  wedding: Prisma.WeddingCreateNestedOneWithoutEventsInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutEventInput
+  guestEvents?: Prisma.GuestEventCreateNestedManyWithoutEventInput
+  vendorEvents?: Prisma.VendorEventCreateNestedManyWithoutEventInput
+  vendorBookings?: Prisma.VendorBookingCreateNestedManyWithoutEventInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutEventInput
+  galleryAlbums?: Prisma.GalleryAlbumCreateNestedManyWithoutEventInput
+  galleryMedia?: Prisma.GalleryMediaCreateNestedManyWithoutEventInput
+}
+
+export type EventUncheckedCreateWithoutEventBudgetInput = {
+  id?: string
+  weddingId: string
+  name: string
+  description?: string | null
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  venueName?: string | null
+  venueAddress?: string | null
+  dressCode?: string | null
+  coverImageKey?: string | null
+  status?: $Enums.EventStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutEventInput
+  guestEvents?: Prisma.GuestEventUncheckedCreateNestedManyWithoutEventInput
+  vendorEvents?: Prisma.VendorEventUncheckedCreateNestedManyWithoutEventInput
+  vendorBookings?: Prisma.VendorBookingUncheckedCreateNestedManyWithoutEventInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutEventInput
+  galleryAlbums?: Prisma.GalleryAlbumUncheckedCreateNestedManyWithoutEventInput
+  galleryMedia?: Prisma.GalleryMediaUncheckedCreateNestedManyWithoutEventInput
+}
+
+export type EventCreateOrConnectWithoutEventBudgetInput = {
+  where: Prisma.EventWhereUniqueInput
+  create: Prisma.XOR<Prisma.EventCreateWithoutEventBudgetInput, Prisma.EventUncheckedCreateWithoutEventBudgetInput>
+}
+
+export type EventUpsertWithoutEventBudgetInput = {
+  update: Prisma.XOR<Prisma.EventUpdateWithoutEventBudgetInput, Prisma.EventUncheckedUpdateWithoutEventBudgetInput>
+  create: Prisma.XOR<Prisma.EventCreateWithoutEventBudgetInput, Prisma.EventUncheckedCreateWithoutEventBudgetInput>
+  where?: Prisma.EventWhereInput
+}
+
+export type EventUpdateToOneWithWhereWithoutEventBudgetInput = {
+  where?: Prisma.EventWhereInput
+  data: Prisma.XOR<Prisma.EventUpdateWithoutEventBudgetInput, Prisma.EventUncheckedUpdateWithoutEventBudgetInput>
+}
+
+export type EventUpdateWithoutEventBudgetInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  venueName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  venueAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  wedding?: Prisma.WeddingUpdateOneRequiredWithoutEventsNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutEventNestedInput
+  guestEvents?: Prisma.GuestEventUpdateManyWithoutEventNestedInput
+  vendorEvents?: Prisma.VendorEventUpdateManyWithoutEventNestedInput
+  vendorBookings?: Prisma.VendorBookingUpdateManyWithoutEventNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutEventNestedInput
+  galleryAlbums?: Prisma.GalleryAlbumUpdateManyWithoutEventNestedInput
+  galleryMedia?: Prisma.GalleryMediaUpdateManyWithoutEventNestedInput
+}
+
+export type EventUncheckedUpdateWithoutEventBudgetInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  weddingId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  venueName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  venueAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutEventNestedInput
+  guestEvents?: Prisma.GuestEventUncheckedUpdateManyWithoutEventNestedInput
+  vendorEvents?: Prisma.VendorEventUncheckedUpdateManyWithoutEventNestedInput
+  vendorBookings?: Prisma.VendorBookingUncheckedUpdateManyWithoutEventNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutEventNestedInput
+  galleryAlbums?: Prisma.GalleryAlbumUncheckedUpdateManyWithoutEventNestedInput
+  galleryMedia?: Prisma.GalleryMediaUncheckedUpdateManyWithoutEventNestedInput
+}
+
+export type EventCreateWithoutExpensesInput = {
+  id?: string
+  name: string
+  description?: string | null
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  venueName?: string | null
+  venueAddress?: string | null
+  dressCode?: string | null
+  coverImageKey?: string | null
+  status?: $Enums.EventStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  wedding: Prisma.WeddingCreateNestedOneWithoutEventsInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutEventInput
+  guestEvents?: Prisma.GuestEventCreateNestedManyWithoutEventInput
+  vendorEvents?: Prisma.VendorEventCreateNestedManyWithoutEventInput
+  vendorBookings?: Prisma.VendorBookingCreateNestedManyWithoutEventInput
+  eventBudget?: Prisma.EventBudgetCreateNestedOneWithoutEventInput
+  galleryAlbums?: Prisma.GalleryAlbumCreateNestedManyWithoutEventInput
+  galleryMedia?: Prisma.GalleryMediaCreateNestedManyWithoutEventInput
+}
+
+export type EventUncheckedCreateWithoutExpensesInput = {
+  id?: string
+  weddingId: string
+  name: string
+  description?: string | null
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  venueName?: string | null
+  venueAddress?: string | null
+  dressCode?: string | null
+  coverImageKey?: string | null
+  status?: $Enums.EventStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutEventInput
+  guestEvents?: Prisma.GuestEventUncheckedCreateNestedManyWithoutEventInput
+  vendorEvents?: Prisma.VendorEventUncheckedCreateNestedManyWithoutEventInput
+  vendorBookings?: Prisma.VendorBookingUncheckedCreateNestedManyWithoutEventInput
+  eventBudget?: Prisma.EventBudgetUncheckedCreateNestedOneWithoutEventInput
+  galleryAlbums?: Prisma.GalleryAlbumUncheckedCreateNestedManyWithoutEventInput
+  galleryMedia?: Prisma.GalleryMediaUncheckedCreateNestedManyWithoutEventInput
+}
+
+export type EventCreateOrConnectWithoutExpensesInput = {
+  where: Prisma.EventWhereUniqueInput
+  create: Prisma.XOR<Prisma.EventCreateWithoutExpensesInput, Prisma.EventUncheckedCreateWithoutExpensesInput>
+}
+
+export type EventUpsertWithoutExpensesInput = {
+  update: Prisma.XOR<Prisma.EventUpdateWithoutExpensesInput, Prisma.EventUncheckedUpdateWithoutExpensesInput>
+  create: Prisma.XOR<Prisma.EventCreateWithoutExpensesInput, Prisma.EventUncheckedCreateWithoutExpensesInput>
+  where?: Prisma.EventWhereInput
+}
+
+export type EventUpdateToOneWithWhereWithoutExpensesInput = {
+  where?: Prisma.EventWhereInput
+  data: Prisma.XOR<Prisma.EventUpdateWithoutExpensesInput, Prisma.EventUncheckedUpdateWithoutExpensesInput>
+}
+
+export type EventUpdateWithoutExpensesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  venueName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  venueAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  wedding?: Prisma.WeddingUpdateOneRequiredWithoutEventsNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutEventNestedInput
+  guestEvents?: Prisma.GuestEventUpdateManyWithoutEventNestedInput
+  vendorEvents?: Prisma.VendorEventUpdateManyWithoutEventNestedInput
+  vendorBookings?: Prisma.VendorBookingUpdateManyWithoutEventNestedInput
+  eventBudget?: Prisma.EventBudgetUpdateOneWithoutEventNestedInput
+  galleryAlbums?: Prisma.GalleryAlbumUpdateManyWithoutEventNestedInput
+  galleryMedia?: Prisma.GalleryMediaUpdateManyWithoutEventNestedInput
+}
+
+export type EventUncheckedUpdateWithoutExpensesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  weddingId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  venueName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  venueAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutEventNestedInput
+  guestEvents?: Prisma.GuestEventUncheckedUpdateManyWithoutEventNestedInput
+  vendorEvents?: Prisma.VendorEventUncheckedUpdateManyWithoutEventNestedInput
+  vendorBookings?: Prisma.VendorBookingUncheckedUpdateManyWithoutEventNestedInput
+  eventBudget?: Prisma.EventBudgetUncheckedUpdateOneWithoutEventNestedInput
+  galleryAlbums?: Prisma.GalleryAlbumUncheckedUpdateManyWithoutEventNestedInput
+  galleryMedia?: Prisma.GalleryMediaUncheckedUpdateManyWithoutEventNestedInput
+}
+
+export type EventCreateWithoutGalleryAlbumsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  venueName?: string | null
+  venueAddress?: string | null
+  dressCode?: string | null
+  coverImageKey?: string | null
+  status?: $Enums.EventStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  wedding: Prisma.WeddingCreateNestedOneWithoutEventsInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutEventInput
+  guestEvents?: Prisma.GuestEventCreateNestedManyWithoutEventInput
+  vendorEvents?: Prisma.VendorEventCreateNestedManyWithoutEventInput
+  vendorBookings?: Prisma.VendorBookingCreateNestedManyWithoutEventInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutEventInput
+  eventBudget?: Prisma.EventBudgetCreateNestedOneWithoutEventInput
+  galleryMedia?: Prisma.GalleryMediaCreateNestedManyWithoutEventInput
+}
+
+export type EventUncheckedCreateWithoutGalleryAlbumsInput = {
+  id?: string
+  weddingId: string
+  name: string
+  description?: string | null
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  venueName?: string | null
+  venueAddress?: string | null
+  dressCode?: string | null
+  coverImageKey?: string | null
+  status?: $Enums.EventStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutEventInput
+  guestEvents?: Prisma.GuestEventUncheckedCreateNestedManyWithoutEventInput
+  vendorEvents?: Prisma.VendorEventUncheckedCreateNestedManyWithoutEventInput
+  vendorBookings?: Prisma.VendorBookingUncheckedCreateNestedManyWithoutEventInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutEventInput
+  eventBudget?: Prisma.EventBudgetUncheckedCreateNestedOneWithoutEventInput
+  galleryMedia?: Prisma.GalleryMediaUncheckedCreateNestedManyWithoutEventInput
+}
+
+export type EventCreateOrConnectWithoutGalleryAlbumsInput = {
+  where: Prisma.EventWhereUniqueInput
+  create: Prisma.XOR<Prisma.EventCreateWithoutGalleryAlbumsInput, Prisma.EventUncheckedCreateWithoutGalleryAlbumsInput>
+}
+
+export type EventUpsertWithoutGalleryAlbumsInput = {
+  update: Prisma.XOR<Prisma.EventUpdateWithoutGalleryAlbumsInput, Prisma.EventUncheckedUpdateWithoutGalleryAlbumsInput>
+  create: Prisma.XOR<Prisma.EventCreateWithoutGalleryAlbumsInput, Prisma.EventUncheckedCreateWithoutGalleryAlbumsInput>
+  where?: Prisma.EventWhereInput
+}
+
+export type EventUpdateToOneWithWhereWithoutGalleryAlbumsInput = {
+  where?: Prisma.EventWhereInput
+  data: Prisma.XOR<Prisma.EventUpdateWithoutGalleryAlbumsInput, Prisma.EventUncheckedUpdateWithoutGalleryAlbumsInput>
+}
+
+export type EventUpdateWithoutGalleryAlbumsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  venueName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  venueAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  wedding?: Prisma.WeddingUpdateOneRequiredWithoutEventsNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutEventNestedInput
+  guestEvents?: Prisma.GuestEventUpdateManyWithoutEventNestedInput
+  vendorEvents?: Prisma.VendorEventUpdateManyWithoutEventNestedInput
+  vendorBookings?: Prisma.VendorBookingUpdateManyWithoutEventNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutEventNestedInput
+  eventBudget?: Prisma.EventBudgetUpdateOneWithoutEventNestedInput
+  galleryMedia?: Prisma.GalleryMediaUpdateManyWithoutEventNestedInput
+}
+
+export type EventUncheckedUpdateWithoutGalleryAlbumsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  weddingId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  venueName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  venueAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutEventNestedInput
+  guestEvents?: Prisma.GuestEventUncheckedUpdateManyWithoutEventNestedInput
+  vendorEvents?: Prisma.VendorEventUncheckedUpdateManyWithoutEventNestedInput
+  vendorBookings?: Prisma.VendorBookingUncheckedUpdateManyWithoutEventNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutEventNestedInput
+  eventBudget?: Prisma.EventBudgetUncheckedUpdateOneWithoutEventNestedInput
+  galleryMedia?: Prisma.GalleryMediaUncheckedUpdateManyWithoutEventNestedInput
+}
+
+export type EventCreateWithoutGalleryMediaInput = {
+  id?: string
+  name: string
+  description?: string | null
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  venueName?: string | null
+  venueAddress?: string | null
+  dressCode?: string | null
+  coverImageKey?: string | null
+  status?: $Enums.EventStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  wedding: Prisma.WeddingCreateNestedOneWithoutEventsInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutEventInput
+  guestEvents?: Prisma.GuestEventCreateNestedManyWithoutEventInput
+  vendorEvents?: Prisma.VendorEventCreateNestedManyWithoutEventInput
+  vendorBookings?: Prisma.VendorBookingCreateNestedManyWithoutEventInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutEventInput
+  eventBudget?: Prisma.EventBudgetCreateNestedOneWithoutEventInput
+  galleryAlbums?: Prisma.GalleryAlbumCreateNestedManyWithoutEventInput
+}
+
+export type EventUncheckedCreateWithoutGalleryMediaInput = {
+  id?: string
+  weddingId: string
+  name: string
+  description?: string | null
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  venueName?: string | null
+  venueAddress?: string | null
+  dressCode?: string | null
+  coverImageKey?: string | null
+  status?: $Enums.EventStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutEventInput
+  guestEvents?: Prisma.GuestEventUncheckedCreateNestedManyWithoutEventInput
+  vendorEvents?: Prisma.VendorEventUncheckedCreateNestedManyWithoutEventInput
+  vendorBookings?: Prisma.VendorBookingUncheckedCreateNestedManyWithoutEventInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutEventInput
+  eventBudget?: Prisma.EventBudgetUncheckedCreateNestedOneWithoutEventInput
+  galleryAlbums?: Prisma.GalleryAlbumUncheckedCreateNestedManyWithoutEventInput
+}
+
+export type EventCreateOrConnectWithoutGalleryMediaInput = {
+  where: Prisma.EventWhereUniqueInput
+  create: Prisma.XOR<Prisma.EventCreateWithoutGalleryMediaInput, Prisma.EventUncheckedCreateWithoutGalleryMediaInput>
+}
+
+export type EventUpsertWithoutGalleryMediaInput = {
+  update: Prisma.XOR<Prisma.EventUpdateWithoutGalleryMediaInput, Prisma.EventUncheckedUpdateWithoutGalleryMediaInput>
+  create: Prisma.XOR<Prisma.EventCreateWithoutGalleryMediaInput, Prisma.EventUncheckedCreateWithoutGalleryMediaInput>
+  where?: Prisma.EventWhereInput
+}
+
+export type EventUpdateToOneWithWhereWithoutGalleryMediaInput = {
+  where?: Prisma.EventWhereInput
+  data: Prisma.XOR<Prisma.EventUpdateWithoutGalleryMediaInput, Prisma.EventUncheckedUpdateWithoutGalleryMediaInput>
+}
+
+export type EventUpdateWithoutGalleryMediaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  venueName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  venueAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  wedding?: Prisma.WeddingUpdateOneRequiredWithoutEventsNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutEventNestedInput
+  guestEvents?: Prisma.GuestEventUpdateManyWithoutEventNestedInput
+  vendorEvents?: Prisma.VendorEventUpdateManyWithoutEventNestedInput
+  vendorBookings?: Prisma.VendorBookingUpdateManyWithoutEventNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutEventNestedInput
+  eventBudget?: Prisma.EventBudgetUpdateOneWithoutEventNestedInput
+  galleryAlbums?: Prisma.GalleryAlbumUpdateManyWithoutEventNestedInput
+}
+
+export type EventUncheckedUpdateWithoutGalleryMediaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  weddingId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  venueName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  venueAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutEventNestedInput
+  guestEvents?: Prisma.GuestEventUncheckedUpdateManyWithoutEventNestedInput
+  vendorEvents?: Prisma.VendorEventUncheckedUpdateManyWithoutEventNestedInput
+  vendorBookings?: Prisma.VendorBookingUncheckedUpdateManyWithoutEventNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutEventNestedInput
+  eventBudget?: Prisma.EventBudgetUncheckedUpdateOneWithoutEventNestedInput
+  galleryAlbums?: Prisma.GalleryAlbumUncheckedUpdateManyWithoutEventNestedInput
+}
+
 export type EventCreateManyWeddingInput = {
   id?: string
   name: string
@@ -642,6 +1710,14 @@ export type EventUpdateWithoutWeddingInput = {
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.TaskUpdateManyWithoutEventNestedInput
+  guestEvents?: Prisma.GuestEventUpdateManyWithoutEventNestedInput
+  vendorEvents?: Prisma.VendorEventUpdateManyWithoutEventNestedInput
+  vendorBookings?: Prisma.VendorBookingUpdateManyWithoutEventNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutEventNestedInput
+  eventBudget?: Prisma.EventBudgetUpdateOneWithoutEventNestedInput
+  galleryAlbums?: Prisma.GalleryAlbumUpdateManyWithoutEventNestedInput
+  galleryMedia?: Prisma.GalleryMediaUpdateManyWithoutEventNestedInput
 }
 
 export type EventUncheckedUpdateWithoutWeddingInput = {
@@ -657,6 +1733,14 @@ export type EventUncheckedUpdateWithoutWeddingInput = {
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutEventNestedInput
+  guestEvents?: Prisma.GuestEventUncheckedUpdateManyWithoutEventNestedInput
+  vendorEvents?: Prisma.VendorEventUncheckedUpdateManyWithoutEventNestedInput
+  vendorBookings?: Prisma.VendorBookingUncheckedUpdateManyWithoutEventNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutEventNestedInput
+  eventBudget?: Prisma.EventBudgetUncheckedUpdateOneWithoutEventNestedInput
+  galleryAlbums?: Prisma.GalleryAlbumUncheckedUpdateManyWithoutEventNestedInput
+  galleryMedia?: Prisma.GalleryMediaUncheckedUpdateManyWithoutEventNestedInput
 }
 
 export type EventUncheckedUpdateManyWithoutWeddingInput = {
@@ -675,6 +1759,89 @@ export type EventUncheckedUpdateManyWithoutWeddingInput = {
 }
 
 
+/**
+ * Count Type EventCountOutputType
+ */
+
+export type EventCountOutputType = {
+  tasks: number
+  guestEvents: number
+  vendorEvents: number
+  vendorBookings: number
+  expenses: number
+  galleryAlbums: number
+  galleryMedia: number
+}
+
+export type EventCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  tasks?: boolean | EventCountOutputTypeCountTasksArgs
+  guestEvents?: boolean | EventCountOutputTypeCountGuestEventsArgs
+  vendorEvents?: boolean | EventCountOutputTypeCountVendorEventsArgs
+  vendorBookings?: boolean | EventCountOutputTypeCountVendorBookingsArgs
+  expenses?: boolean | EventCountOutputTypeCountExpensesArgs
+  galleryAlbums?: boolean | EventCountOutputTypeCountGalleryAlbumsArgs
+  galleryMedia?: boolean | EventCountOutputTypeCountGalleryMediaArgs
+}
+
+/**
+ * EventCountOutputType without action
+ */
+export type EventCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EventCountOutputType
+   */
+  select?: Prisma.EventCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * EventCountOutputType without action
+ */
+export type EventCountOutputTypeCountTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TaskWhereInput
+}
+
+/**
+ * EventCountOutputType without action
+ */
+export type EventCountOutputTypeCountGuestEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GuestEventWhereInput
+}
+
+/**
+ * EventCountOutputType without action
+ */
+export type EventCountOutputTypeCountVendorEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorEventWhereInput
+}
+
+/**
+ * EventCountOutputType without action
+ */
+export type EventCountOutputTypeCountVendorBookingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorBookingWhereInput
+}
+
+/**
+ * EventCountOutputType without action
+ */
+export type EventCountOutputTypeCountExpensesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExpenseWhereInput
+}
+
+/**
+ * EventCountOutputType without action
+ */
+export type EventCountOutputTypeCountGalleryAlbumsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GalleryAlbumWhereInput
+}
+
+/**
+ * EventCountOutputType without action
+ */
+export type EventCountOutputTypeCountGalleryMediaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GalleryMediaWhereInput
+}
+
 
 export type EventSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -691,6 +1858,15 @@ export type EventSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   createdAt?: boolean
   updatedAt?: boolean
   wedding?: boolean | Prisma.WeddingDefaultArgs<ExtArgs>
+  tasks?: boolean | Prisma.Event$tasksArgs<ExtArgs>
+  guestEvents?: boolean | Prisma.Event$guestEventsArgs<ExtArgs>
+  vendorEvents?: boolean | Prisma.Event$vendorEventsArgs<ExtArgs>
+  vendorBookings?: boolean | Prisma.Event$vendorBookingsArgs<ExtArgs>
+  expenses?: boolean | Prisma.Event$expensesArgs<ExtArgs>
+  eventBudget?: boolean | Prisma.Event$eventBudgetArgs<ExtArgs>
+  galleryAlbums?: boolean | Prisma.Event$galleryAlbumsArgs<ExtArgs>
+  galleryMedia?: boolean | Prisma.Event$galleryMediaArgs<ExtArgs>
+  _count?: boolean | Prisma.EventCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["event"]>
 
 export type EventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -746,6 +1922,15 @@ export type EventSelectScalar = {
 export type EventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "weddingId" | "name" | "description" | "startsAt" | "endsAt" | "venueName" | "venueAddress" | "dressCode" | "coverImageKey" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["event"]>
 export type EventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   wedding?: boolean | Prisma.WeddingDefaultArgs<ExtArgs>
+  tasks?: boolean | Prisma.Event$tasksArgs<ExtArgs>
+  guestEvents?: boolean | Prisma.Event$guestEventsArgs<ExtArgs>
+  vendorEvents?: boolean | Prisma.Event$vendorEventsArgs<ExtArgs>
+  vendorBookings?: boolean | Prisma.Event$vendorBookingsArgs<ExtArgs>
+  expenses?: boolean | Prisma.Event$expensesArgs<ExtArgs>
+  eventBudget?: boolean | Prisma.Event$eventBudgetArgs<ExtArgs>
+  galleryAlbums?: boolean | Prisma.Event$galleryAlbumsArgs<ExtArgs>
+  galleryMedia?: boolean | Prisma.Event$galleryMediaArgs<ExtArgs>
+  _count?: boolean | Prisma.EventCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EventIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   wedding?: boolean | Prisma.WeddingDefaultArgs<ExtArgs>
@@ -758,6 +1943,14 @@ export type $EventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name: "Event"
   objects: {
     wedding: Prisma.$WeddingPayload<ExtArgs>
+    tasks: Prisma.$TaskPayload<ExtArgs>[]
+    guestEvents: Prisma.$GuestEventPayload<ExtArgs>[]
+    vendorEvents: Prisma.$VendorEventPayload<ExtArgs>[]
+    vendorBookings: Prisma.$VendorBookingPayload<ExtArgs>[]
+    expenses: Prisma.$ExpensePayload<ExtArgs>[]
+    eventBudget: Prisma.$EventBudgetPayload<ExtArgs> | null
+    galleryAlbums: Prisma.$GalleryAlbumPayload<ExtArgs>[]
+    galleryMedia: Prisma.$GalleryMediaPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1168,6 +2361,14 @@ readonly fields: EventFieldRefs;
 export interface Prisma__EventClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   wedding<T extends Prisma.WeddingDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WeddingDefaultArgs<ExtArgs>>): Prisma.Prisma__WeddingClient<runtime.Types.Result.GetResult<Prisma.$WeddingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  tasks<T extends Prisma.Event$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  guestEvents<T extends Prisma.Event$guestEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$guestEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GuestEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vendorEvents<T extends Prisma.Event$vendorEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$vendorEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vendorBookings<T extends Prisma.Event$vendorBookingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$vendorBookingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorBookingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  expenses<T extends Prisma.Event$expensesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  eventBudget<T extends Prisma.Event$eventBudgetArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$eventBudgetArgs<ExtArgs>>): Prisma.Prisma__EventBudgetClient<runtime.Types.Result.GetResult<Prisma.$EventBudgetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  galleryAlbums<T extends Prisma.Event$galleryAlbumsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$galleryAlbumsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GalleryAlbumPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  galleryMedia<T extends Prisma.Event$galleryMediaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$galleryMediaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GalleryMediaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1608,6 +2809,193 @@ export type EventDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Limit how many Events to delete.
    */
   limit?: number
+}
+
+/**
+ * Event.tasks
+ */
+export type Event$tasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Task
+   */
+  select?: Prisma.TaskSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Task
+   */
+  omit?: Prisma.TaskOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TaskInclude<ExtArgs> | null
+  where?: Prisma.TaskWhereInput
+  orderBy?: Prisma.TaskOrderByWithRelationInput | Prisma.TaskOrderByWithRelationInput[]
+  cursor?: Prisma.TaskWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TaskScalarFieldEnum | Prisma.TaskScalarFieldEnum[]
+}
+
+/**
+ * Event.guestEvents
+ */
+export type Event$guestEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GuestEvent
+   */
+  select?: Prisma.GuestEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GuestEvent
+   */
+  omit?: Prisma.GuestEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GuestEventInclude<ExtArgs> | null
+  where?: Prisma.GuestEventWhereInput
+  orderBy?: Prisma.GuestEventOrderByWithRelationInput | Prisma.GuestEventOrderByWithRelationInput[]
+  cursor?: Prisma.GuestEventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GuestEventScalarFieldEnum | Prisma.GuestEventScalarFieldEnum[]
+}
+
+/**
+ * Event.vendorEvents
+ */
+export type Event$vendorEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorEvent
+   */
+  select?: Prisma.VendorEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorEvent
+   */
+  omit?: Prisma.VendorEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorEventInclude<ExtArgs> | null
+  where?: Prisma.VendorEventWhereInput
+  orderBy?: Prisma.VendorEventOrderByWithRelationInput | Prisma.VendorEventOrderByWithRelationInput[]
+  cursor?: Prisma.VendorEventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorEventScalarFieldEnum | Prisma.VendorEventScalarFieldEnum[]
+}
+
+/**
+ * Event.vendorBookings
+ */
+export type Event$vendorBookingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorBooking
+   */
+  select?: Prisma.VendorBookingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorBooking
+   */
+  omit?: Prisma.VendorBookingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorBookingInclude<ExtArgs> | null
+  where?: Prisma.VendorBookingWhereInput
+  orderBy?: Prisma.VendorBookingOrderByWithRelationInput | Prisma.VendorBookingOrderByWithRelationInput[]
+  cursor?: Prisma.VendorBookingWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorBookingScalarFieldEnum | Prisma.VendorBookingScalarFieldEnum[]
+}
+
+/**
+ * Event.expenses
+ */
+export type Event$expensesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Expense
+   */
+  select?: Prisma.ExpenseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Expense
+   */
+  omit?: Prisma.ExpenseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExpenseInclude<ExtArgs> | null
+  where?: Prisma.ExpenseWhereInput
+  orderBy?: Prisma.ExpenseOrderByWithRelationInput | Prisma.ExpenseOrderByWithRelationInput[]
+  cursor?: Prisma.ExpenseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ExpenseScalarFieldEnum | Prisma.ExpenseScalarFieldEnum[]
+}
+
+/**
+ * Event.eventBudget
+ */
+export type Event$eventBudgetArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EventBudget
+   */
+  select?: Prisma.EventBudgetSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EventBudget
+   */
+  omit?: Prisma.EventBudgetOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EventBudgetInclude<ExtArgs> | null
+  where?: Prisma.EventBudgetWhereInput
+}
+
+/**
+ * Event.galleryAlbums
+ */
+export type Event$galleryAlbumsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GalleryAlbum
+   */
+  select?: Prisma.GalleryAlbumSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GalleryAlbum
+   */
+  omit?: Prisma.GalleryAlbumOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GalleryAlbumInclude<ExtArgs> | null
+  where?: Prisma.GalleryAlbumWhereInput
+  orderBy?: Prisma.GalleryAlbumOrderByWithRelationInput | Prisma.GalleryAlbumOrderByWithRelationInput[]
+  cursor?: Prisma.GalleryAlbumWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GalleryAlbumScalarFieldEnum | Prisma.GalleryAlbumScalarFieldEnum[]
+}
+
+/**
+ * Event.galleryMedia
+ */
+export type Event$galleryMediaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GalleryMedia
+   */
+  select?: Prisma.GalleryMediaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GalleryMedia
+   */
+  omit?: Prisma.GalleryMediaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GalleryMediaInclude<ExtArgs> | null
+  where?: Prisma.GalleryMediaWhereInput
+  orderBy?: Prisma.GalleryMediaOrderByWithRelationInput | Prisma.GalleryMediaOrderByWithRelationInput[]
+  cursor?: Prisma.GalleryMediaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GalleryMediaScalarFieldEnum | Prisma.GalleryMediaScalarFieldEnum[]
 }
 
 /**

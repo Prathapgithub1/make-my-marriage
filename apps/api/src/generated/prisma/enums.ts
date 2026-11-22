@@ -34,3 +34,154 @@ export const EventStatus = {
 } as const
 
 export type EventStatus = (typeof EventStatus)[keyof typeof EventStatus]
+
+
+export const TaskStatus = {
+  TO_DO: 'TO_DO',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED'
+} as const
+
+export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus]
+
+
+export const TaskPriority = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH'
+} as const
+
+export type TaskPriority = (typeof TaskPriority)[keyof typeof TaskPriority]
+
+
+export const RsvpStatus = {
+  PENDING: 'PENDING',
+  ATTENDING: 'ATTENDING',
+  NOT_ATTENDING: 'NOT_ATTENDING'
+} as const
+
+export type RsvpStatus = (typeof RsvpStatus)[keyof typeof RsvpStatus]
+
+
+export const VendorCategory = {
+  VENUE: 'VENUE',
+  CATERING: 'CATERING',
+  PHOTOGRAPHY: 'PHOTOGRAPHY',
+  VIDEOGRAPHY: 'VIDEOGRAPHY',
+  DECORATION: 'DECORATION',
+  CLOTHING: 'CLOTHING',
+  JEWELLERY: 'JEWELLERY',
+  MAKEUP: 'MAKEUP',
+  MUSIC: 'MUSIC',
+  ENTERTAINMENT: 'ENTERTAINMENT',
+  TRANSPORT: 'TRANSPORT',
+  TRAVEL: 'TRAVEL',
+  INVITATIONS: 'INVITATIONS',
+  GIFTS: 'GIFTS',
+  OTHER: 'OTHER',
+  PLANNER: 'PLANNER',
+  FLORIST: 'FLORIST',
+  ACCOMMODATION: 'ACCOMMODATION'
+} as const
+
+export type VendorCategory = (typeof VendorCategory)[keyof typeof VendorCategory]
+
+
+export const ExpenseCategory = {
+  VENUE: 'VENUE',
+  CATERING: 'CATERING',
+  PHOTOGRAPHY: 'PHOTOGRAPHY',
+  VIDEOGRAPHY: 'VIDEOGRAPHY',
+  DECORATION: 'DECORATION',
+  CLOTHING: 'CLOTHING',
+  JEWELLERY: 'JEWELLERY',
+  MAKEUP: 'MAKEUP',
+  MUSIC: 'MUSIC',
+  ENTERTAINMENT: 'ENTERTAINMENT',
+  TRANSPORT: 'TRANSPORT',
+  TRAVEL: 'TRAVEL',
+  INVITATIONS: 'INVITATIONS',
+  GIFTS: 'GIFTS',
+  OTHER: 'OTHER',
+  PLANNER: 'PLANNER',
+  FLORIST: 'FLORIST',
+  ACCOMMODATION: 'ACCOMMODATION'
+} as const
+
+export type ExpenseCategory = (typeof ExpenseCategory)[keyof typeof ExpenseCategory]
+
+
+export const ExpensePaymentStatus = {
+  PENDING: 'PENDING',
+  PARTIAL: 'PARTIAL',
+  PAID: 'PAID',
+  OVERDUE: 'OVERDUE',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type ExpensePaymentStatus = (typeof ExpensePaymentStatus)[keyof typeof ExpensePaymentStatus]
+
+
+export const ExpensePaymentMethod = {
+  UPI: 'UPI',
+  BANK_TRANSFER: 'BANK_TRANSFER',
+  CREDIT_CARD: 'CREDIT_CARD',
+  DEBIT_CARD: 'DEBIT_CARD',
+  CASH: 'CASH',
+  CHEQUE: 'CHEQUE',
+  OTHER: 'OTHER'
+} as const
+
+export type ExpensePaymentMethod = (typeof ExpensePaymentMethod)[keyof typeof ExpensePaymentMethod]
+
+
+export const VendorPriceRange = {
+  BUDGET: 'BUDGET',
+  MODERATE: 'MODERATE',
+  PREMIUM: 'PREMIUM',
+  LUXURY: 'LUXURY'
+} as const
+
+export type VendorPriceRange = (typeof VendorPriceRange)[keyof typeof VendorPriceRange]
+
+
+export const VendorStatus = {
+  SHORTLISTED: 'SHORTLISTED',
+  CONTACTED: 'CONTACTED',
+  NEGOTIATING: 'NEGOTIATING',
+  CONFIRMED: 'CONFIRMED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type VendorStatus = (typeof VendorStatus)[keyof typeof VendorStatus]
+
+
+export const VendorBookingStatus = {
+  SHORTLISTED: 'SHORTLISTED',
+  CONTACTED: 'CONTACTED',
+  NEGOTIATING: 'NEGOTIATING',
+  CONFIRMED: 'CONFIRMED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type VendorBookingStatus = (typeof VendorBookingStatus)[keyof typeof VendorBookingStatus]
+
+
+export const MediaType = {
+  IMAGE: 'IMAGE',
+  VIDEO: 'VIDEO'
+} as const
+
+export type MediaType = (typeof MediaType)[keyof typeof MediaType]
+
+
+export const MediaUploadStatus = {
+  PENDING: 'PENDING',
+  UPLOADED: 'UPLOADED',
+  FAILED: 'FAILED',
+  DELETED: 'DELETED'
+} as const
+
+export type MediaUploadStatus = (typeof MediaUploadStatus)[keyof typeof MediaUploadStatus]

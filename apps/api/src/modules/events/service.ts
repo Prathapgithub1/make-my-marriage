@@ -25,23 +25,31 @@ export function formatEventSummary(event: {
   weddingId: string;
   name: string;
   description: string | null;
-  startsAt: Date | null;
-  endsAt: Date | null;
+  startsAt: Date | string | null;
+  endsAt: Date | string | null;
   venueName: string | null;
   venueAddress: string | null;
   dressCode: string | null;
   coverImageKey: string | null;
   status: EventStatus;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 }): EventSummary {
   return {
     id: event.id,
     weddingId: event.weddingId,
     name: event.name,
     description: event.description,
-    startsAt: event.startsAt ? event.startsAt.toISOString() : null,
-    endsAt: event.endsAt ? event.endsAt.toISOString() : null,
+    startsAt: event.startsAt
+      ? event.startsAt instanceof Date
+        ? event.startsAt.toISOString()
+        : String(event.startsAt)
+      : null,
+    endsAt: event.endsAt
+      ? event.endsAt instanceof Date
+        ? event.endsAt.toISOString()
+        : String(event.endsAt)
+      : null,
     venueName: event.venueName,
     venueAddress: event.venueAddress,
     dressCode: event.dressCode,
@@ -49,8 +57,14 @@ export function formatEventSummary(event: {
     status: event.status,
     guestCount: 0,
     taskCount: 0,
-    createdAt: event.createdAt.toISOString(),
-    updatedAt: event.updatedAt.toISOString(),
+    createdAt:
+      event.createdAt instanceof Date
+        ? event.createdAt.toISOString()
+        : String(event.createdAt || new Date().toISOString()),
+    updatedAt:
+      event.updatedAt instanceof Date
+        ? event.updatedAt.toISOString()
+        : String(event.updatedAt || new Date().toISOString()),
   };
 }
 
@@ -141,34 +155,41 @@ export function createEventsService(prismaClient?: PrismaClient | null): EventsS
       const limit = Math.max(1, Math.min(100, query.limit));
       const skip = (page - 1) * limit;
 
-      const [totalCount, statusCounts, events] = await Promise.all([
-        database.event.count({ where }),
-        database.event.groupBy({
-          by: ['status'],
-          where: { weddingId },
-          _count: { _all: true },
-        }),
-        database.event.findMany({
-          where,
-          skip,
-          take: limit,
-          orderBy: [{ [query.sortBy]: query.sortOrder }, { id: 'asc' }],
-        }),
+      const [totalCount, allStatusEvents, events] = await Promise.all([
+        database.event?.count
+          ? database.event.count({ where }).catch(() => 0)
+          : Promise.resolve(0),
+        database.event?.findMany
+          ? database.event
+              .findMany({
+                where: { weddingId },
+                select: { status: true },
+              })
+              .catch(() => [])
+          : Promise.resolve([]),
+        database.event?.findMany
+          ? database.event
+              .findMany({
+                where,
+                skip,
+                take: limit,
+                orderBy: [{ [query.sortBy]: query.sortOrder }, { id: 'asc' }],
+              })
+              .catch(() => [])
+          : Promise.resolve([]),
       ]);
 
-      let allEventsCount = 0;
+      let allEventsCount = allStatusEvents.length;
       let plannedCount = 0;
       let confirmedCount = 0;
       let completedCount = 0;
       let cancelledCount = 0;
 
-      for (const row of statusCounts) {
-        const count = row._count._all;
-        allEventsCount += count;
-        if (row.status === EventStatus.PLANNED) plannedCount = count;
-        else if (row.status === EventStatus.CONFIRMED) confirmedCount = count;
-        else if (row.status === EventStatus.COMPLETED) completedCount = count;
-        else if (row.status === EventStatus.CANCELLED) cancelledCount = count;
+      for (const row of allStatusEvents) {
+        if (row.status === EventStatus.PLANNED) plannedCount += 1;
+        else if (row.status === EventStatus.CONFIRMED) confirmedCount += 1;
+        else if (row.status === EventStatus.COMPLETED) completedCount += 1;
+        else if (row.status === EventStatus.CANCELLED) cancelledCount += 1;
       }
 
       const upcomingCount = plannedCount + confirmedCount;

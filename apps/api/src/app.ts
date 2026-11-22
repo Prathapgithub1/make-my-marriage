@@ -21,6 +21,12 @@ import {
   memberInvitationsRouter,
 } from './modules/members/routes';
 import { eventsRouter } from './modules/events/routes';
+import { tasksRouter } from './modules/tasks/routes';
+import { guestsRouter, publicInvitationsRouter } from './modules/guests/routes';
+import { vendorsRouter } from './modules/vendors/routes';
+import { expensesRouter } from './modules/expenses/routes';
+import { websiteRouter, publicWebsiteRouter } from './modules/website/routes';
+import { galleryRouter } from './modules/gallery/routes';
 import { AppError } from './shared/app-error';
 
 export function createApp(applicationLogger: Logger = logger) {
@@ -54,9 +60,21 @@ export function createApp(applicationLogger: Logger = logger) {
   apiRouter.use('/health/database', databaseHealthRouter);
   apiRouter.use('/auth', authRouter);
   apiRouter.use('/wedding', weddingRouter);
+  apiRouter.use('/wedding/dashboard', dashboardRouter);
   apiRouter.use('/dashboard', dashboardRouter);
   apiRouter.use('/members', membersRouter);
   apiRouter.use('/events', eventsRouter);
+  apiRouter.use('/tasks', tasksRouter);
+  apiRouter.use('/guests', guestsRouter);
+  apiRouter.use('/vendors', vendorsRouter);
+  apiRouter.use('/expenses', expensesRouter);
+  apiRouter.use('/gallery', galleryRouter);
+  apiRouter.use('/wedding/gallery', galleryRouter);
+  apiRouter.use('/website', websiteRouter);
+  apiRouter.use('/wedding/website', websiteRouter);
+  apiRouter.use('/public/weddings', publicWebsiteRouter);
+  apiRouter.use('/public/invitations', publicInvitationsRouter);
+  apiRouter.use('/invitations', publicInvitationsRouter);
   apiRouter.use('/public/member-invitations', publicMemberInvitationsRouter);
   apiRouter.use('/member-invitations', memberInvitationsRouter);
   app.use('/api/v1', apiRouter);
@@ -70,17 +88,28 @@ export function createApp(applicationLogger: Logger = logger) {
     const requestId = String(res.getHeader('X-Request-Id') ?? '');
 
     if (statusCode >= 500) {
+      const errObj = error instanceof Error ? error : new Error(String(error));
       req.log.error(
-        { errorType: error instanceof Error ? error.name : 'UnknownError' },
-        'Request failed',
+        {
+          err: errObj,
+          errorName: errObj.name,
+          errorMessage: errObj.message,
+          stack: errObj.stack,
+        },
+        'Request failed with 500',
       );
     }
+
+    const isDev = process.env.NODE_ENV !== 'production';
+    const fallbackMessage =
+      isDev && error instanceof Error ? error.message : 'An unexpected error occurred.';
 
     res.status(statusCode).json({
       error: {
         code: appError?.code ?? 'INTERNAL_ERROR',
-        message: appError?.message ?? 'An unexpected error occurred.',
+        message: appError?.message ?? fallbackMessage,
         ...(appError?.details ? { details: appError.details } : {}),
+        ...(isDev && error instanceof Error ? { debugStack: error.stack } : {}),
       },
       requestId,
     });

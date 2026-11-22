@@ -1,4 +1,6 @@
 import { Link } from 'react-router';
+import type { DashboardData } from '../weddingApi';
+import { formatCurrencyINR } from '../../expenses/expensesApi';
 
 export interface SummaryCardsProps {
   eventsCount: number;
@@ -6,12 +8,24 @@ export interface SummaryCardsProps {
   guestsCount: number;
   rsvpsSummary: { pending: number; attending: number; notAttending: number };
   totalExpenseAmount: string;
+  budgetSummary?: DashboardData['summary']['budget'];
   weddingDate: string | null;
-  onOpenComingSoon: (featureName: string, description: string) => void;
+  onOpenComingSoon?: (featureName: string, description: string) => void;
 }
 
-export function SummaryCards({ eventsCount, onOpenComingSoon }: SummaryCardsProps) {
+export function SummaryCards({
+  eventsCount,
+  tasksSummary,
+  guestsCount,
+  rsvpsSummary,
+  totalExpenseAmount,
+  budgetSummary,
+}: SummaryCardsProps) {
   const displayEventsStat = eventsCount > 0 ? `${eventsCount} Scheduled` : '3 Scheduled';
+  const totalTasks = tasksSummary?.total ?? 0;
+  const completedTasks = tasksSummary?.completed ?? 0;
+  const taskPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+  const remainingTasks = Math.max(0, totalTasks - completedTasks);
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5 mb-5 sm:mb-6">
@@ -88,33 +102,38 @@ export function SummaryCards({ eventsCount, onOpenComingSoon }: SummaryCardsProp
           <div className="mt-2 sm:mt-2.5">
             <div className="flex items-baseline gap-2">
               <span className="font-serif text-2xl sm:text-[26px] font-semibold text-[#1A1C18] leading-tight">
-                24 / 28
+                {completedTasks} / {totalTasks}
               </span>
               <span className="px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-[#EAF5EB] text-[#2F6B38]">
-                86%
+                {taskPercentage}%
               </span>
-              <span className="sr-only">No tasks yet</span>
+              <span className="sr-only">
+                {totalTasks === 0 ? 'No tasks yet' : `${completedTasks} of ${totalTasks} completed`}
+              </span>
             </div>
             <div className="w-full bg-[#EAE6E1] h-1.5 rounded-full mt-2 overflow-hidden">
-              <div className="bg-[#4A6B4A] h-full rounded-full" style={{ width: '86%' }} />
+              <div
+                className="bg-[#4A6B4A] h-full rounded-full transition-all duration-300"
+                style={{ width: `${taskPercentage}%` }}
+              />
             </div>
           </div>
         </div>
 
         <div className="mt-2.5 pt-2 border-t border-[#F4F2EE] flex items-center justify-between text-[11px] text-[#86736D]">
-          <span className="truncate">4 urgent tasks remaining</span>
-          <button
-            type="button"
-            onClick={() =>
-              onOpenComingSoon(
-                'Task Progress',
-                'Task checklist milestones and delegation are in development.',
-              )
-            }
+          <span className="truncate">
+            {remainingTasks > 0
+              ? `${remainingTasks} urgent task${remainingTasks > 1 ? 's' : ''} remaining`
+              : totalTasks > 0
+                ? 'All tasks completed'
+                : 'No tasks scheduled'}
+          </span>
+          <Link
+            to="/tasks"
             className="text-[11px] font-semibold text-[#86736D] hover:text-[#8A4B35] transition-colors shrink-0 ml-2 cursor-pointer"
           >
             Tasks &gt;
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -144,29 +163,23 @@ export function SummaryCards({ eventsCount, onOpenComingSoon }: SummaryCardsProp
 
           <div className="mt-2 sm:mt-2.5">
             <div className="font-serif text-2xl sm:text-[26px] font-semibold text-[#1A1C18] leading-tight">
-              184 Total
+              {guestsCount} Total
             </div>
           </div>
         </div>
 
         <div className="mt-2.5 pt-2 border-t border-[#F4F2EE] flex items-center justify-between text-[11px] text-[#86736D]">
           <span className="flex items-center gap-1.5 truncate">
-            <span>142 Attending</span>
+            <span>{rsvpsSummary?.attending ?? 0} Attending</span>
             <span className="w-1 h-1 rounded-full bg-[#8A4B35]" />
-            <span>24 Pending</span>
+            <span>{rsvpsSummary?.pending ?? 0} Pending</span>
           </span>
-          <button
-            type="button"
-            onClick={() =>
-              onOpenComingSoon(
-                'Guest Management',
-                'Guest list invitation dispatch and RSVP responses are launching soon.',
-              )
-            }
+          <Link
+            to="/guests"
             className="text-[11px] font-semibold text-[#86736D] hover:text-[#8A4B35] transition-colors shrink-0 ml-2 cursor-pointer"
           >
             Guests &gt;
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -196,27 +209,29 @@ export function SummaryCards({ eventsCount, onOpenComingSoon }: SummaryCardsProp
 
           <div className="mt-2 sm:mt-2.5">
             <div className="font-serif text-2xl sm:text-[26px] font-semibold text-[#1A1C18] leading-tight">
-              ₹18,45,000
+              {formatCurrencyINR(totalExpenseAmount)}
             </div>
-            <span className="sr-only">Not set up yet</span>
+            {!budgetSummary?.hasBudgetConfigured && Number(totalExpenseAmount) === 0 && (
+              <span className="sr-only">Not set up yet</span>
+            )}
             <span className="sr-only">Nov 14, 2025</span>
           </div>
         </div>
 
         <div className="mt-2.5 pt-2 border-t border-[#F4F2EE] flex items-center justify-between text-[11px] text-[#86736D]">
-          <span className="truncate">Strictly confirmed payments</span>
-          <button
-            type="button"
-            onClick={() =>
-              onOpenComingSoon(
-                'Expense Tracker',
-                'Vendor budget schedules and installment tracking are coming soon.',
-              )
-            }
-            className="text-[11px] font-semibold text-[#86736D] hover:text-[#8A4B35] transition-colors shrink-0 ml-2 cursor-pointer"
+          <span className="truncate">
+            {budgetSummary?.hasBudgetConfigured
+              ? `Cap ${formatCurrencyINR(budgetSummary.totalBudget)} · Paid ${formatCurrencyINR(budgetSummary.totalPaidAmount)}`
+              : budgetSummary && Number(totalExpenseAmount) > 0
+                ? `Paid ${formatCurrencyINR(budgetSummary.totalPaidAmount)} across ${budgetSummary.expenseCount} items`
+                : 'Strictly confirmed payments'}
+          </span>
+          <Link
+            to="/expenses"
+            className="text-[11px] font-semibold text-[#86736D] hover:text-[#8A4B35] transition-colors shrink-0 ml-2"
           >
             Budget &gt;
-          </button>
+          </Link>
         </div>
       </div>
     </div>

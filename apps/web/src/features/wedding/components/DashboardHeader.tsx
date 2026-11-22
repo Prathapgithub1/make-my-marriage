@@ -8,6 +8,12 @@ export interface DashboardHeaderProps {
   userRole?: string;
   onSignOut: () => void;
   onOpenMobileSidebar?: () => void;
+  isSidebarCollapsed?: boolean;
+  onToggleSidebar?: () => void;
+  weddingTitle?: string;
+  weddingDate?: string | null;
+  weddingLocation?: string | null;
+  daysRemaining?: number | null;
 }
 
 export function DashboardHeader({
@@ -17,6 +23,12 @@ export function DashboardHeader({
   userRole = 'ADMIN',
   onSignOut,
   onOpenMobileSidebar,
+  isSidebarCollapsed,
+  onToggleSidebar,
+  weddingTitle,
+  weddingDate,
+  weddingLocation,
+  daysRemaining,
 }: DashboardHeaderProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -41,8 +53,8 @@ export function DashboardHeader({
   return (
     <header className="bg-white border-b border-[#EAE6E1] sticky top-0 z-40 shadow-2xs">
       <div className="w-full px-4 sm:px-6 md:px-8 h-14 sm:h-15 flex items-center justify-between">
-        {/* Left: Mobile hamburger menu toggle */}
-        <div className="flex items-center">
+        {/* Left: Mobile hamburger menu toggle + Desktop sidebar toggle & wedding context */}
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <button
             type="button"
             onClick={onOpenMobileSidebar}
@@ -58,6 +70,50 @@ export function DashboardHeader({
               />
             </svg>
           </button>
+
+          {onToggleSidebar && (
+            <button
+              type="button"
+              onClick={onToggleSidebar}
+              title={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              aria-label={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              className="hidden lg:flex p-1.5 rounded-lg text-[#86736D] hover:text-[#1A1C18] hover:bg-[#F4F2EE] transition-colors items-center justify-center shrink-0"
+            >
+              <svg
+                className={`w-4 h-4 transition-transform duration-300 ${isSidebarCollapsed ? 'rotate-180' : ''}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+              </svg>
+            </button>
+          )}
+
+          {weddingTitle && (
+            <div className="hidden sm:flex items-center gap-2.5 min-w-0 text-xs">
+              <span className="font-serif font-bold text-stone-900 text-sm sm:text-base truncate">
+                {weddingTitle}
+              </span>
+              {weddingDate && (
+                <>
+                  <span className="text-stone-300">|</span>
+                  <span className="text-stone-500 font-medium whitespace-nowrap">{weddingDate}</span>
+                </>
+              )}
+              {weddingLocation && (
+                <>
+                  <span className="text-stone-300">|</span>
+                  <span className="text-stone-500 truncate max-w-[160px] md:max-w-[220px]">{weddingLocation}</span>
+                </>
+              )}
+              {typeof daysRemaining === 'number' && daysRemaining >= 0 && (
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200 whitespace-nowrap">
+                  {daysRemaining === 0 ? 'Today' : `${daysRemaining} Days to Go`}
+                </span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Right: Notifications & User Profile matching Screenshot 1 */}

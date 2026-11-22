@@ -61,7 +61,21 @@ export const ModelName = {
   AuthRateLimit: 'AuthRateLimit',
   EmailVerificationToken: 'EmailVerificationToken',
   MemberInvitation: 'MemberInvitation',
-  Event: 'Event'
+  Event: 'Event',
+  Task: 'Task',
+  Guest: 'Guest',
+  GuestEvent: 'GuestEvent',
+  Vendor: 'Vendor',
+  VendorService: 'VendorService',
+  VendorEvent: 'VendorEvent',
+  VendorBooking: 'VendorBooking',
+  VendorPayment: 'VendorPayment',
+  VendorDocument: 'VendorDocument',
+  WeddingBudget: 'WeddingBudget',
+  EventBudget: 'EventBudget',
+  Expense: 'Expense',
+  GalleryAlbum: 'GalleryAlbum',
+  GalleryMedia: 'GalleryMedia'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -231,6 +245,262 @@ export const EventScalarFieldEnum = {
 } as const
 
 export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
+
+
+export const TaskScalarFieldEnum = {
+  id: 'id',
+  weddingId: 'weddingId',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  priority: 'priority',
+  dueDate: 'dueDate',
+  completedAt: 'completedAt',
+  eventId: 'eventId',
+  assignedMemberId: 'assignedMemberId',
+  createdByUserId: 'createdByUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]
+
+
+export const GuestScalarFieldEnum = {
+  id: 'id',
+  weddingId: 'weddingId',
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  maxGuests: 'maxGuests',
+  rsvpStatus: 'rsvpStatus',
+  attendingCount: 'attendingCount',
+  rsvpRespondedAt: 'rsvpRespondedAt',
+  invitationToken: 'invitationToken',
+  invitationTokenHash: 'invitationTokenHash',
+  invitationExpiresAt: 'invitationExpiresAt',
+  invitationRevokedAt: 'invitationRevokedAt',
+  invitationSentAt: 'invitationSentAt',
+  lastReminderSentAt: 'lastReminderSentAt',
+  reminderCount: 'reminderCount',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GuestScalarFieldEnum = (typeof GuestScalarFieldEnum)[keyof typeof GuestScalarFieldEnum]
+
+
+export const GuestEventScalarFieldEnum = {
+  guestId: 'guestId',
+  eventId: 'eventId',
+  createdAt: 'createdAt'
+} as const
+
+export type GuestEventScalarFieldEnum = (typeof GuestEventScalarFieldEnum)[keyof typeof GuestEventScalarFieldEnum]
+
+
+export const VendorScalarFieldEnum = {
+  id: 'id',
+  weddingId: 'weddingId',
+  name: 'name',
+  category: 'category',
+  contactName: 'contactName',
+  phone: 'phone',
+  email: 'email',
+  website: 'website',
+  address: 'address',
+  city: 'city',
+  state: 'state',
+  coverImageUrl: 'coverImageUrl',
+  description: 'description',
+  pricing: 'pricing',
+  priceRange: 'priceRange',
+  rating: 'rating',
+  status: 'status',
+  isFavorite: 'isFavorite',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VendorScalarFieldEnum = (typeof VendorScalarFieldEnum)[keyof typeof VendorScalarFieldEnum]
+
+
+export const VendorServiceScalarFieldEnum = {
+  id: 'id',
+  weddingId: 'weddingId',
+  vendorId: 'vendorId',
+  name: 'name',
+  description: 'description',
+  price: 'price',
+  isIncluded: 'isIncluded',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VendorServiceScalarFieldEnum = (typeof VendorServiceScalarFieldEnum)[keyof typeof VendorServiceScalarFieldEnum]
+
+
+export const VendorEventScalarFieldEnum = {
+  weddingId: 'weddingId',
+  vendorId: 'vendorId',
+  eventId: 'eventId',
+  notes: 'notes',
+  createdAt: 'createdAt'
+} as const
+
+export type VendorEventScalarFieldEnum = (typeof VendorEventScalarFieldEnum)[keyof typeof VendorEventScalarFieldEnum]
+
+
+export const VendorBookingScalarFieldEnum = {
+  id: 'id',
+  weddingId: 'weddingId',
+  vendorId: 'vendorId',
+  eventId: 'eventId',
+  expenseId: 'expenseId',
+  serviceName: 'serviceName',
+  status: 'status',
+  bookingDate: 'bookingDate',
+  serviceDate: 'serviceDate',
+  agreedAmount: 'agreedAmount',
+  advancePayment: 'advancePayment',
+  paidAmount: 'paidAmount',
+  contractUrl: 'contractUrl',
+  contractRef: 'contractRef',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VendorBookingScalarFieldEnum = (typeof VendorBookingScalarFieldEnum)[keyof typeof VendorBookingScalarFieldEnum]
+
+
+export const VendorPaymentScalarFieldEnum = {
+  id: 'id',
+  weddingId: 'weddingId',
+  bookingId: 'bookingId',
+  vendorId: 'vendorId',
+  expenseId: 'expenseId',
+  amount: 'amount',
+  paymentDate: 'paymentDate',
+  paymentStatus: 'paymentStatus',
+  paymentMethod: 'paymentMethod',
+  paidBy: 'paidBy',
+  referenceNumber: 'referenceNumber',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VendorPaymentScalarFieldEnum = (typeof VendorPaymentScalarFieldEnum)[keyof typeof VendorPaymentScalarFieldEnum]
+
+
+export const VendorDocumentScalarFieldEnum = {
+  id: 'id',
+  weddingId: 'weddingId',
+  vendorId: 'vendorId',
+  bookingId: 'bookingId',
+  title: 'title',
+  fileUrl: 'fileUrl',
+  fileType: 'fileType',
+  fileSize: 'fileSize',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VendorDocumentScalarFieldEnum = (typeof VendorDocumentScalarFieldEnum)[keyof typeof VendorDocumentScalarFieldEnum]
+
+
+export const WeddingBudgetScalarFieldEnum = {
+  id: 'id',
+  weddingId: 'weddingId',
+  totalBudget: 'totalBudget',
+  currency: 'currency',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WeddingBudgetScalarFieldEnum = (typeof WeddingBudgetScalarFieldEnum)[keyof typeof WeddingBudgetScalarFieldEnum]
+
+
+export const EventBudgetScalarFieldEnum = {
+  id: 'id',
+  weddingId: 'weddingId',
+  eventId: 'eventId',
+  allocatedBudget: 'allocatedBudget',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EventBudgetScalarFieldEnum = (typeof EventBudgetScalarFieldEnum)[keyof typeof EventBudgetScalarFieldEnum]
+
+
+export const ExpenseScalarFieldEnum = {
+  id: 'id',
+  weddingId: 'weddingId',
+  eventId: 'eventId',
+  vendorId: 'vendorId',
+  createdByUserId: 'createdByUserId',
+  title: 'title',
+  category: 'category',
+  amount: 'amount',
+  paidAmount: 'paidAmount',
+  currency: 'currency',
+  paymentStatus: 'paymentStatus',
+  paymentMethod: 'paymentMethod',
+  spentAt: 'spentAt',
+  dueDate: 'dueDate',
+  paidBy: 'paidBy',
+  referenceNumber: 'referenceNumber',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExpenseScalarFieldEnum = (typeof ExpenseScalarFieldEnum)[keyof typeof ExpenseScalarFieldEnum]
+
+
+export const GalleryAlbumScalarFieldEnum = {
+  id: 'id',
+  weddingId: 'weddingId',
+  eventId: 'eventId',
+  name: 'name',
+  description: 'description',
+  coverImageKey: 'coverImageKey',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GalleryAlbumScalarFieldEnum = (typeof GalleryAlbumScalarFieldEnum)[keyof typeof GalleryAlbumScalarFieldEnum]
+
+
+export const GalleryMediaScalarFieldEnum = {
+  id: 'id',
+  weddingId: 'weddingId',
+  albumId: 'albumId',
+  eventId: 'eventId',
+  uploadedByUserId: 'uploadedByUserId',
+  s3ObjectKey: 's3ObjectKey',
+  originalFileName: 'originalFileName',
+  mimeType: 'mimeType',
+  sizeBytes: 'sizeBytes',
+  mediaType: 'mediaType',
+  uploadStatus: 'uploadStatus',
+  caption: 'caption',
+  width: 'width',
+  height: 'height',
+  durationSeconds: 'durationSeconds',
+  uploadedByGuest: 'uploadedByGuest',
+  createdAt: 'createdAt',
+  uploadedAt: 'uploadedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type GalleryMediaScalarFieldEnum = (typeof GalleryMediaScalarFieldEnum)[keyof typeof GalleryMediaScalarFieldEnum]
 
 
 export const SortOrder = {

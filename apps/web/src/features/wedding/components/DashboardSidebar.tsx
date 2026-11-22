@@ -1,13 +1,18 @@
 import { useEffect, type ReactNode, type MouseEvent } from 'react';
 import { Link, useLocation } from 'react-router';
-import { BrandLockup } from '../../../components/BrandMark';
+import { BrandLockup, BrandMark } from '../../../components/BrandMark';
 
 export interface DashboardSidebarProps {
   eventsCount?: number;
   membersCount?: number;
+  tasksDueCount?: number;
+  guestsCount?: number;
+  vendorsCount?: number;
   onOpenComingSoon?: (feature: string, description: string) => void;
   isMobileOpen?: boolean;
   onCloseMobile?: () => void;
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
 interface NavItem {
@@ -23,9 +28,14 @@ interface NavItem {
 export function DashboardSidebar({
   eventsCount,
   membersCount,
+  tasksDueCount,
+  guestsCount,
+  vendorsCount,
   onOpenComingSoon,
   isMobileOpen = false,
   onCloseMobile,
+  isCollapsed = false,
+  onToggleCollapse,
 }: DashboardSidebarProps) {
   const location = useLocation();
   const currentPath = location.pathname;
@@ -70,8 +80,7 @@ export function DashboardSidebar({
           />
         </svg>
       ),
-      badge:
-        typeof eventsCount === 'number' && eventsCount > 0 ? String(eventsCount) : null,
+      badge: typeof eventsCount === 'number' && eventsCount > 0 ? String(eventsCount) : null,
       badgeType: 'neutral',
       isRealRoute: true,
     },
@@ -88,10 +97,9 @@ export function DashboardSidebar({
           />
         </svg>
       ),
-      badge: '4 Due',
+      badge: typeof tasksDueCount === 'number' && tasksDueCount > 0 ? `${tasksDueCount} Due` : null,
       badgeType: 'amber',
       isRealRoute: true,
-      comingSoonDesc: 'Wedding checklist and milestone task delegation are coming soon.',
     },
     {
       name: 'Guests & RSVP',
@@ -106,11 +114,9 @@ export function DashboardSidebar({
           />
         </svg>
       ),
-      badge: '184',
+      badge: typeof guestsCount === 'number' && guestsCount > 0 ? String(guestsCount) : null,
       badgeType: 'neutral',
       isRealRoute: true,
-      comingSoonDesc:
-        'Guest registry, digital invitation links, and RSVP tracking are launching soon.',
     },
     {
       name: 'Expenses',
@@ -126,7 +132,6 @@ export function DashboardSidebar({
         </svg>
       ),
       isRealRoute: true,
-      comingSoonDesc: 'Wedding budget management and vendor deposit tracking are in development.',
     },
     {
       name: 'Vendors',
@@ -141,8 +146,9 @@ export function DashboardSidebar({
           />
         </svg>
       ),
+      badge: typeof vendorsCount === 'number' && vendorsCount > 0 ? String(vendorsCount) : null,
+      badgeType: 'neutral',
       isRealRoute: true,
-      comingSoonDesc: 'Vendor directory and bookings coordination are coming soon.',
     },
     {
       name: 'Wedding Website',
@@ -176,7 +182,6 @@ export function DashboardSidebar({
         </svg>
       ),
       isRealRoute: true,
-      comingSoonDesc: 'Photo and memory gallery sharing is coming soon.',
     },
   ];
 
@@ -201,7 +206,6 @@ export function DashboardSidebar({
         </svg>
       ),
       isRealRoute: true,
-      comingSoonDesc: 'Workspace timezone and notification settings are in development.',
     },
     {
       name: 'Wedding Members',
@@ -216,8 +220,7 @@ export function DashboardSidebar({
           />
         </svg>
       ),
-      badge:
-        typeof membersCount === 'number' && membersCount > 0 ? String(membersCount) : null,
+      badge: typeof membersCount === 'number' && membersCount > 0 ? String(membersCount) : null,
       badgeType: 'neutral',
       isRealRoute: true,
     },
@@ -284,17 +287,76 @@ export function DashboardSidebar({
           onCloseMobile?.();
         };
 
+        if (isCollapsed) {
+          if (item.isRealRoute) {
+            return (
+              <Link
+                key={item.name}
+                to={item.path}
+                onClick={onCloseMobile}
+                className={`relative group flex items-center justify-center p-3 rounded-xl transition-all ${isActive
+                  ? 'bg-[#FBF4F0] text-[#8A4B35] font-semibold shadow-xs'
+                  : 'text-[#53433E] hover:text-[#1A1C18] hover:bg-[#F4F2EE]'
+                  }`}
+              >
+                <span className={isActive ? 'text-[#8A4B35]' : 'text-[#86736D]'}>{item.icon}</span>
+                {item.badge && (
+                  <span
+                    className={`absolute top-2 right-2 w-2 h-2 rounded-full ring-2 ring-white ${item.badgeType === 'amber'
+                      ? 'bg-amber-500'
+                      : item.badgeType === 'green'
+                        ? 'bg-emerald-500'
+                        : 'bg-[#8A4B35]'
+                      }`}
+                  />
+                )}
+                {/* Tooltip on hover with pointer arrow */}
+                <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1.5 bg-[#1A1C18] text-white text-xs font-medium rounded-lg shadow-2xl whitespace-nowrap z-[100] opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-150 flex items-center gap-2">
+                  <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#1A1C18] rotate-45" />
+                  <span className="relative z-10">{item.name}</span>
+                  {item.badge && (
+                    <span className="relative z-10 text-[10px] text-amber-300 font-bold bg-white/10 px-1.5 py-0.5 rounded">
+                      {item.badge}
+                    </span>
+                  )}
+                </div>
+              </Link>
+            );
+          }
+
+          return (
+            <button
+              key={item.name}
+              type="button"
+              onClick={handleClick}
+              className="relative group w-full flex items-center justify-center p-3 rounded-xl text-[#53433E] hover:text-[#1A1C18] hover:bg-[#F4F2EE] transition-all"
+            >
+              <span className="text-[#86736D]">{item.icon}</span>
+              {item.badge && (
+                <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-stone-400 ring-2 ring-white" />
+              )}
+              {/* Tooltip on hover with pointer arrow */}
+              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1.5 bg-[#1A1C18] text-white text-xs font-medium rounded-lg shadow-2xl whitespace-nowrap z-[100] opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-150 flex items-center gap-2">
+                <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#1A1C18] rotate-45" />
+                <span className="relative z-10">{item.name}</span>
+                <span className="relative z-10 text-[10px] text-stone-300 font-normal bg-white/10 px-1.5 py-0.5 rounded">
+                  Coming Soon
+                </span>
+              </div>
+            </button>
+          );
+        }
+
         if (item.isRealRoute) {
           return (
             <Link
               key={item.name}
               to={item.path}
               onClick={onCloseMobile}
-              className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs transition-all ${
-                isActive
-                  ? 'bg-[#FBF4F0] text-[#8A4B35] font-semibold'
-                  : 'text-[#53433E] hover:text-[#1A1C18] hover:bg-[#F4F2EE] font-medium'
-              }`}
+              className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs transition-all ${isActive
+                ? 'bg-[#FBF4F0] text-[#8A4B35] font-semibold'
+                : 'text-[#53433E] hover:text-[#1A1C18] hover:bg-[#F4F2EE] font-medium'
+                }`}
             >
               <div className="flex items-center gap-3">
                 <span className={isActive ? 'text-[#8A4B35]' : 'text-[#86736D]'}>{item.icon}</span>
@@ -329,39 +391,109 @@ export function DashboardSidebar({
   );
 
   const sidebarContent = (
-    <aside className="w-full flex flex-col justify-between min-h-full">
+    <aside className={`w-full flex flex-col justify-between min-h-full ${isCollapsed ? 'overflow-visible' : ''}`}>
       <div>
-        {/* Brand Lockup Header matching Screenshot 1 */}
-        <div className="h-14 sm:h-15 px-6 flex items-center border-b border-[#EAE6E1]/70">
-          <BrandLockup subtitle="WEDDING PLANNING SUITE" />
+        {/* Brand Lockup Header */}
+        <div
+          className={`h-14 sm:h-15 border-b border-[#EAE6E1]/70 flex items-center ${isCollapsed ? 'justify-center px-2' : 'justify-between px-4 sm:px-5'
+            }`}
+        >
+          {isCollapsed ? (
+            <button
+              type="button"
+              onClick={onToggleCollapse}
+              title="Expand sidebar"
+              aria-label="Expand sidebar"
+              className="group p-2 rounded-xl text-[#86736D] hover:text-[#8A4B35] hover:bg-[#FBF4F0] transition-colors relative flex items-center justify-center"
+            >
+              <BrandMark compact />
+              <span className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 border border-[#EAE6E1] shadow-xs text-[#86736D] group-hover:text-[#8A4B35] transition-colors">
+                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                </svg>
+              </span>
+            </button>
+          ) : (
+            <>
+              <BrandLockup subtitle="WEDDING PLANNING SUITE" />
+              {onToggleCollapse && (
+                <button
+                  type="button"
+                  onClick={onToggleCollapse}
+                  title="Collapse sidebar"
+                  aria-label="Collapse sidebar"
+                  className="p-1.5 rounded-lg text-[#86736D] hover:text-[#1A1C18] hover:bg-[#F4F2EE] transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                  </svg>
+                </button>
+              )}
+            </>
+          )}
         </div>
 
         {/* Navigation Sections */}
-        <nav className="p-4 space-y-6">
+        <nav className={`space-y-6 ${isCollapsed ? 'p-2 overflow-visible' : 'p-4'}`}>
           {/* Main Menu */}
           <div>
-            <div className="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-[#86736D]">
-              MAIN MENU
-            </div>
+            {isCollapsed ? (
+              <div className="my-2 border-t border-[#EAE6E1]/70" />
+            ) : (
+              <div className="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-[#86736D]">
+                MAIN MENU
+              </div>
+            )}
             {renderNavList(mainMenuItems)}
           </div>
 
           {/* Administration */}
           <div>
-            <div className="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-[#86736D]">
-              ADMINISTRATION
-            </div>
+            {isCollapsed ? (
+              <div className="my-2 border-t border-[#EAE6E1]/70" />
+            ) : (
+              <div className="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-[#86736D]">
+                ADMINISTRATION
+              </div>
+            )}
             {renderNavList(adminItems)}
           </div>
         </nav>
       </div>
+
+      {/* Sidebar Footer with Collapse / Expand control */}
+      {onToggleCollapse && (
+        <div className={`border-t border-[#EAE6E1]/70 ${isCollapsed ? 'p-2 flex justify-center' : 'p-3'}`}>
+          <button
+            type="button"
+            onClick={onToggleCollapse}
+            title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            className={`flex items-center ${isCollapsed ? 'justify-center p-2.5 rounded-xl' : 'w-full gap-3 px-3 py-2 rounded-xl text-xs font-medium'
+              } text-[#86736D] hover:text-[#1A1C18] hover:bg-[#F4F2EE] transition-colors`}
+          >
+            <svg
+              className={`w-4 h-4 transition-transform duration-300 ${isCollapsed ? 'rotate-180' : ''}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+            </svg>
+            {!isCollapsed && <span>Collapse sidebar</span>}
+          </button>
+        </div>
+      )}
     </aside>
   );
 
   return (
     <>
       {/* Desktop Persistent Sidebar */}
-      <div className="hidden lg:block w-[270px] shrink-0 sticky top-0 h-screen overflow-y-auto border-r border-[#EAE6E1] bg-white">
+      <div
+        className={`hidden lg:block ${isCollapsed ? 'w-[76px] overflow-visible' : 'w-[270px] overflow-y-auto'
+          } shrink-0 sticky top-0 h-screen border-r border-[#EAE6E1] bg-white transition-[width] duration-300 ease-in-out z-50`}
+      >
         {sidebarContent}
       </div>
 

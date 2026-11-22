@@ -4,10 +4,11 @@ import { DEMO_FOCUS_TASKS, type FocusTask } from '../dashboardMockData';
 
 export interface TaskFocusListProps {
   tasksSummary?: { total: number; completed: number };
-  onOpenComingSoon: (featureName: string, description: string) => void;
+  onOpenComingSoon?: (featureName: string, description: string) => void;
 }
 
-export function TaskFocusList({ onOpenComingSoon }: TaskFocusListProps) {
+export function TaskFocusList(props: TaskFocusListProps) {
+  void props;
   const [tasks, setTasks] = useState<FocusTask[]>(DEMO_FOCUS_TASKS);
 
   const toggleTask = (taskId: string) => {
@@ -52,18 +53,12 @@ export function TaskFocusList({ onOpenComingSoon }: TaskFocusListProps) {
           <span className="sr-only">0 of 0 Completed</span>
         </div>
 
-        <button
-          type="button"
-          onClick={() =>
-            onOpenComingSoon(
-              'Create Task',
-              'Task assignment, vendor checklist, and calendar reminders are launching soon.',
-            )
-          }
+        <a
+          href="/tasks"
           className="text-xs font-semibold text-[#8D493A] hover:underline transition-colors flex items-center gap-1 cursor-pointer"
         >
           + New Task
-        </button>
+        </a>
       </div>
 
       {/* Task List Cards */}
