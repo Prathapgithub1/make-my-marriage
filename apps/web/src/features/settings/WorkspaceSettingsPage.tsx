@@ -3,9 +3,7 @@ import { useAuth } from '../auth/AuthProvider';
 import {
   getWedding,
   updateWedding,
-  getDashboard,
   type WeddingDetail,
-  type DashboardData,
 } from '../wedding/weddingApi';
 import type {
   SettingsTab,
@@ -43,7 +41,6 @@ export function WorkspaceSettingsPage() {
 
   // Server data
   const [wedding, setWedding] = useState<WeddingDetail | null>(null);
-  const [dashboard, setDashboard] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -67,10 +64,12 @@ export function WorkspaceSettingsPage() {
     showPublicAttendeeCount: false,
   });
 
-  // Action status
+  // Action status & dialogs
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
   const [membersCount, setMembersCount] = useState<number>(1);
+  const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
+  const [showHelpModal, setShowHelpModal] = useState(false);
 
   // Check if form is dirty
   const isDirty = useMemo(() => {
@@ -93,13 +92,9 @@ export function WorkspaceSettingsPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const [weddingData, dashboardData] = await Promise.all([
-        getWedding(),
-        getDashboard().catch(() => null),
-      ]);
+      const weddingData = await getWedding();
 
       setWedding(weddingData);
-      setDashboard(dashboardData);
       setMembersCount(weddingData.membersCount ?? 1);
 
       const loadedState: WorkspaceSettingsFormState = {
@@ -126,7 +121,7 @@ export function WorkspaceSettingsPage() {
         }));
       }
     } catch {
-      setError('Failed to load workspace settings. Please refresh.');
+      setError('Failed to load workspace settings. Please refresh the page.');
     } finally {
       setIsLoading(false);
     }
@@ -143,8 +138,17 @@ export function WorkspaceSettingsPage() {
     setFormState((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleDiscard = () => {
+  const handleRequestDiscard = () => {
+    if (isDirty) {
+      setShowDiscardConfirm(true);
+    } else {
+      setFormState(initialFormState);
+    }
+  };
+
+  const handleConfirmDiscard = () => {
     setFormState(initialFormState);
+    setShowDiscardConfirm(false);
   };
 
   const handleSave = async () => {
@@ -210,6 +214,7 @@ export function WorkspaceSettingsPage() {
     setTimeout(() => setSaveSuccess(null), 3000);
   };
 
+  // Determine RBAC permissions: ADMIN has write privileges; MANAGER has view & operational privileges
   const isAdmin = wedding?.role
     ? wedding.role === 'ADMIN'
     : (session?.membership?.role ?? 'ADMIN') === 'ADMIN';
@@ -243,17 +248,18 @@ export function WorkspaceSettingsPage() {
 
   return (
     <div className="min-h-screen bg-[#FBF9F5] flex flex-col">
-      {/* Top Breadcrumb & Status Header */}
+      {/* Top Workspace Context Header */}
       <SettingsHeader
         wedding={wedding}
-        daysRemaining={dashboard?.countdown?.daysRemaining ?? null}
         userDisplayName={session?.user?.displayName || 'Organizer'}
         userRole={wedding?.role || (session?.membership?.role as 'ADMIN' | 'MANAGER') || 'ADMIN'}
         isDirty={isDirty}
         isSaving={isSaving}
+        isAdmin={isAdmin}
         onSave={handleSave}
-        onDiscard={handleDiscard}
+        onDiscard={handleRequestDiscard}
         onOpenNotifications={() => setActiveTab('notifications')}
+        onOpenHelp={() => setShowHelpModal(true)}
       />
 
       {/* Main Container */}
@@ -275,6 +281,7 @@ export function WorkspaceSettingsPage() {
                 <span>{saveSuccess}</span>
               </div>
               <button
+                type="button"
                 onClick={() => setSaveSuccess(null)}
                 className="text-[#2F6B38] hover:opacity-75 font-bold"
               >
@@ -290,6 +297,7 @@ export function WorkspaceSettingsPage() {
                 <span>{error}</span>
               </div>
               <button
+                type="button"
                 onClick={() => setError(null)}
                 className="text-[#C53030] hover:opacity-75 font-bold"
               >
@@ -349,6 +357,107 @@ export function WorkspaceSettingsPage() {
           )}
         </main>
       </div>
+
+      {/* Discard Changes Confirmation Modal */}
+      {showDiscardConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white border border-[#E8E2D8] rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-[#FEF3E2] border border-[#F6DDAE] text-[#9A6218] flex items-center justify-center font-bold text-lg">
+                ⚠️
+              </div>
+              <div>
+                <h3 className="text-base font-serif font-bold text-[#2C1810]">
+                  Discard Unsaved Modifications?
+                </h3>
+                <p className="text-xs text-[#7C6659] mt-0.5">
+                  Any edits made to workspace settings will be reverted to the last saved state.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2.5 pt-3 border-t border-[#EAE4DC]">
+              <button
+                type="button"
+                onClick={() => setShowDiscardConfirm(false)}
+                className="px-4 py-2 text-xs font-semibold rounded-lg border border-[#D5CCC0] text-[#5A453A] hover:bg-[#FAF8F5] transition-colors"
+              >
+                Keep Editing
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDiscard}
+                className="px-4 py-2 text-xs font-semibold rounded-lg bg-[#C53030] hover:bg-[#A82525] text-white shadow-sm transition-colors"
+              >
+                Discard Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Help & Support Information Modal */}
+      {showHelpModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white border border-[#E8E2D8] rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-5">
+            <div className="flex items-center justify-between pb-3 border-b border-[#EAE4DC]">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">📘</span>
+                <h3 className="text-base font-serif font-bold text-[#2C1810]">
+                  Workspace Settings & RBAC Guide
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowHelpModal(false)}
+                className="text-[#8C7A70] hover:text-[#2C1810] p-1 rounded-lg hover:bg-[#FAF8F5]"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-3.5 text-xs text-[#5A453A] max-h-[60vh] overflow-y-auto pr-1">
+              <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#E8E2D8]">
+                <h4 className="font-bold text-[#2C1810] mb-1">👑 Administrator Privileges</h4>
+                <p className="text-[11px] text-[#7C6659]">
+                  Administrators have full governance rights: modifying workspace identity, setting ceremony dates and timezones, updating celebration cover banners, managing co-host invitations and roles, and executing workspace deletion.
+                </p>
+              </div>
+
+              <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#E8E2D8]">
+                <h4 className="font-bold text-[#2C1810] mb-1">👥 Manager Capabilities</h4>
+                <p className="text-[11px] text-[#7C6659]">
+                  Managers have operational access to coordinate guests, tasks, and vendors, but cannot alter workspace settings, demote administrators, or delete celebration records.
+                </p>
+              </div>
+
+              <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#E8E2D8]">
+                <h4 className="font-bold text-[#2C1810] mb-1">💾 Saving & Discarding Changes</h4>
+                <p className="text-[11px] text-[#7C6659]">
+                  Settings are persisted immediately to PostgreSQL. When edits are made, the Save Changes button activates. Discarding restores the latest server-persisted state with confirmation.
+                </p>
+              </div>
+
+              <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#E8E2D8]">
+                <h4 className="font-bold text-[#2C1810] mb-1">📊 Data Backup & Privacy</h4>
+                <p className="text-[11px] text-[#7C6659]">
+                  Use the Workspace Data & Export section to generate CSV spreadsheets for attendees, expenses, and vendor directories at any time.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex justify-end pt-3 border-t border-[#EAE4DC]">
+              <button
+                type="button"
+                onClick={() => setShowHelpModal(false)}
+                className="px-4 py-2 text-xs font-semibold rounded-lg bg-[#7B341E] hover:bg-[#652714] text-white shadow-sm"
+              >
+                Got It
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

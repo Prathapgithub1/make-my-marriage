@@ -12,30 +12,6 @@ interface GeneralProfileSectionProps {
   coverImageUrl?: string | null;
 }
 
-// Curated royal heritage celebration backdrops
-const PALACE_PRESETS = [
-  {
-    name: 'Bangalore Palace',
-    city: 'Bengaluru, Karnataka',
-    url: 'https://images.unsplash.com/photo-1544833058-e70f6ca2a63f?auto=format&fit=crop&w=1200&q=80',
-  },
-  {
-    name: 'The Oberoi Udaivilas',
-    city: 'Udaipur, Rajasthan',
-    url: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80',
-  },
-  {
-    name: 'Rambagh Palace Heritage',
-    city: 'Jaipur, Rajasthan',
-    url: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1200&q=80',
-  },
-  {
-    name: 'Taj Falaknuma Grandeur',
-    city: 'Hyderabad, Telangana',
-    url: 'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=1200&q=80',
-  },
-];
-
 export function GeneralProfileSection({
   formState,
   onChangeField,
@@ -45,13 +21,14 @@ export function GeneralProfileSection({
   const [showCoverModal, setShowCoverModal] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [imgLoadError, setImgLoadError] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Active cover preview: either uploaded S3 URL, preset URL, or luxury default
+  // Active cover preview: uploaded S3 pre-signed URL or directly stored URL
   const activeCoverSrc =
-    coverImageUrl ||
-    (formState.coverImageKey?.startsWith('http') ? formState.coverImageKey : null) ||
-    PALACE_PRESETS[0].url;
+    !imgLoadError &&
+    (coverImageUrl ||
+      (formState.coverImageKey?.startsWith('http') ? formState.coverImageKey : null));
 
   const handleFileSelect = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -78,6 +55,7 @@ export function GeneralProfileSection({
 
       await uploadCoverToS3(uploadUrl, file, uploadHeaders);
       onChangeField('coverImageKey', s3ObjectKey);
+      setImgLoadError(false);
       setShowCoverModal(false);
     } catch (err) {
       setUploadError(
@@ -88,8 +66,9 @@ export function GeneralProfileSection({
     }
   };
 
-  const handleSelectPreset = (url: string) => {
-    onChangeField('coverImageKey', url);
+  const handleRemoveCover = () => {
+    onChangeField('coverImageKey', '');
+    setImgLoadError(false);
     setShowCoverModal(false);
   };
 
@@ -105,7 +84,7 @@ export function GeneralProfileSection({
             General Information
           </h2>
           <p className="text-xs sm:text-sm text-[#7C6659] mt-0.5">
-            Master celebration identity, wedding ceremony schedule, and default cover aesthetics.
+            Workspace identity, celebration schedule, and visual aesthetics.
           </p>
         </div>
 
@@ -127,24 +106,45 @@ export function GeneralProfileSection({
         </div>
 
         {/* Banner Frame */}
-        <div className="relative w-full h-56 sm:h-72 rounded-xl overflow-hidden border border-[#D9D0C3] shadow-inner group">
-          <img
-            src={activeCoverSrc}
-            alt="Wedding Celebration Cover"
-            className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
-          />
+        <div className="relative w-full h-52 sm:h-64 rounded-xl overflow-hidden border border-[#D9D0C3] shadow-inner group">
+          {activeCoverSrc ? (
+            <img
+              src={activeCoverSrc}
+              alt="Celebration Cover"
+              onError={() => setImgLoadError(true)}
+              className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+            />
+          ) : (
+            /* Clean luxury terracotta gradient placeholder when no image is uploaded */
+            <div className="w-full h-full bg-gradient-to-br from-[#4A2013] via-[#632918] to-[#8A3F2A] flex flex-col items-center justify-center text-white/90 p-6 relative">
+              <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-2 text-white/80">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.5"
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              <p className="text-xs font-semibold tracking-wide">
+                No custom cover banner uploaded
+              </p>
+              <p className="text-[11px] text-white/60 mt-0.5">
+                Upload a 1200×400px banner for your workspace and wedding portal
+              </p>
+            </div>
+          )}
 
-          {/* Dark luxury gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10 pointer-events-none" />
+          {/* Dark luxury gradient overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent pointer-events-none" />
 
           {/* Bottom Left Monogram Overlay */}
-          <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 text-white space-y-1">
-            <h4 className="text-lg sm:text-2xl font-serif font-bold drop-shadow-md">
-              {formState.brideName && formState.groomName
-                ? `${formState.brideName} & ${formState.groomName} Nuptials`
-                : formState.title || 'Wedding Nuptials'}
+          <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 text-white space-y-0.5">
+            <h4 className="text-base sm:text-xl font-serif font-bold drop-shadow-md">
+              {formState.title || 'Wedding Workspace'}
             </h4>
-            <p className="text-xs text-white/80 drop-shadow">
+            <p className="text-[11px] text-white/80 drop-shadow">
               Recommended 1200×400px • Max 15MB (JPG, WebP)
             </p>
           </div>
@@ -155,10 +155,10 @@ export function GeneralProfileSection({
               <button
                 type="button"
                 onClick={() => setShowCoverModal(true)}
-                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-white/90 hover:bg-white text-[#2C1810] text-xs font-semibold shadow-lg backdrop-blur-sm transition-all active:scale-95"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/95 hover:bg-white text-[#2C1810] text-xs font-semibold shadow-md backdrop-blur-sm transition-all active:scale-95"
               >
                 <svg
-                  className="w-4 h-4 text-[#7B341E]"
+                  className="w-3.5 h-3.5 text-[#7B341E]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -183,49 +183,49 @@ export function GeneralProfileSection({
         </div>
       </div>
 
-      {/* Card 2: Wedding Identity & Couple Details */}
+      {/* Card 2: Workspace Identity & Couple Details */}
       <div className="bg-white border border-[#E8E2D8] rounded-xl p-5 shadow-sm space-y-4">
-        <h3 className="text-sm font-bold text-[#2C1810]">Wedding Identity & Couple Details</h3>
+        <h3 className="text-sm font-bold text-[#2C1810]">Workspace Identity & Couple Details</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-xs font-semibold text-[#5A453A] mb-1">
-              Wedding Workspace Name <span className="text-[#C53030]">*</span>
+              Workspace Name <span className="text-[#C53030]">*</span>
             </label>
             <input
               type="text"
               value={formState.title}
               disabled={!isAdmin}
               onChange={(e) => onChangeField('title', e.target.value)}
-              placeholder="e.g. Prathap & Akshitha's Wedding"
+              placeholder="Workspace name"
               className="w-full px-3 py-2 text-xs rounded-lg border border-[#D5CCC0] bg-[#FAF8F5] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#7B341E]/20 focus:border-[#7B341E] text-[#2C1810]"
             />
           </div>
 
           <div>
             <label className="block text-xs font-semibold text-[#5A453A] mb-1">
-              Partner 1 (Bride / Groom) <span className="text-[#C53030]">*</span>
+              Partner 1 <span className="text-[#C53030]">*</span>
             </label>
             <input
               type="text"
               value={formState.brideName}
               disabled={!isAdmin}
               onChange={(e) => onChangeField('brideName', e.target.value)}
-              placeholder="e.g. Akshitha Rao"
+              placeholder="Partner 1 name"
               className="w-full px-3 py-2 text-xs rounded-lg border border-[#D5CCC0] bg-[#FAF8F5] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#7B341E]/20 focus:border-[#7B341E] text-[#2C1810]"
             />
           </div>
 
           <div>
             <label className="block text-xs font-semibold text-[#5A453A] mb-1">
-              Partner 2 (Groom / Bride) <span className="text-[#C53030]">*</span>
+              Partner 2 <span className="text-[#C53030]">*</span>
             </label>
             <input
               type="text"
               value={formState.groomName}
               disabled={!isAdmin}
               onChange={(e) => onChangeField('groomName', e.target.value)}
-              placeholder="e.g. Prathap"
+              placeholder="Partner 2 name"
               className="w-full px-3 py-2 text-xs rounded-lg border border-[#D5CCC0] bg-[#FAF8F5] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#7B341E]/20 focus:border-[#7B341E] text-[#2C1810]"
             />
           </div>
@@ -255,7 +255,7 @@ export function GeneralProfileSection({
 
           <div>
             <label className="block text-xs font-semibold text-[#5A453A] mb-1">
-              Celebration Timezone
+              Workspace Timezone
             </label>
             <select
               value={formState.timezone}
@@ -271,13 +271,13 @@ export function GeneralProfileSection({
               <option value="Asia/Singapore">Asia/Singapore (SGT, UTC+08:00)</option>
             </select>
             <p className="text-[11px] text-[#8C7A70] mt-1">
-              Controls calendar notifications, reminder dispatches, and public invitation times.
+              Controls notification triggers and reminder dispatches.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Card 4: Primary Celebration Venue & Location */}
+      {/* Card 4: Primary Celebration Venue & Destination */}
       <div className="bg-white border border-[#E8E2D8] rounded-xl p-5 shadow-sm space-y-4">
         <h3 className="text-sm font-bold text-[#2C1810]">Celebration Venue & Destination</h3>
 
@@ -291,7 +291,7 @@ export function GeneralProfileSection({
               value={formState.location}
               disabled={!isAdmin}
               onChange={(e) => onChangeField('location', e.target.value)}
-              placeholder="e.g. Bangalore Palace Grounds, Sankey Road"
+              placeholder="Primary venue or address (optional)"
               className="w-full px-3 py-2 text-xs rounded-lg border border-[#D5CCC0] bg-[#FAF8F5] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#7B341E]/20 focus:border-[#7B341E] text-[#2C1810]"
             />
           </div>
@@ -303,7 +303,7 @@ export function GeneralProfileSection({
               value={formState.city}
               disabled={!isAdmin}
               onChange={(e) => onChangeField('city', e.target.value)}
-              placeholder="e.g. Bengaluru"
+              placeholder="City (optional)"
               className="w-full px-3 py-2 text-xs rounded-lg border border-[#D5CCC0] bg-[#FAF8F5] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#7B341E]/20 focus:border-[#7B341E] text-[#2C1810]"
             />
           </div>
@@ -315,7 +315,7 @@ export function GeneralProfileSection({
               value={formState.state}
               disabled={!isAdmin}
               onChange={(e) => onChangeField('state', e.target.value)}
-              placeholder="e.g. Karnataka"
+              placeholder="State / Province (optional)"
               className="w-full px-3 py-2 text-xs rounded-lg border border-[#D5CCC0] bg-[#FAF8F5] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#7B341E]/20 focus:border-[#7B341E] text-[#2C1810]"
             />
           </div>
@@ -327,16 +327,16 @@ export function GeneralProfileSection({
               value={formState.country}
               disabled={!isAdmin}
               onChange={(e) => onChangeField('country', e.target.value)}
-              placeholder="e.g. India"
+              placeholder="Country"
               className="w-full px-3 py-2 text-xs rounded-lg border border-[#D5CCC0] bg-[#FAF8F5] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#7B341E]/20 focus:border-[#7B341E] text-[#2C1810]"
             />
           </div>
         </div>
       </div>
 
-      {/* Card 5: Story & Celebration Description */}
+      {/* Card 5: Story & Welcome Notes */}
       <div className="bg-white border border-[#E8E2D8] rounded-xl p-5 shadow-sm space-y-4">
-        <h3 className="text-sm font-bold text-[#2C1810]">Celebration Story & Welcome Message</h3>
+        <h3 className="text-sm font-bold text-[#2C1810]">Workspace Description & Story</h3>
 
         <div>
           <label className="block text-xs font-semibold text-[#5A453A] mb-1">
@@ -347,7 +347,7 @@ export function GeneralProfileSection({
             value={formState.description}
             disabled={!isAdmin}
             onChange={(e) => onChangeField('description', e.target.value)}
-            placeholder="Share a heartfelt message with guests, family, and team members..."
+            placeholder="Workspace description or notes..."
             className="w-full px-3 py-2 text-xs rounded-lg border border-[#D5CCC0] bg-[#FAF8F5] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#7B341E]/20 focus:border-[#7B341E] text-[#2C1810]"
           />
         </div>
@@ -355,106 +355,82 @@ export function GeneralProfileSection({
 
       {/* Change Cover Modal */}
       {showCoverModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-xl w-full p-6 space-y-6 shadow-2xl border border-[#E8E2D8] animate-scaleUp">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white border border-[#E8E2D8] rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-5">
             <div className="flex items-center justify-between pb-3 border-b border-[#EAE4DC]">
-              <div>
-                <h3 className="text-lg font-serif font-bold text-[#2C1810]">
-                  Select Master Celebration Cover
-                </h3>
-                <p className="text-xs text-[#7C6659]">
-                  Upload a photo from your computer or choose from royal destination presets.
-                </p>
-              </div>
+              <h3 className="text-base font-serif font-bold text-[#2C1810]">
+                Workspace Cover Banner
+              </h3>
               <button
                 type="button"
                 onClick={() => setShowCoverModal(false)}
-                className="p-1 rounded-lg text-[#8C7A70] hover:text-[#2C1810] hover:bg-[#F4EFEA]"
+                className="text-[#8C7A70] hover:text-[#2C1810] p-1 rounded-lg hover:bg-[#FAF8F5]"
               >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                ✕
               </button>
             </div>
 
-            {/* Upload from device */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold text-[#5A453A] uppercase tracking-wider">
-                Option 1: Upload from Device
-              </h4>
+            {uploadError && (
+              <div className="p-3 text-xs bg-[#FDF2F2] border border-[#F8D7DA] text-[#C53030] rounded-lg">
+                {uploadError}
+              </div>
+            )}
 
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                onChange={handleFileSelect}
-                className="hidden"
-              />
-
+            {/* Upload Area */}
+            <div className="space-y-4">
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-[#D5CCC0] hover:border-[#7B341E] rounded-xl p-6 text-center cursor-pointer transition-colors bg-[#FAF8F5] hover:bg-[#F5F0E8]"
+                className="border-2 border-dashed border-[#D5CCC0] hover:border-[#7B341E] bg-[#FAF8F5] hover:bg-[#F7F2EB] p-8 rounded-xl text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2 group"
               >
-                <svg
-                  className="w-8 h-8 text-[#9A6218] mx-auto mb-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.5"
-                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
-                <p className="text-xs font-semibold text-[#2C1810]">
-                  {isUploading ? 'Uploading to cloud storage...' : 'Click to browse wedding cover photo'}
-                </p>
-                <p className="text-[11px] text-[#8C7A70] mt-0.5">
-                  JPG, PNG, WebP up to 15MB
-                </p>
-              </div>
-
-              {uploadError && (
-                <p className="text-xs text-[#C53030] font-medium">{uploadError}</p>
-              )}
-            </div>
-
-            {/* Presets Grid */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold text-[#5A453A] uppercase tracking-wider">
-                Option 2: Curated Heritage Palaces
-              </h4>
-
-              <div className="grid grid-cols-2 gap-3">
-                {PALACE_PRESETS.map((preset) => (
-                  <div
-                    key={preset.name}
-                    onClick={() => handleSelectPreset(preset.url)}
-                    className="relative group rounded-lg overflow-hidden border border-[#D5CCC0] cursor-pointer hover:border-[#7B341E] transition-all"
-                  >
-                    <img
-                      src={preset.url}
-                      alt={preset.name}
-                      className="w-full h-24 object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-2 flex flex-col justify-end text-white">
-                      <div className="text-xs font-bold truncate">{preset.name}</div>
-                      <div className="text-[10px] text-white/80 truncate">{preset.city}</div>
-                    </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+                <div className="w-12 h-12 rounded-full bg-[#EAE4DC] group-hover:bg-[#7B341E]/10 flex items-center justify-center text-[#7B341E] transition-colors">
+                  {isUploading ? (
+                    <svg className="animate-spin h-6 w-6 text-[#7B341E]" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                    </svg>
+                  )}
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-[#2C1810]">
+                    {isUploading ? 'Uploading to cloud storage...' : 'Click to select and upload custom banner'}
                   </div>
-                ))}
+                  <div className="text-[11px] text-[#7C6659] mt-0.5">
+                    Supports JPG, PNG, WebP up to 15MB
+                  </div>
+                </div>
               </div>
+
+              {formState.coverImageKey && (
+                <div className="pt-2 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={handleRemoveCover}
+                    className="text-xs font-semibold text-[#C53030] hover:text-[#9B2C2C] hover:underline"
+                  >
+                    Remove Current Banner
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="flex justify-end pt-3 border-t border-[#EAE4DC]">
               <button
                 type="button"
                 onClick={() => setShowCoverModal(false)}
-                className="px-4 py-2 text-xs font-semibold rounded-lg text-[#5A453A] hover:bg-[#F3EFE9]"
+                className="px-4 py-2 text-xs font-semibold rounded-lg border border-[#D5CCC0] text-[#5A453A] hover:bg-[#FAF8F5]"
               >
-                Cancel
+                Close
               </button>
             </div>
           </div>

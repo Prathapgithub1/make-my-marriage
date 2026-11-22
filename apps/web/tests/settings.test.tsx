@@ -13,20 +13,26 @@ function renderPage(ui: ReactNode, initialEntries = ['/settings']) {
   );
 }
 
-describe('Workspace Settings Console (Stitch Design Reference)', () => {
+describe('Workspace Settings Console (Stitch Design Reference & RBAC)', () => {
   beforeEach(() => {
     queryClient.clear();
   });
 
-  it('renders the Settings Console header with wedding title, countdown, and Stitch styling', async () => {
+  it('renders the Settings Console header with workspace title, status badges, and SaaS action buttons', async () => {
     renderPage(<WorkspaceSettingsPage />);
 
     // Header breadcrumb and titles
     expect(await screen.findByText(/WORKSPACE & CONFIGURATION/i)).toBeInTheDocument();
     expect(screen.getByText(/SETTINGS CONSOLE/i)).toBeInTheDocument();
-    expect(screen.getByText("Prathap & Akshitha's Wedding")).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { level: 1, name: "Prathap & Akshitha's Wedding" }),
+    ).toBeInTheDocument();
 
-    // Badges and buttons
+    // Workspace Status Badge (Active Workspace & Administrator)
+    expect(screen.getByText('Active Workspace')).toBeInTheDocument();
+    expect(screen.getByText('Administrator')).toBeInTheDocument();
+
+    // Redesigned SaaS Action Buttons
     expect(screen.getByText(/Save Changes/i)).toBeInTheDocument();
     expect(screen.getByText(/Discard/i)).toBeInTheDocument();
   });
@@ -98,7 +104,46 @@ describe('Workspace Settings Console (Stitch Design Reference)', () => {
     });
   });
 
-  it('shows Master Celebration Cover & Monogram Banner with Change Cover button', async () => {
+  it('shows discard changes confirmation modal and restores original values on confirm', async () => {
+    const user = userEvent.setup();
+    renderPage(<WorkspaceSettingsPage />);
+
+    const titleInput = await screen.findByDisplayValue("Prathap & Akshitha's Wedding");
+    await user.clear(titleInput);
+    await user.type(titleInput, 'Unsaved Modified Title');
+
+    const discardButton = screen.getByRole('button', { name: /Discard/i });
+    expect(discardButton).not.toBeDisabled();
+    await user.click(discardButton);
+
+    // Confirmation dialog should appear
+    expect(await screen.findByText('Discard Unsaved Modifications?')).toBeInTheDocument();
+
+    // Click confirm discard
+    const confirmButton = screen.getByRole('button', { name: 'Discard Changes' });
+    await user.click(confirmButton);
+
+    // Value should revert to original
+    expect(await screen.findByDisplayValue("Prathap & Akshitha's Wedding")).toBeInTheDocument();
+  });
+
+  it('opens Help and Support modal when help icon is clicked', async () => {
+    const user = userEvent.setup();
+    renderPage(<WorkspaceSettingsPage />);
+
+    const helpButton = await screen.findByTitle('Workspace Settings Guide & Support');
+    await user.click(helpButton);
+
+    expect(await screen.findByText('Workspace Settings & RBAC Guide')).toBeInTheDocument();
+    expect(screen.getByText(/Administrator Privileges/i)).toBeInTheDocument();
+    expect(screen.getByText(/Manager Capabilities/i)).toBeInTheDocument();
+
+    const gotItBtn = screen.getByRole('button', { name: 'Got It' });
+    await user.click(gotItBtn);
+    expect(screen.queryByText('Workspace Settings & RBAC Guide')).not.toBeInTheDocument();
+  });
+
+  it('shows Master Celebration Cover Banner with Change Cover button', async () => {
     renderPage(<WorkspaceSettingsPage />);
 
     expect(

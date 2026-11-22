@@ -300,6 +300,30 @@ describe('Wedding & Dashboard Routes', () => {
       expect(res.status).toBe(400);
       expect(res.body.error.code).toBe('VALIDATION_ERROR');
     });
+
+    it('rejects cover upload request from non-admin members with 403', async () => {
+      const { app } = buildWeddingApp({
+        getCoverUploadUrl: jest.fn(async () => {
+          throw new AppError(
+            403,
+            'FORBIDDEN',
+            'Only wedding administrators can upload wedding cover images.',
+          );
+        }),
+      });
+
+      const res = await request(app)
+        .post('/api/v1/wedding/cover/upload-url')
+        .set(validHeaders)
+        .send({
+          fileName: 'cover.jpg',
+          contentType: 'image/jpeg',
+          fileSize: 1024 * 1024,
+        });
+
+      expect(res.status).toBe(403);
+      expect(res.body.error.code).toBe('FORBIDDEN');
+    });
   });
 
   describe('DELETE /api/v1/wedding', () => {
